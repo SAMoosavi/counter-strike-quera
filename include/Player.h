@@ -6,6 +6,7 @@
 #define COUNTER_STRIKE_QUERA_PLAYER_H
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <utility>
 #include "../Setting.h"
@@ -16,17 +17,29 @@ using std::vector;
 
 class Player {
 public:
-    explicit Player(string name, Gun *knife) : NAME(std::move(name)), KNIFE(knife) {}
+    explicit Player(string name, string time) : NAME(std::move(name)), TIME(std::move(time)) {}
 
     void reset();
 
-    void add_kill() { this->kills++; }
+    void add_kill(int money);
 
     bool shut(int health);
 
     void bye_gun(Gun *gun);
 
-    int get_health() const { return this->health; }
+    int get_health() const;
+
+    int get_money() const;
+
+    int get_kills() const;
+
+    int get_killed() const;
+
+    string get_time() const;
+
+    void won();
+
+    void lose();
 
 private:
     const string NAME;
@@ -35,9 +48,11 @@ private:
     int kills = 0;
     int killed = 0;
     vector<Gun *> guns;
-    const Gun *KNIFE;
+    const string TIME;
 
     void can_bye(Gun *gun) const;
+
+    void add_money(int money);
 };
 
 #endif //COUNTER_STRIKE_QUERA_PLAYER_H

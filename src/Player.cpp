@@ -35,3 +35,38 @@ void Player::can_bye(Gun *gun) const {
         throw "no enough money";
     }
 }
+
+void Player::add_kill(int money) {
+    this->kills++;
+}
+
+int Player::get_health() const { return this->health; }
+
+int Player::get_money() const { return this->money; }
+
+int Player::get_kills() const {
+    return this->kills;
+}
+
+int Player::get_killed() const {
+    return this->killed;
+}
+
+string Player::get_time() const {
+    return this->TIME;
+}
+
+void Player::won() {
+    this->add_money(Setting::WON_MONEY);
+}
+
+void Player::lose() {
+    this->add_money(Setting::LOSE_MONEY);
+}
+
+void Player::add_money(int money) {
+    this->money += money;
+    if (this->money > Setting::MAX_MONEY) {
+        this->money = Setting::MAX_MONEY;
+    }
+}
