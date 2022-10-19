@@ -6,6 +6,7 @@
 #define COUNTER_STRIKE_QUERA_GUN_H
 
 #include <string>
+#include <utility>
 #include "../GlobalVariable.h"
 
 using std::string;
@@ -17,15 +18,18 @@ public:
             int price,
             int health,
             int money,
-            GlobalVariable::type_gun type
+            GlobalVariable::type_gun type,
+            GlobalVariable::access_level accessLevel
     ) :
-            NAME(name),
+            NAME(std::move(name)),
             PRICE(price),
             HEALTH(health),
             MONEY(money),
-            TYPE(type) {}
+            TYPE(type),
+            ACCESS_LEVEL(accessLevel) {}
 
 private:
+    const GlobalVariable::access_level ACCESS_LEVEL;
     const GlobalVariable::type_gun TYPE;
     const string NAME;
     const int PRICE;
