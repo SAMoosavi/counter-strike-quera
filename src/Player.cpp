@@ -70,3 +70,7 @@ void Player::add_money(int money) {
         this->money = Setting::MAX_MONEY;
     }
 }
+
+bool Player::is_live() const {
+    return this->health;
+}

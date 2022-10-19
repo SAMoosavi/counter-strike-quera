@@ -37,6 +37,8 @@ public:
 
     string get_time() const;
 
+    bool is_live() const;
+
     void won();
 
     void lose();
