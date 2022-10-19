@@ -6,14 +6,17 @@
 #define COUNTER_STRIKE_QUERA_PLAYER_H
 
 #include <string>
+#include <vector>
+#include <utility>
 #include "../Setting.h"
 #include "Gun.h"
 
 using std::string;
+using std::vector;
 
 class Player {
 public:
-    Player(string name) : NAME(name) {}
+    explicit Player(string name, Gun *knife) : NAME(std::move(name)), KNIFE(knife) {}
 
 private:
     const string NAME;
@@ -21,7 +24,8 @@ private:
     int money = Setting::START_MONEY;
     int kills = 0;
     int killed = 0;
-    Gun *guns[3];
+    vector<Gun *> guns;
+    const Gun *KNIFE;
 };
 
 #endif //COUNTER_STRIKE_QUERA_PLAYER_H
