@@ -16,10 +16,13 @@ using std::string;
 
 class Team {
 public:
-    void add_player(const string& name);
+    Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
+
+    void add_player(const string &name);
 
 protected:
-    map<string,Player *> players;
+    map<string, Player *> players;
+    const GlobalVariable::access_level ACCESS_LEVEL;
     int life = 0;
 };
 
