@@ -26,6 +26,8 @@ public:
 
     void bye_gun(Gun *gun);
 
+    int get_health() const { return this->health; }
+
 private:
     const string NAME;
     int health = 100;
