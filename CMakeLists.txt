@@ -8,7 +8,10 @@ set(SOURCES
         src/Gun.cpp
         GlobalVariable.h
         src/Player.cpp
-        Setting.h src/Team.cpp)
+        Setting.h
+        src/Team.cpp
+        src/Terrorist.cpp
+        )
 
 add_executable(Counter_Strike_Quera ${SOURCES})
 
