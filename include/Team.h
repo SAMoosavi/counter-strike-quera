@@ -9,6 +9,7 @@
 #include <map>
 #include "Gun.h"
 #include "Player.h"
+#include <Guns.h>
 
 using std::map;
 using std::string;
@@ -19,7 +20,6 @@ public:
 
 protected:
     map<string,Player *> players;
-    map<string, Gun *> guns;
     int life = 0;
 };
 
