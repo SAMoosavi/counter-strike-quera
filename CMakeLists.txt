@@ -3,5 +3,16 @@ project(Counter_Strike_Quera)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Counter_Strike_Quera main.cpp)
+set(SOURCES
+        main.cpp
+        )
+
+add_executable(Counter_Strike_Quera ${SOURCES})
+
+target_include_directories(Counter_Strike_Quera
+        PRIVATE
+        ${PROJECT_SOURCE_DIR}/include
+        )
+
+
 add_subdirectory(test)
