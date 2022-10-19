@@ -7,8 +7,8 @@
 
 class GlobalVariable {
 public:
-    static enum type_gun {
-        heavy, pistol
+    enum type_gun {
+        heavy, pistol,knife
     };
 };
 
