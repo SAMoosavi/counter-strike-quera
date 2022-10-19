@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(SOURCES
         main.cpp
         src/Gun.cpp
-        GlobalVariable.h)
+        GlobalVariable.h src/Player.cpp)
 
 add_executable(Counter_Strike_Quera ${SOURCES})
 
