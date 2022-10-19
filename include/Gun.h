@@ -34,6 +34,10 @@ public:
 
     GlobalVariable::access_level get_access_level() const { return this->ACCESS_LEVEL; }
 
+    int get_money() const { return this->MONEY; }
+
+    int get_health() const { return this->HEALTH; }
+
 private:
     const GlobalVariable::access_level ACCESS_LEVEL;
     const GlobalVariable::type_gun TYPE;
