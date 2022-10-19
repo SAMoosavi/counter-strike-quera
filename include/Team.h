@@ -15,11 +15,9 @@ using std::string;
 
 class Team {
 public:
-    void add_player(string name);
+    void add_player(const string& name);
 
 protected:
-    virtual void create_gun() = 0;
-
     map<string,Player *> players;
     map<string, Gun *> guns;
     int life = 0;

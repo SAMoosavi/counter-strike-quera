@@ -8,9 +8,7 @@
 #include "Team.h"
 
 class CounterTerrorist : public Team {
-public:
-private:
-    void create_gun() override;
+
 };
 
 #endif //COUNTER_STRIKE_QUERA_COUNTER_TERRORIST_H

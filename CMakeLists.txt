@@ -11,7 +11,7 @@ set(SOURCES
         Setting.h
         src/Team.cpp
         src/Terrorist.cpp
-        src/CounterTerrorist.cpp)
+        src/CounterTerrorist.cpp src/Guns.cpp)
 
 add_executable(Counter_Strike_Quera ${SOURCES})
 
