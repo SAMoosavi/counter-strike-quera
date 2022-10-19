@@ -28,6 +28,12 @@ public:
             TYPE(type),
             ACCESS_LEVEL(accessLevel) {}
 
+    int get_price() const { return this->PRICE; }
+
+    GlobalVariable::type_gun get_type() const { return this->TYPE; }
+
+    GlobalVariable::access_level get_access_level() const { return this->ACCESS_LEVEL; }
+
 private:
     const GlobalVariable::access_level ACCESS_LEVEL;
     const GlobalVariable::type_gun TYPE;
