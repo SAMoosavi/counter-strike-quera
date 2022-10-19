@@ -12,9 +12,18 @@ using std::string;
 
 class Gun {
 public:
-    Gun(string name, int price, int health, int money, GlobalVariable::type_gun type) : NAME(name), PRICE(price),
-                                                                                        HEALTH(health), MONEY(money),
-                                                                                        TYPE(type) {}
+    Gun(
+            string name,
+            int price,
+            int health,
+            int money,
+            GlobalVariable::type_gun type
+    ) :
+            NAME(name),
+            PRICE(price),
+            HEALTH(health),
+            MONEY(money),
+            TYPE(type) {}
 
 private:
     const GlobalVariable::type_gun TYPE;
