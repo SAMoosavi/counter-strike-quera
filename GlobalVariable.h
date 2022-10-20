@@ -11,7 +11,7 @@ public:
         heavy, pistol,knife
     };
     enum access_level {
-        terrorist,counter_terrorist,all
+        setting,terrorist,counter_terrorist,all
     };
 };
 
