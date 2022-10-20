@@ -82,3 +82,10 @@ bool Player::is_live() const {
 bool Player::has_gun(GlobalVariable::type_gun type) const {
     return this->guns.count(type);
 }
+
+Gun *Player::get_gun(GlobalVariable::type_gun type) const {
+    if (this->has_gun(type))
+        return const_cast<Gun *>(this->guns.at(type));
+    else
+        return nullptr;
+}

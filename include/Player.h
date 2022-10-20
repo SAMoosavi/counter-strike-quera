@@ -46,6 +46,8 @@ public:
 
     bool has_gun(GlobalVariable::type_gun type) const;
 
+    Gun *get_gun(GlobalVariable::type_gun type) const;
+
 private:
     const string NAME;
     int health = 100;
