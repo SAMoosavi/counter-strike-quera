@@ -8,7 +8,7 @@
 #include "Team.h"
 
 class CounterTerrorist : public Team {
-
+    CounterTerrorist() : Team(GlobalVariable::access_level::counter_terrorist) {}
 };
 
 #include "../src/CounterTerrorist.h"

@@ -7,8 +7,8 @@
 
 #include "Team.h"
 
-class Terrorist:public Team{
-
+class Terrorist : public Team {
+    Terrorist() : Team(GlobalVariable::access_level::terrorist) {}
 };
 
 #include "../src/Terrorist.h"
