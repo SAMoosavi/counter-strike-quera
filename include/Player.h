@@ -6,10 +6,9 @@
 #define COUNTER_STRIKE_QUERA_PLAYER_H
 
 #include <string>
-#include <utility>
 #include <vector>
-#include <utility>
 #include "../Setting.h"
+#include "Time.h"
 #include "Gun.h"
 
 using std::string;
@@ -17,7 +16,7 @@ using std::vector;
 
 class Player {
 public:
-    explicit Player(string name, string time) : NAME(std::move(name)), TIME(std::move(time)) {}
+    explicit Player(string name, const Time &time) : NAME(std::move(name)), TIME(time) {}
 
     void reset();
 
@@ -35,7 +34,7 @@ public:
 
     int get_killed() const;
 
-    string get_time() const;
+    Time get_time() const;
 
     bool is_live() const;
 
@@ -50,7 +49,7 @@ private:
     int kills = 0;
     int killed = 0;
     vector<Gun *> guns;
-    const string TIME;
+    const Time TIME;
 
     void can_bye(Gun *gun) const;
 

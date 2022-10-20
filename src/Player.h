@@ -55,7 +55,7 @@ int Player::get_killed() const {
     return this->killed;
 }
 
-string Player::get_time() const {
+Time Player::get_time() const {
     return this->TIME;
 }
 
