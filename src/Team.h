@@ -8,3 +8,5 @@ void Team::add_player(const string &name, const Time &time) {
         throw "this team is full";
     this->players[name] = new Player(name, time);
 }
+
+bool Team::has_player(const std::string &name) const { return this->players.count(name); }

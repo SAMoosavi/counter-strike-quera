@@ -20,6 +20,8 @@ public:
 
     void add_player(const string &name, const Time &time);
 
+    bool has_player(const string &name) const;
+
 protected:
     map<string, Player *> players;
     const GlobalVariable::access_level ACCESS_LEVEL;
