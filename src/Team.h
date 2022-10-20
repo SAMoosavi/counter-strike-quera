@@ -10,3 +10,9 @@ void Team::add_player(const string &name, const Time &time) {
 }
 
 bool Team::has_player(const std::string &name) const { return this->players.count(name); }
+
+Player *Team::get_player(const std::string &name) const {
+    if (this->players.count(name))
+        throw "invalid username";
+    return this->players[name];
+}
