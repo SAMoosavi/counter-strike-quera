@@ -11,4 +11,6 @@ class Terrorist:public Team{
 
 };
 
+#include "../src/Terrorist.h"
+
 #endif //COUNTER_STRIKE_QUERA_TERRORIST_H

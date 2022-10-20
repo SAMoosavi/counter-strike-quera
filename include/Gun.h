@@ -47,4 +47,6 @@ private:
     const int MONEY;
 };
 
+#include "../src/Gun.h"
+
 #endif //COUNTER_STRIKE_QUERA_GUN_H

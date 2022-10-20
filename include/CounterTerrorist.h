@@ -11,4 +11,6 @@ class CounterTerrorist : public Team {
 
 };
 
+#include "../src/CounterTerrorist.h"
+
 #endif //COUNTER_STRIKE_QUERA_COUNTER_TERRORIST_H

@@ -57,4 +57,6 @@ private:
     void add_money(int money);
 };
 
+#include "../src/Player.h"
+
 #endif //COUNTER_STRIKE_QUERA_PLAYER_H

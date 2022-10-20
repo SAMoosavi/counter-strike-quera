@@ -18,4 +18,6 @@ private:
     Guns() = default;
 };
 
+#include "../src/Guns.h"
+
 #endif //COUNTER_STRIKE_QUERA_GUNS_H

@@ -26,4 +26,6 @@ protected:
     int life = 0;
 };
 
+#include "../src/Team.h"
+
 #endif //COUNTER_STRIKE_QUERA_TEAM_H
