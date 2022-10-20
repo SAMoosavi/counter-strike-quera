@@ -18,7 +18,7 @@ class Team {
 public:
     Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
 
-    void add_player(const string &name);
+    void add_player(const string &name, const Time &time);
 
 protected:
     map<string, Player *> players;
