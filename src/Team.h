@@ -4,7 +4,7 @@
 #include "../include/Team.h"
 
 void Team::add_player(const string &name, const Time &time) {
-    if (this->players.size() == 10)
+    if (this->players.size() == Setting::get_max_member_team())
         throw "this team is full";
     this->players[name] = new Player(name, time);
 }
