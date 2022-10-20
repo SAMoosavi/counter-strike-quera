@@ -17,6 +17,7 @@ class PlayerTest : public ::testing::Test {
 protected:
     void SetUp() override {
         this->player = new Player("aa", TIME);
+        this->player->bye_gun(Guns::get_gun("knife", this->ACCESS_LEVEL));
     }
 
     Player *player{};
@@ -54,13 +55,14 @@ TEST_F(PlayerTest, GetMoneyAfterBye) {
 }
 
 TEST_F(PlayerTest, AddKills) {
-    this->player->add_kill(1000);
-    EXPECT_THAT(this->player->get_money(), Eq(2000));
+    this->player->add_kill("knife");
+    EXPECT_THAT(this->player->get_money(), Eq(1500));
     EXPECT_THAT(this->player->get_kills(), Eq(1));
 }
 
 TEST_F(PlayerTest, AddMoneyAfterMaxMoney) {
-    this->player->add_kill(Setting::MAX_MONEY);
+    for (int i = 0; i < Setting::MAX_MONEY / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
+        this->player->add_kill("knife");
     EXPECT_THAT(this->player->get_money(), Eq(Setting::MAX_MONEY));
 }
 
@@ -90,7 +92,7 @@ TEST_F(PlayerTest, Shut) {
     EXPECT_THAT(this->player->get_health(), Eq(0));
 }
 
-TEST_F(PlayerTest,Reset) {
+TEST_F(PlayerTest, Reset) {
     this->player->shut(50);
     EXPECT_NO_THROW(this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL)));
     this->player->reset();
