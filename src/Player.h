@@ -79,5 +79,7 @@ bool Player::is_live() const {
 }
 
 bool Player::has_gun(const string &name) const {
+    if (name == "knife")
+        return true;
     return this->guns.count(name);
 }
