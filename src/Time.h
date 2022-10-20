@@ -8,7 +8,11 @@
 
 using std::regex;
 
-Time::Time(const string &time) { this->Milliseconds = Time::correct_str_to_milliseconds(time); }
+Time::Time(const string &time, int round) {
+    this->Milliseconds =
+            (Time(Setting::get_end_time()) * (round - 1)).Milliseconds +
+            Time::correct_str_to_milliseconds(time);
+}
 
 bool Time::operator<(const Time &other) const { return this->Milliseconds < other.Milliseconds; }
 
@@ -43,4 +47,8 @@ bool Time::operator==(const Time &other) const {
 
 bool Time::operator==(const string &other) const {
     return this->Milliseconds == Time::correct_str_to_milliseconds(other);
+}
+
+Time Time::operator*(int i) const {
+    return Time(this->Milliseconds * i);
 }

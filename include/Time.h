@@ -6,12 +6,16 @@
 #define COUNTER_STRIKE_QUERA_TIME_H
 
 #include <string>
+#include "../Setting.h"
+
 
 using std::string;
 
 class Time {
 public:
-    Time(const string &time);
+    explicit Time(const string &time, int round = 1) ;
+
+    explicit Time(long long int time) { this->Milliseconds = time; }
 
     bool operator<(const Time &other) const;
 
@@ -24,6 +28,8 @@ public:
     bool operator==(const Time &other) const;
 
     bool operator==(const string &other) const;
+
+    Time operator*(int i) const;
 
 private:
     long long int Milliseconds;
