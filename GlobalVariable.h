@@ -8,10 +8,14 @@
 class GlobalVariable {
 public:
     enum type_gun {
-        heavy, pistol,knife
+        heavy, pistol, knife
     };
     enum access_level {
-        setting,terrorist,counter_terrorist,all
+        setting, terrorist, counter_terrorist, all
+    };
+
+    enum team {
+        Terrorist, Counter_Terrorist
     };
 };
 
