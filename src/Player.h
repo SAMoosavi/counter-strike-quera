@@ -39,6 +39,8 @@ void Player::can_bye(Gun *gun) const {
 }
 
 void Player::add_kill(Gun *gun) {
+    if (!this->has_gun(gun->get_name()))
+        throw "you have no gun named" + (gun->get_name());
     this->kills++;
     this->add_money(gun->get_money());
 }
