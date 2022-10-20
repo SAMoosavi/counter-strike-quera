@@ -77,3 +77,7 @@ void Player::add_money(int money) {
 bool Player::is_live() const {
     return this->health;
 }
+
+bool Player::has_gun(const string &name) const {
+    return this->guns.count(name);
+}

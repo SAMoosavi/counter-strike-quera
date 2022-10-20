@@ -42,6 +42,7 @@ public:
 
     void lose();
 
+    bool has_gun(const string& name) const;
 private:
     const string NAME;
     int health = 100;
