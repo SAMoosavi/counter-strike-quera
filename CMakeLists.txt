@@ -12,7 +12,9 @@ set(SOURCES
         src/Team.h
         src/Terrorist.h
         src/CounterTerrorist.h
-        src/Guns.h)
+        src/Guns.h
+        src/Time.h
+        )
 
 add_executable(Counter_Strike_Quera ${SOURCES})
 
