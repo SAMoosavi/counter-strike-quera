@@ -40,7 +40,7 @@ TEST_F(PlayerTest, ByeGuns) {
 
 TEST_F(PlayerTest, ByeGunHaveAType) {
     this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL));
-    EXPECT_NO_THROW(this->player->bye_gun(Guns::get_gun("Glock-18", this->ACCESS_LEVEL)));
+    EXPECT_ANY_THROW(this->player->bye_gun(Guns::get_gun("Glock-18", this->ACCESS_LEVEL)));
 }
 
 TEST_F(PlayerTest, GetMoneyStart) {
@@ -54,7 +54,7 @@ TEST_F(PlayerTest, GetMoneyAfterBye) {
 
 TEST_F(PlayerTest, AddKills) {
     this->player->add_kill(1000);
-    EXPECT_THAT(this->player->get_money(), Eq(200));
+    EXPECT_THAT(this->player->get_money(), Eq(2000));
     EXPECT_THAT(this->player->get_kills(), Eq(1));
 }
 
