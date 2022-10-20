@@ -6,7 +6,7 @@
 
 void Player::reset() {
     this->health = 100;
-    this->guns[Setting::get_start_gun()->get_name()] = Setting::get_start_gun();
+    this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun();
 }
 
 bool Player::shut(int health) {
@@ -24,7 +24,7 @@ bool Player::shut(int health) {
 void Player::bye_gun(Gun *gun) {
     this->can_bye(gun);
     this->money -= gun->get_price();
-    this->guns[gun->get_name()] = gun;
+    this->guns[gun->get_type()] = gun;
 }
 
 void Player::can_bye(Gun *gun) const {
@@ -39,11 +39,11 @@ void Player::can_bye(Gun *gun) const {
     }
 }
 
-void Player::add_kill(const string &name) {
-    if (!this->has_gun(name))
-        throw "you have no gun named" + name;
+void Player::add_kill(GlobalVariable::type_gun type) {
+    if (!this->has_gun(type))
+        throw "you have no gun named" + type;
     this->kills++;
-    this->add_money(this->guns[name]->get_money());
+    this->add_money(this->guns[type]->get_money());
 }
 
 int Player::get_health() const { return this->health; }
@@ -81,6 +81,6 @@ bool Player::is_live() const {
     return this->health;
 }
 
-bool Player::has_gun(const string &name) const {
-    return this->guns.count(name);
+bool Player::has_gun(GlobalVariable::type_gun type) const {
+    return this->guns.count(type);
 }

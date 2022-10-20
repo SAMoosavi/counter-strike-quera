@@ -18,11 +18,11 @@ class Player {
 public:
     explicit Player(string name, const Time &time) :
             NAME(std::move(name)),
-            TIME(time) { this->guns[Setting::get_start_gun()->get_name()] = Setting::get_start_gun(); }
+            TIME(time) { this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun(); }
 
     void reset();
 
-    void add_kill(const string &name);
+    void add_kill(GlobalVariable::type_gun type);
 
     bool shut(int health);
 
@@ -44,7 +44,7 @@ public:
 
     void lose();
 
-    bool has_gun(const string &name) const;
+    bool has_gun(GlobalVariable::type_gun type) const;
 
 private:
     const string NAME;
@@ -52,7 +52,7 @@ private:
     int money = Setting::get_start_money();
     int kills = 0;
     int killed = 0;
-    map<string,const Gun *> guns;
+    map<GlobalVariable::type_gun,const Gun *> guns;
     const Time TIME;
 
     void can_bye(Gun *gun) const;
