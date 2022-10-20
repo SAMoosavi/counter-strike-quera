@@ -28,11 +28,14 @@ public:
 
     static auto get_start_gun() { return Setting::START_GUN; }
 
+    static auto get_max_member_team() { return Setting::MAX_MEMBER_TEAM; }
+
 private:
     static const int START_MONEY = 1000;
     static const int MAX_MONEY = 10000;
     static const int WON_MONEY = 2700;
     static const int LOSE_MONEY = 2400;
+    static const int MAX_MEMBER_TEAM = 10;
     static const string START_TIME = "00:00:000";
     static const string END_TIME = "02:15:000";
     static const Gun *START_GUN;
