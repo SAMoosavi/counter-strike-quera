@@ -67,8 +67,8 @@ void Player::lose() {
     this->add_money(Setting::LOSE_MONEY);
 }
 
-void Player::add_money(int money) {
-    this->money += money;
+void Player::add_money(int _money) {
+    this->money += _money;
     if (this->money > Setting::MAX_MONEY) {
         this->money = Setting::MAX_MONEY;
     }

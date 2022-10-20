@@ -54,7 +54,7 @@ private:
 
     void can_bye(Gun *gun) const;
 
-    void add_money(int money);
+    void add_money(int _money);
 };
 
 #include "../src/Player.h"
