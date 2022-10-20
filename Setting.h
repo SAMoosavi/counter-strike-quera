@@ -8,6 +8,9 @@
 #include "include/Time.h"
 #include "include/Gun.h"
 #include "include/Guns.h"
+#include <string>
+
+using std::string;
 
 class Setting {
 public:
@@ -30,15 +33,13 @@ private:
     static const int MAX_MONEY = 10000;
     static const int WON_MONEY = 2700;
     static const int LOSE_MONEY = 2400;
-    static const Time START_TIME;
-    static const Time END_TIME;
+    static const string START_TIME = "00:00:000";
+    static const string END_TIME = "02:15:000";
     static const Gun *START_GUN;
 
     Setting() = default;
 };
 
-const Time Setting::START_TIME = Time("00:00:000");
-const Time Setting::END_TIME = Time("02:15:000");
 const Gun *Setting::START_GUN = Guns::get_gun("knife", GlobalVariable::access_level::setting);
 
 #endif //COUNTER_STRIKE_QUERA_SETTING_H
