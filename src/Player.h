@@ -38,11 +38,11 @@ void Player::can_bye(Gun *gun) const {
     }
 }
 
-void Player::add_kill(Gun *gun) {
-    if (!this->has_gun(gun->get_name()))
-        throw "you have no gun named" + (gun->get_name());
+void Player::add_kill(const string &name) {
+    if (!this->has_gun(name))
+        throw "you have no gun named" + name;
     this->kills++;
-    this->add_money(gun->get_money());
+    this->add_money(this->guns[name]->get_money());
 }
 
 int Player::get_health() const { return this->health; }
