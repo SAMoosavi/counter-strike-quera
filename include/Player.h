@@ -16,11 +16,13 @@ using std::map;
 
 class Player {
 public:
-    explicit Player(string name, const Time &time) : NAME(std::move(name)), TIME(time) {}
+    explicit Player(string name, const Time &time) :
+            NAME(std::move(name)),
+            TIME(time) { this->guns[Setting::get_start_gun()->get_name()] = Setting::get_start_gun(); }
 
     void reset();
 
-    void add_kill(const string& name);
+    void add_kill(const string &name);
 
     bool shut(int health);
 
@@ -42,14 +44,15 @@ public:
 
     void lose();
 
-    bool has_gun(const string& name) const;
+    bool has_gun(const string &name) const;
+
 private:
     const string NAME;
     int health = 100;
-    int money = Setting::START_MONEY;
+    int money = Setting::get_start_money();
     int kills = 0;
     int killed = 0;
-    map<string ,Gun *> guns;
+    map<string,const Gun *> guns;
     const Time TIME;
 
     void can_bye(Gun *gun) const;

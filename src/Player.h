@@ -6,6 +6,7 @@
 
 void Player::reset() {
     this->health = 100;
+    this->guns[Setting::get_start_gun()->get_name()] = Setting::get_start_gun();
 }
 
 bool Player::shut(int health) {
