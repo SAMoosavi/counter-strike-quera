@@ -9,7 +9,7 @@ void Player::reset() {
 }
 
 bool Player::shut(int health) {
-    if(!this->is_live())
+    if (!this->is_live())
         throw "Player is not live!";
     this->health -= health;
     if (this->health <= 0) {
@@ -40,6 +40,7 @@ void Player::can_bye(Gun *gun) const {
 
 void Player::add_kill(int money) {
     this->kills++;
+    this->add_money(money);
 }
 
 int Player::get_health() const { return this->health; }
