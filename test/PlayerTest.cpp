@@ -7,6 +7,7 @@
 #include "../include/Player.h"
 
 #include "../include/Guns.h"
+#include "../include/Time.h"
 
 using testing::Eq;
 using testing::IsTrue;
@@ -19,7 +20,7 @@ protected:
     }
 
     Player *player{};
-    const string TIME = "00:10:000";
+    Time TIME = Time("00:10:000");
     const GlobalVariable::access_level ACCESS_LEVEL = GlobalVariable::access_level::terrorist;
 };
 
