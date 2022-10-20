@@ -57,3 +57,21 @@ void Handler::get_health(const std::string &username) const {
 //    log success
     Logger::log_successes(std::to_string(health));
 }
+
+void Handler::tap(const std::string &attacker, const std::string &attacked, const GlobalVariable::type_gun type) {
+    auto attacker_player = this->find_player(attacker);
+    auto attacked_player = this->find_player(attacked);
+
+    if (!attacker_player->is_live()) throw "attacker is dead";
+    if (!attacked_player->is_live()) throw "attacked is dead";
+
+    if (!attacker_player->has_gun(type)) throw "no such gun";
+
+    if (this->terrorist_class->has_player(attacker) ^ this->terrorist_class->has_player(attacked))
+        throw "friendly fire";
+
+    Logger::log_successes("nice shot");
+
+    if (attacked_player->shut(attacker_player->get_gun(type)->get_health()))
+        attacker_player->add_kill(type);
+}
