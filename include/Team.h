@@ -24,7 +24,9 @@ public:
 
     Player *get_player(const string &name) const;
 
-protected:
+    void new_round();
+
+private:
     map<string, Player *> players;
     const GlobalVariable::access_level ACCESS_LEVEL;
     int life = 0;

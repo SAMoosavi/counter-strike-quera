@@ -14,5 +14,12 @@ bool Team::has_player(const std::string &name) const { return this->players.coun
 Player *Team::get_player(const std::string &name) const {
     if (this->players.count(name))
         throw "invalid username";
-    return this->players[name];
+    return this->players.at(name);
+}
+
+void Team::new_round() {
+    for (auto &player: this->players) {
+        player.second->reset();
+    }
+    this->life = this->players.size();
 }
