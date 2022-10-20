@@ -11,6 +11,21 @@
 
 class Setting {
 public:
+    static auto get_start_money() { return Setting::START_MONEY; }
+
+    static auto get_max_money() { return Setting::MAX_MONEY; }
+
+    static auto get_won_money() { return Setting::WON_MONEY; }
+
+    static auto get_lose_money() { return Setting::LOSE_MONEY; }
+
+    static auto get_start_time() { return Setting::START_TIME; }
+
+    static auto get_end_time() { return Setting::END_TIME; }
+
+    static auto get_start_gun() { return Setting::START_GUN; }
+
+private:
     static const int START_MONEY = 1000;
     static const int MAX_MONEY = 10000;
     static const int WON_MONEY = 2700;
@@ -18,7 +33,7 @@ public:
     static const Time START_TIME;
     static const Time END_TIME;
     static const Gun *START_GUN;
-private:
+
     Setting() = default;
 };
 
