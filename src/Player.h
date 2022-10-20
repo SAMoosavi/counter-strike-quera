@@ -63,17 +63,17 @@ Time Player::get_time() const {
 }
 
 void Player::won() {
-    this->add_money(Setting::WON_MONEY);
+    this->add_money(Setting::get_won_money());
 }
 
 void Player::lose() {
-    this->add_money(Setting::LOSE_MONEY);
+    this->add_money(Setting::get_lose_money());
 }
 
 void Player::add_money(int _money) {
     this->money += _money;
-    if (this->money > Setting::MAX_MONEY) {
-        this->money = Setting::MAX_MONEY;
+    if (this->money > Setting::get_max_money()) {
+        this->money = Setting::get_max_money();
     }
 }
 
