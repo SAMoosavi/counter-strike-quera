@@ -20,7 +20,7 @@ public:
 
     void reset();
 
-    void add_kill(int money);
+    void add_kill(Gun *gun);
 
     bool shut(int health);
 

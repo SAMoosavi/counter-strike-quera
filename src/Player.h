@@ -27,7 +27,7 @@ void Player::bye_gun(Gun *gun) {
 }
 
 void Player::can_bye(Gun *gun) const {
-    for (const auto& playerGun: this->guns) {
+    for (const auto &playerGun: this->guns) {
         if (gun->get_type() == playerGun.second->get_type()) {
             throw "you have a" + (gun->get_type() == GlobalVariable::type_gun::heavy) ? "heavy" : "pistol";
         }
@@ -38,9 +38,9 @@ void Player::can_bye(Gun *gun) const {
     }
 }
 
-void Player::add_kill(int money) {
+void Player::add_kill(Gun *gun) {
     this->kills++;
-    this->add_money(money);
+    this->add_money(gun->get_money());
 }
 
 int Player::get_health() const { return this->health; }
