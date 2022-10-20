@@ -38,6 +38,8 @@ public:
 
     int get_health() const { return this->HEALTH; }
 
+    string get_name() const { return this->NAME; }
+
 private:
     const GlobalVariable::access_level ACCESS_LEVEL;
     const GlobalVariable::type_gun TYPE;
