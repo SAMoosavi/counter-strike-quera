@@ -15,12 +15,13 @@ map<string, Gun *> Guns::guns = {
 };
 
 
-Gun * Guns::get_gun(string name, GlobalVariable::access_level accessLevel) {
-    if(accessLevel == GlobalVariable::access_level::all)
+Gun *Guns::get_gun(string name, GlobalVariable::access_level accessLevel) {
+    if (accessLevel == GlobalVariable::access_level::all)
         throw ":/";
-    else if(!Guns::guns.count(name))
+    else if (!Guns::guns.count(name))
         throw "invalid category gun";
-    else if(Guns::guns[name]->get_access_level() == GlobalVariable::access_level::all) return  Guns::guns[name];
+    else if (accessLevel == GlobalVariable::access_level::setting) return Guns::guns[name];
+    else if (Guns::guns[name]->get_access_level() == GlobalVariable::access_level::all) return Guns::guns[name];
     else if (Guns::guns[name]->get_access_level() == accessLevel) return Guns::guns[name];
     else throw "invalid category gun";
 }
