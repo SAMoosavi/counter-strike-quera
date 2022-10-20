@@ -14,6 +14,7 @@ set(SOURCES
         src/CounterTerrorist.h
         src/Guns.h
         src/Time.h
+        src/Handler.h
         )
 
 add_executable(Counter_Strike_Quera ${SOURCES})
