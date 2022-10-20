@@ -17,7 +17,6 @@ class PlayerTest : public ::testing::Test {
 protected:
     void SetUp() override {
         this->player = new Player("aa", TIME);
-        this->player->bye_gun(Guns::get_gun("knife", this->ACCESS_LEVEL));
     }
 
     Player *player{};
@@ -46,12 +45,12 @@ TEST_F(PlayerTest, ByeGunHaveAType) {
 }
 
 TEST_F(PlayerTest, GetMoneyStart) {
-    EXPECT_THAT(this->player->get_money(), Eq(Setting::START_MONEY));
+    EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money()));
 }
 
 TEST_F(PlayerTest, GetMoneyAfterBye) {
     this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL));
-    EXPECT_THAT(this->player->get_money(), Eq(Setting::START_MONEY - 600));
+    EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() - 600));
 }
 
 TEST_F(PlayerTest, AddKills) {
@@ -61,19 +60,19 @@ TEST_F(PlayerTest, AddKills) {
 }
 
 TEST_F(PlayerTest, AddMoneyAfterMaxMoney) {
-    for (int i = 0; i < Setting::MAX_MONEY / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
+    for (int i = 0; i < Setting::get_max_money() / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
         this->player->add_kill("knife");
-    EXPECT_THAT(this->player->get_money(), Eq(Setting::MAX_MONEY));
+    EXPECT_THAT(this->player->get_money(), Eq(Setting::get_max_money()));
 }
 
 TEST_F(PlayerTest, Wod) {
     this->player->won();
-    EXPECT_THAT(this->player->get_money(), Eq(Setting::START_MONEY + Setting::WON_MONEY));
+    EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() + Setting::get_won_money()));
 }
 
 TEST_F(PlayerTest, Lose) {
     this->player->lose();
-    EXPECT_THAT(this->player->get_money(), Eq(Setting::START_MONEY + Setting::LOSE_MONEY));
+    EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() + Setting::get_lose_money()));
 }
 
 TEST_F(PlayerTest, Shut) {
@@ -97,7 +96,20 @@ TEST_F(PlayerTest, Reset) {
     EXPECT_NO_THROW(this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL)));
     this->player->reset();
     EXPECT_THAT(this->player->get_health(), Eq(100));
-    EXPECT_THAT(this->player->get_money(), Eq(Setting::START_MONEY - 600));
+    EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() - 600));
     EXPECT_ANY_THROW(this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL)));
 }
 
+TEST_F(PlayerTest, HasGun) {
+    EXPECT_THAT(this->player->has_gun("knife"), IsTrue());
+    EXPECT_THAT(this->player->has_gun("AWP"), IsFalse());
+    for (int i = 0; i < Setting::get_max_money() / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
+        this->player->add_kill("knife");
+    this->player->bye_gun(Guns::get_gun("AWP", this->ACCESS_LEVEL));
+    EXPECT_THAT(this->player->has_gun("AWP"), IsTrue());
+    this->player->shut(110);
+    EXPECT_THAT(this->player->has_gun("AWP"), IsFalse());
+    EXPECT_THAT(this->player->has_gun("knife"), IsFalse());
+    this->player->reset();
+
+}
