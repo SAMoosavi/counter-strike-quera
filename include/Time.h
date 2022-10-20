@@ -21,6 +21,8 @@ public:
 
     bool operator>(const string &other) const;
 
+    bool operator==(const Time &other) const;
+
 private:
     long long int Milliseconds;
 

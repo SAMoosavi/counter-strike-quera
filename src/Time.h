@@ -35,3 +35,7 @@ bool Time::str_is_correct(const std::string &time) {
    regex timePattern(R"(\d\d:\d\d:\d\d\d)");
     return regex_match(time,timePattern);
 }
+
+bool Time::operator==(const Time &other) const {
+    return this->Milliseconds == other.Milliseconds;
+}
