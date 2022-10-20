@@ -40,3 +40,7 @@ bool Time::str_is_correct(const std::string &time) {
 bool Time::operator==(const Time &other) const {
     return this->Milliseconds == other.Milliseconds;
 }
+
+bool Time::operator==(const string &other) const {
+    return this->Milliseconds == Time::correct_str_to_milliseconds(other);
+}
