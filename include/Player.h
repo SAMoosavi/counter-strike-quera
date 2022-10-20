@@ -6,13 +6,13 @@
 #define COUNTER_STRIKE_QUERA_PLAYER_H
 
 #include <string>
-#include <vector>
+#include <map>
 #include "../Setting.h"
 #include "Time.h"
 #include "Gun.h"
 
 using std::string;
-using std::vector;
+using std::map;
 
 class Player {
 public:
@@ -48,7 +48,7 @@ private:
     int money = Setting::START_MONEY;
     int kills = 0;
     int killed = 0;
-    vector<Gun *> guns;
+    map<string ,Gun *> guns;
     const Time TIME;
 
     void can_bye(Gun *gun) const;
