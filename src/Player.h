@@ -23,12 +23,12 @@ bool Player::shut(int health) {
 void Player::bye_gun(Gun *gun) {
     this->can_bye(gun);
     this->money -= gun->get_price();
-    this->guns.push_back(gun);
+    this->guns[gun->get_name()] = gun;
 }
 
 void Player::can_bye(Gun *gun) const {
-    for (auto playerGun: this->guns) {
-        if (gun->get_type() == playerGun->get_type()) {
+    for (const auto& playerGun: this->guns) {
+        if (gun->get_type() == playerGun.second->get_type()) {
             throw "you have a" + (gun->get_type() == GlobalVariable::type_gun::heavy) ? "heavy" : "pistol";
         }
     }
