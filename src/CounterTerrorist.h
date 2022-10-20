@@ -3,3 +3,8 @@
 //
 
 #include "../include/CounterTerrorist.h"
+
+CounterTerrorist *CounterTerrorist::create_class() {
+    if (CounterTerrorist::ct == nullptr) return new CounterTerrorist();
+    return CounterTerrorist::ct;
+}

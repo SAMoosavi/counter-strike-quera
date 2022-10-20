@@ -8,6 +8,10 @@
 #include "Team.h"
 
 class CounterTerrorist : public Team {
+public:
+    static CounterTerrorist *create_class();
+private:
+    static CounterTerrorist *ct;
     CounterTerrorist() : Team(GlobalVariable::access_level::counter_terrorist) {}
 };
 
