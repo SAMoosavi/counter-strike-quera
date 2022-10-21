@@ -42,8 +42,8 @@ int main() {
                     handler->score_board();
                 }
             }
-            catch (const string& error) {
-                Logger::log_error(error);
+            catch (const Error &error) {
+                Logger::log_error(error.get_error());
             }
         }
         handler->new_round();
