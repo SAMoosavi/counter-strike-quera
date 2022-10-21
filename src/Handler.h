@@ -75,3 +75,15 @@ void Handler::tap(const std::string &attacker, const std::string &attacked, cons
     if (attacked_player->shut(attacker_player->get_gun(type)->get_health()))
         attacker_player->add_kill(type);
 }
+
+void Handler::buy(const string &username, const string &gunName, const string &time) const {
+    auto player = this->find_player(username);
+
+    if (!player->is_live()) throw "deads can not buy";
+
+    if (Time(time) > Time(Setting::get_time_buy_gun())) throw "you are out of time";
+
+    player->bye_gun(gunName);
+
+    Logger::log_successes("I hope you can use it");
+}
