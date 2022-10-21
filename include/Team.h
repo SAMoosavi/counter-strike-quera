@@ -7,11 +7,13 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include "Gun.h"
 #include "Player.h"
 #include <Guns.h>
 
 using std::map;
+using std::vector;
 using std::string;
 
 class Team {
@@ -25,6 +27,8 @@ public:
     Player *get_player(const string &name) const;
 
     void new_round();
+
+    vector<Player *> get_score_board() const;
 
 private:
     map<string, Player *> players;

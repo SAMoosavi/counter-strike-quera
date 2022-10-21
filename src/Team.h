@@ -23,3 +23,11 @@ void Team::new_round() {
     }
     this->life = this->players.size();
 }
+
+vector<Player *> Team::get_score_board() const {
+    vector<Player *> result_players;
+    for(const auto& player:this->players)
+        result_players.push_back(player.second);
+    std::sort(result_players.begin(), result_players.end());
+    return result_players;
+}
