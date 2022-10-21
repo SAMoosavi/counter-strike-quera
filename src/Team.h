@@ -21,7 +21,7 @@ void Team::new_round() {
     for (auto &player: this->players) {
         player.second->reset();
     }
-    this->life = this->players.size();
+    this->life = (int) this->players.size();
 }
 
 vector<Player *> Team::get_score_board() const {
