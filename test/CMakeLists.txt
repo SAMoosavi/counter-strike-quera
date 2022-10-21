@@ -12,5 +12,6 @@ add_executable(Google_Tests_run
         GunsTest.cpp
         PlayerTest.cpp
         TimeTest.cpp
+        TeamTest.cpp
         )
 target_link_libraries(Google_Tests_run gtest gtest_main)
