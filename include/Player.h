@@ -21,7 +21,11 @@ public:
     explicit Player(string name, const Time &time, GlobalVariable::access_level accessLevel) :
             NAME(std::move(name)),
             TIME(time),
-            ACCESS_LEVEL(accessLevel) { this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun(); }
+            ACCESS_LEVEL(accessLevel) {
+        this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun();
+        if ((time % Time(Setting::get_end_time())) > Time(Setting::get_time_add_player()))
+            this->health = 0;
+    }
 
     void reset();
 
