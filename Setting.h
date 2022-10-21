@@ -28,6 +28,8 @@ public:
 
     static auto get_time_buy_gun() { return Setting::TIME_BUY_GUN; }
 
+    static auto get_time_add_player() { return Setting::TIME_ADD_PLAYER; }
+
     static auto get_start_gun() { return Setting::START_GUN; }
 
     static auto get_max_member_team() { return Setting::MAX_MEMBER_TEAM; }
@@ -38,13 +40,19 @@ private:
     static const int WON_MONEY = 2700;
     static const int LOSE_MONEY = 2400;
     static const int MAX_MEMBER_TEAM = 10;
-    static const string START_TIME = "00:00:000";
-    static const string END_TIME = "02:15:000";
-    static const string TIME_BUY_GUN = "00:45:000";
+    static const string START_TIME;
+    static const string END_TIME;
+    static const string TIME_BUY_GUN;
+    static const string TIME_ADD_PLAYER;
     static const Gun *START_GUN;
 
     Setting() = default;
 };
+
+const string Setting::START_TIME = "00:00:000";
+const string Setting::END_TIME = "02:15:000";
+const string Setting::TIME_BUY_GUN = "00:45:000";
+const string Setting::TIME_ADD_PLAYER = "00:03:000";
 
 const Gun *Setting::START_GUN = Guns::get_gun("knife", GlobalVariable::access_level::setting);
 
