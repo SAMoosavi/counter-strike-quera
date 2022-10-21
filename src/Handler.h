@@ -19,7 +19,7 @@ bool Handler::has_player(const std::string &name) const {
     return this->terrorist_class->has_player(name) && this->counter_terrorist_class->has_player(name);
 }
 
-void Handler::add_user(const std::string &name, GlobalVariable::team team, const string &time) const {
+void Handler::add_user(const std::string &name, GlobalVariable::team team, const string &time) {
 // check has player
     if (this->has_player(name))
         throw "you are already in this game";
@@ -58,7 +58,7 @@ void Handler::get_health(const std::string &username) const {
     Logger::log_successes(std::to_string(health));
 }
 
-void Handler::tap(const std::string &attacker, const std::string &attacked, const GlobalVariable::type_gun type) {
+void Handler::tap(const std::string &attacker, const std::string &attacked, const GlobalVariable::type_gun type) const {
     auto attacker_player = this->find_player(attacker);
     auto attacked_player = this->find_player(attacked);
 
