@@ -74,7 +74,7 @@ void Handler::tap(const std::string &attacker, const std::string &attacked, cons
 
     if (!attacker_player->has_gun(type)) throw Error("no such gun");
 
-    if (this->terrorist_class->has_player(attacker) ^ this->terrorist_class->has_player(attacked))
+    if (!(this->terrorist_class->has_player(attacker) ^ this->terrorist_class->has_player(attacked)))
         throw Error("friendly fire");
 
     Logger::log_successes("nice shot");
