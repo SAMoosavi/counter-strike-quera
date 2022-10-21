@@ -8,7 +8,7 @@
 map<string, Gun *> Guns::guns = {
         {"AK",           (new Gun("AK",           2700, 31,  100, GlobalVariable::type_gun::heavy,  GlobalVariable::access_level::terrorist))},
         {"AWP",          (new Gun("AWP",          4300, 110, 50,  GlobalVariable::type_gun::heavy,  GlobalVariable::access_level::all))},
-        {"M4A1",         {new Gun("M4A1",         2700, 29,  100, GlobalVariable::type_gun::heavy,  GlobalVariable::access_level::terrorist)}},
+        {"M4A1",         {new Gun("M4A1",         2700, 29,  100, GlobalVariable::type_gun::heavy,  GlobalVariable::access_level::counter_terrorist)}},
         {"Desert-Eagle", (new Gun("Desert-Eagle", 600,  53,  175, GlobalVariable::type_gun::pistol, GlobalVariable::access_level::counter_terrorist))},
         {"UPS-S",        (new Gun("UPS-S",        300,  13,  225, GlobalVariable::type_gun::pistol, GlobalVariable::access_level::counter_terrorist))},
         {"Revolver",     (new Gun("Revolver",     600,  51,  150, GlobalVariable::type_gun::pistol, GlobalVariable::access_level::terrorist))},
