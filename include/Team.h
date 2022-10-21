@@ -10,7 +10,7 @@
 #include <vector>
 #include "Gun.h"
 #include "Player.h"
-#include <Guns.h>
+#include "Guns.h"
 
 using std::map;
 using std::vector;
@@ -18,7 +18,7 @@ using std::string;
 
 class Team {
 public:
-    Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
+    explicit Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
 
     void add_player(const string &name, const Time &time);
 
