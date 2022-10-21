@@ -21,8 +21,8 @@ bool Player::shut(int health) {
     return !this->health;
 }
 
-void Player::bye_gun(const string& name) {
-    auto gun  = Guns::get_gun(name, this->ACCESS_LEVEL);
+void Player::bye_gun(const string &name) {
+    auto gun = Guns::get_gun(name, this->ACCESS_LEVEL);
     this->can_bye(gun);
     this->money -= gun->get_price();
     this->guns[gun->get_type()] = gun;
@@ -89,4 +89,9 @@ Gun *Player::get_gun(GlobalVariable::type_gun type) const {
         return const_cast<Gun *>(this->guns.at(type));
     else
         return nullptr;
+}
+
+ostream &operator<<(ostream &output, const Player &player) {
+    output << player.NAME << " " << player.kills << " " << player.killed << "\n";
+    return output;
 }

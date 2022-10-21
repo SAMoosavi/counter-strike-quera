@@ -7,12 +7,14 @@
 
 #include <string>
 #include <map>
+#include <iostream>
 #include "../Setting.h"
 #include "Time.h"
 #include "Gun.h"
 
 using std::string;
 using std::map;
+using std::ostream;
 
 class Player {
 public:
@@ -48,6 +50,8 @@ public:
     bool has_gun(GlobalVariable::type_gun type) const;
 
     Gun *get_gun(GlobalVariable::type_gun type) const;
+
+    friend ostream &operator<<( ostream &output, const Player &player );
 
 private:
     const string NAME;
