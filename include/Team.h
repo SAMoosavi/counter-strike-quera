@@ -30,6 +30,8 @@ public:
 
     vector<Player *> get_score_board() const;
 
+    bool has_life() const;
+
 private:
     map<string, Player *> players;
     const GlobalVariable::access_level ACCESS_LEVEL;

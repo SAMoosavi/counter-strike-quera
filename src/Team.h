@@ -31,3 +31,7 @@ vector<Player *> Team::get_score_board() const {
     std::sort(result_players.begin(), result_players.end());
     return result_players;
 }
+
+bool Team::has_life() const {
+    return (bool)this->life;
+}
