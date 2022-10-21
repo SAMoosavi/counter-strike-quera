@@ -19,7 +19,7 @@ Player *Handler::find_player(const std::string &name) const {
 }
 
 bool Handler::has_player(const std::string &name) const {
-    return this->terrorist_class->has_player(name) && this->counter_terrorist_class->has_player(name);
+    return this->terrorist_class->has_player(name) || this->counter_terrorist_class->has_player(name);
 }
 
 void Handler::add_user(const std::string &name, GlobalVariable::team team, const string &time) {
