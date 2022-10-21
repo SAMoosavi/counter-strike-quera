@@ -6,9 +6,6 @@
 #include "gmock/gmock.h"
 #include "../include/Player.h"
 
-#include "../include/Guns.h"
-#include "../include/Time.h"
-
 using testing::Eq;
 using testing::IsTrue;
 using testing::IsFalse;
@@ -16,7 +13,7 @@ using testing::IsFalse;
 class PlayerTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        this->player = new Player("aa", TIME);
+        this->player = new Player("aa", TIME, this->ACCESS_LEVEL);
     }
 
     Player *player{};
@@ -29,19 +26,19 @@ TEST_F(PlayerTest, GetTime) {
 }
 
 TEST_F(PlayerTest, ByeGunNotEnoughMoney) {
-    EXPECT_ANY_THROW(this->player->bye_gun(Guns::get_gun("AK", this->ACCESS_LEVEL)));
+    EXPECT_ANY_THROW(this->player->bye_gun("AK"));
 }
 
 TEST_F(PlayerTest, ByeGuns) {
     this->player->won();
     this->player->won();
-    EXPECT_NO_THROW(this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL)));
-    EXPECT_NO_THROW(this->player->bye_gun(Guns::get_gun("AWP", this->ACCESS_LEVEL)));
+    EXPECT_NO_THROW(this->player->bye_gun("Revolver"));
+    EXPECT_NO_THROW(this->player->bye_gun("AWP"));
 }
 
 TEST_F(PlayerTest, ByeGunHaveAType) {
-    this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL));
-    EXPECT_ANY_THROW(this->player->bye_gun(Guns::get_gun("Glock-18", this->ACCESS_LEVEL)));
+    this->player->bye_gun("Revolver");
+    EXPECT_ANY_THROW(this->player->bye_gun("Glock-18"));
 }
 
 TEST_F(PlayerTest, GetMoneyStart) {
@@ -49,19 +46,19 @@ TEST_F(PlayerTest, GetMoneyStart) {
 }
 
 TEST_F(PlayerTest, GetMoneyAfterBye) {
-    this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL));
+    this->player->bye_gun("Revolver");
     EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() - 600));
 }
 
 TEST_F(PlayerTest, AddKills) {
-    this->player->add_kill("knife");
+    this->player->add_kill(GlobalVariable::type_gun::knife);
     EXPECT_THAT(this->player->get_money(), Eq(1500));
     EXPECT_THAT(this->player->get_kills(), Eq(1));
 }
 
 TEST_F(PlayerTest, AddMoneyAfterMaxMoney) {
     for (int i = 0; i < Setting::get_max_money() / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
-        this->player->add_kill("knife");
+        this->player->add_kill(GlobalVariable::type_gun::knife);
     EXPECT_THAT(this->player->get_money(), Eq(Setting::get_max_money()));
 }
 
@@ -93,23 +90,23 @@ TEST_F(PlayerTest, Shut) {
 
 TEST_F(PlayerTest, Reset) {
     this->player->shut(50);
-    EXPECT_NO_THROW(this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL)));
+    EXPECT_NO_THROW(this->player->bye_gun("Revolver"));
     this->player->reset();
     EXPECT_THAT(this->player->get_health(), Eq(100));
     EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() - 600));
-    EXPECT_ANY_THROW(this->player->bye_gun(Guns::get_gun("Revolver", this->ACCESS_LEVEL)));
+    EXPECT_ANY_THROW(this->player->bye_gun("Revolver"));
 }
 
 TEST_F(PlayerTest, HasGun) {
-    EXPECT_THAT(this->player->has_gun("knife"), IsTrue());
-    EXPECT_THAT(this->player->has_gun("AWP"), IsFalse());
+    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::knife), IsTrue());
+    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
     for (int i = 0; i < Setting::get_max_money() / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
-        this->player->add_kill("knife");
-    this->player->bye_gun(Guns::get_gun("AWP", this->ACCESS_LEVEL));
-    EXPECT_THAT(this->player->has_gun("AWP"), IsTrue());
+        this->player->add_kill(GlobalVariable::type_gun::knife);
+    this->player->bye_gun("AWP");
+    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsTrue());
     this->player->shut(110);
-    EXPECT_THAT(this->player->has_gun("AWP"), IsFalse());
-    EXPECT_THAT(this->player->has_gun("knife"), IsFalse());
+    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
+    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::knife), IsFalse());
     this->player->reset();
 
 }
