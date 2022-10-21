@@ -73,8 +73,7 @@ void Handler::tap(const std::string &attacker, const std::string &attacked, cons
 
     Logger::log_successes("nice shot");
 
-    if (attacked_player->shut(attacker_player->get_gun(type)->get_health()))
-        attacker_player->add_kill(type);
+    if (attacked_player->shut(attacker_player->get_gun(type)->get_health())) { attacker_player->add_kill(type); }
 }
 
 void Handler::buy(const string &username, const string &gunName, const string &time) const {
@@ -105,7 +104,7 @@ void Handler::score_board() const {
 void Handler::new_round() {
     this->round++;
 
-    if ((!this->counter_terrorist_class->has_life()) && this->terrorist_class->has_life()) {
+    if ((!this->counter_terrorist_class->has_live()) && this->terrorist_class->has_live()) {
         Logger::log_successes("Terrorist won");
         this->terrorist_class->won();
         this->counter_terrorist_class->lose();
