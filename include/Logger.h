@@ -15,4 +15,6 @@ public:
     static void log_error(const string &message);
 };
 
+#include "../src/Logger.h"
+
 #endif //COUNTER_STRIKE_QUERA_LOGGER_H
