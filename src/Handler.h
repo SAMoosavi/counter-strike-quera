@@ -117,3 +117,8 @@ void Handler::new_round() {
     this->terrorist_class->new_round();
     this->counter_terrorist_class->new_round();
 }
+
+Handler::~Handler() {
+    delete this->terrorist_class;
+    delete this->counter_terrorist_class;
+}

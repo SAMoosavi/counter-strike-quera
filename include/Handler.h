@@ -28,6 +28,8 @@ public:
 
     void new_round();
 
+    ~Handler();
+
 private:
     int round = 0;
     Terrorist *terrorist_class = Terrorist::create_class();
