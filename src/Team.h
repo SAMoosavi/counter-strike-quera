@@ -5,7 +5,7 @@
 
 void Team::add_player(const string &name, const Time &time) {
     if (this->players.size() == Setting::get_max_member_team())
-        throw "this team is full";
+        throw Error("this team is full");
     this->players[name] = new Player(name, time, this->ACCESS_LEVEL);
 }
 
@@ -21,7 +21,6 @@ void Team::new_round() {
     for (auto &player: this->players) {
         player.second->reset();
     }
-    this->life = (int) this->players.size();
 }
 
 vector<Player *> Team::get_score_board() const {
