@@ -5,7 +5,7 @@
 #ifndef COUNTER_STRIKE_QUERA_SETTING_H
 #define COUNTER_STRIKE_QUERA_SETTING_H
 
-#include "include/Time.h"
+
 #include "include/Gun.h"
 #include "include/Guns.h"
 #include <string>
