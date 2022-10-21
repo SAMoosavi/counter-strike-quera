@@ -10,9 +10,12 @@
 using std::regex;
 
 Time::Time(const string &time, int round) {
-    this->Milliseconds =
-            (Time(Setting::get_end_time()) * (round - 1)).Milliseconds +
-            Time::correct_str_to_milliseconds(time);
+    if (round == 1)
+        this->Milliseconds = Time::correct_str_to_milliseconds(time);
+    else
+        this->Milliseconds =
+                (Time(Setting::get_end_time()) * (round - 1)).Milliseconds +
+                Time::correct_str_to_milliseconds(time);
 }
 
 bool Time::operator<(const Time &other) const { return this->Milliseconds < other.Milliseconds; }

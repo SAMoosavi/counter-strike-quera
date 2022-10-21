@@ -13,7 +13,7 @@ using std::string;
 
 class Time {
 public:
-    explicit Time(const string &time, int round = 1) ;
+    Time(const string &time, int round = 1);
 
     explicit Time(long long int time) { this->Milliseconds = time; }
 
