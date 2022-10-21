@@ -12,7 +12,7 @@ using std::map;
 
 class Guns {
 public:
-    static Gun * get_gun(string name, GlobalVariable::access_level accessLevel);
+    static Gun * get_gun(const string& name, GlobalVariable::access_level accessLevel);
 private:
     static map<string, Gun *> guns ;
     Guns() = default;

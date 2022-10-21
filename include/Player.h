@@ -31,7 +31,7 @@ public:
 
     void add_kill(GlobalVariable::type_gun type);
 
-    bool shut(int health);
+    bool shut(int health_);
 
     void bye_gun(const string &name);
 

@@ -34,7 +34,7 @@ public:
     Time operator%(const Time &other) const;
 
 private:
-    long long int Milliseconds;
+    long long int Milliseconds{};
 
     static long long int correct_str_to_milliseconds(const string &time);
 
