@@ -30,7 +30,7 @@ protected:
 TEST_F(TeamTest, AddPlayer) {
     ASSERT_NO_THROW(this->team->add_player("0", Time("00:01:000")));
     int muxMemberTeam = Setting::get_max_member_team();
-    for (int i = 1; i < muxMemberTeam - 1; ++i)
+    for (int i = 1; i < muxMemberTeam; ++i)
         ASSERT_NO_THROW(this->team->add_player(to_string(i), Time("00:00:001") * i));
     ASSERT_ANY_THROW(this->team->add_player(to_string(muxMemberTeam), Time("00:00:001") * muxMemberTeam));
 }
