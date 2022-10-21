@@ -100,3 +100,9 @@ void Handler::score_board() const {
         Logger::log_successes(std::to_string(i + 1) + " " + terrorist_score_board[i]->to_string());
     }
 }
+
+void Handler::new_round() {
+    this->round++;
+    this->terrorist_class->new_round();
+    this->counter_terrorist_class->new_round();
+}

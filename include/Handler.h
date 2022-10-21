@@ -26,6 +26,8 @@ public:
 
     void score_board() const;
 
+    void new_round();
+
 private:
     int round = 0;
     Terrorist *terrorist_class = Terrorist::create_class();
