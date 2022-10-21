@@ -30,18 +30,19 @@ public:
 
     vector<Player *> get_score_board() const;
 
-    bool has_life() const;
+    bool has_live() const;
 
     void won() const;
 
     void lose() const;
+
+    int get_live_num() const;
 
     ~Team();
 
 private:
     map<string, Player *> players;
     const GlobalVariable::access_level ACCESS_LEVEL;
-    int life = 0;
 };
 
 #include "../src/Team.h"

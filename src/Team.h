@@ -32,8 +32,8 @@ vector<Player *> Team::get_score_board() const {
     return result_players;
 }
 
-bool Team::has_life() const {
-    return (bool) this->life;
+bool Team::has_live() const {
+    return this->get_live_num() > 0;
 }
 
 Team::~Team() {
@@ -50,4 +50,11 @@ void Team::won() const {
 void Team::lose() const {
     for (auto &player: this->players)
         player.second->lose();
+}
+
+int Team::get_live_num() const {
+    int liveNum = 0;
+    for(auto &player: this->players)
+        if(player.second->is_live()) liveNum++;
+    return liveNum;
 }
