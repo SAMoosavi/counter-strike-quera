@@ -17,6 +17,7 @@ set(SOURCES
         src/Handler.h
         src/Logger.h
         HelperFunctions.h
+        Errors.h
         )
 
 add_executable(Counter_Strike_Quera ${SOURCES})
