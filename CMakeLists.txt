@@ -10,8 +10,6 @@ set(SOURCES
         src/Gun.h
         src/Player.h
         src/Team.h
-        src/Terrorist.h
-        src/CounterTerrorist.h
         src/Guns.h
         src/Time.h
         src/Handler.h

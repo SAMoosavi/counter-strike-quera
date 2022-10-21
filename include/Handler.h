@@ -7,8 +7,7 @@
 
 #include <string>
 #include "Time.h"
-#include "Terrorist.h"
-#include "CounterTerrorist.h"
+#include "Team.h"
 
 using std::string;
 
@@ -32,8 +31,8 @@ public:
 
 private:
     int round = 0;
-    Terrorist *terrorist_class = Terrorist::create_class();
-    CounterTerrorist *counter_terrorist_class = CounterTerrorist::create_class();
+    Team *terrorist_class = new Team(GlobalVariable::access_level::terrorist);
+    Team *counter_terrorist_class = new Team(GlobalVariable::access_level::counter_terrorist);
 
     Player *find_player(const string &name) const;
 
