@@ -57,3 +57,7 @@ Time Time::operator*(int i) const {
 Time Time::operator%(const Time &other) const {
     return Time(this->Milliseconds % other.Milliseconds);
 }
+
+Time Time::operator+(const Time &other) const {
+    return Time(this->Milliseconds + other.Milliseconds);
+}

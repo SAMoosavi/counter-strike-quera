@@ -56,3 +56,11 @@ TEST(TimeTest, Round) {
     EXPECT_THAT(time1, Lt(time3));
     EXPECT_THAT(time1, Eq(time2));
 }
+
+TEST(TimeTest, OperatorSum) {
+    auto time1 = Time("00:01:000");
+    auto time2 = Time("00:02:000", 2);
+    auto time3 = Time("00:03:000", 2);
+
+    EXPECT_THAT(time1 + time2, Eq(time3));
+}
