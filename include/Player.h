@@ -16,9 +16,10 @@ using std::map;
 
 class Player {
 public:
-    explicit Player(string name, const Time &time) :
+    explicit Player(string name, const Time &time, GlobalVariable::access_level accessLevel) :
             NAME(std::move(name)),
-            TIME(time) { this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun(); }
+            TIME(time),
+            ACCESS_LEVEL(accessLevel) { this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun(); }
 
     void reset();
 
@@ -26,7 +27,7 @@ public:
 
     bool shut(int health);
 
-    void bye_gun(Gun *gun);
+    void bye_gun(const string& name);
 
     int get_health() const;
 
@@ -54,7 +55,8 @@ private:
     int money = Setting::get_start_money();
     int kills = 0;
     int killed = 0;
-    map<GlobalVariable::type_gun,const Gun *> guns;
+    map<GlobalVariable::type_gun, const Gun *> guns;
+    const GlobalVariable::access_level ACCESS_LEVEL;
     const Time TIME;
 
     void can_bye(Gun *gun) const;

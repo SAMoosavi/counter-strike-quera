@@ -21,7 +21,8 @@ bool Player::shut(int health) {
     return !this->health;
 }
 
-void Player::bye_gun(Gun *gun) {
+void Player::bye_gun(const string& name) {
+    auto gun  = Guns::get_gun(name, this->ACCESS_LEVEL);
     this->can_bye(gun);
     this->money -= gun->get_price();
     this->guns[gun->get_type()] = gun;
