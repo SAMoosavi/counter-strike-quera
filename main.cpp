@@ -11,13 +11,13 @@ int main() {
     cin >> round;
     auto handler = new Handler();
     string order, time;
-    cin >> order;
     int orderNumber;
     for (int i = 0; i < round; ++i) {
         cin >> order >> orderNumber;
         for (int j = 0; j < orderNumber; ++j) {
+            cin >> order;
             try {
-                if (order == "ADD_USER") {
+                if (order == "ADD-USER") {
                     string username, team;
                     cin >> username >> team >> time;
                     handler->add_user(username, HelperFunctions::string_to_team_enum(team), time);
