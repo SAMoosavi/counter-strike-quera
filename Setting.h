@@ -26,6 +26,8 @@ public:
 
     static auto get_end_time() { return Setting::END_TIME; }
 
+    static auto get_time_buy_gun() { return Setting::TIME_BUY_GUN; }
+
     static auto get_start_gun() { return Setting::START_GUN; }
 
     static auto get_max_member_team() { return Setting::MAX_MEMBER_TEAM; }
@@ -38,6 +40,7 @@ private:
     static const int MAX_MEMBER_TEAM = 10;
     static const string START_TIME = "00:00:000";
     static const string END_TIME = "02:15:000";
+    static const string TIME_BUY_GUN = "00:45:000";
     static const Gun *START_GUN;
 
     Setting() = default;
