@@ -3,16 +3,17 @@
 //
 
 #include "../include/Player.h"
+#include "../HelperFunctions.h"
 
 void Player::reset() {
     this->health = 100;
     this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun();
 }
 
-bool Player::shut(int health) {
+bool Player::shut(int health_) {
     if (!this->is_live())
-        throw "Player is not live!";
-    this->health -= health;
+        throw Error("Player is not live!");
+    this->health -= health_;
     if (this->health <= 0) {
         this->killed++;
         this->health = 0;
@@ -30,17 +31,17 @@ void Player::bye_gun(const string &name) {
 
 void Player::can_bye(Gun *gun) const {
     if (this->guns.count(gun->get_type())) {
-        throw "you have a" + (gun->get_type() == GlobalVariable::type_gun::heavy) ? "heavy" : "pistol";
+        throw Error("you have a" + HelperFunctions::type_gun_enum_to_string(gun->get_type()));
     }
 
     if (gun->get_price() > this->money) {
-        throw "no enough money";
+        throw Error("no enough money");
     }
 }
 
 void Player::add_kill(GlobalVariable::type_gun type) {
     if (!this->has_gun(type))
-        throw "you have no gun named" + type;
+        throw Error("you have no gun named" + HelperFunctions::type_gun_enum_to_string(type));
     this->kills++;
     this->add_money(this->guns[type]->get_money());
 }

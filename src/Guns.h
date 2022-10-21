@@ -3,6 +3,7 @@
 //
 
 #include "../include/Guns.h"
+#include "../Errors.h"
 
 map<string, Gun *> Guns::guns = {
         {"AK",           (new Gun("AK",           2700, 31,  100, GlobalVariable::type_gun::heavy,  GlobalVariable::access_level::terrorist))},
@@ -15,13 +16,13 @@ map<string, Gun *> Guns::guns = {
 };
 
 
-Gun *Guns::get_gun(string name, GlobalVariable::access_level accessLevel) {
+Gun *Guns::get_gun(const string &name, GlobalVariable::access_level accessLevel) {
     if (accessLevel == GlobalVariable::access_level::all)
-        throw ":/";
+        throw Error(":/");
     else if (!Guns::guns.count(name))
-        throw "invalid category gun";
+        throw Error("invalid category gun");
     else if (accessLevel == GlobalVariable::access_level::setting) return Guns::guns[name];
     else if (Guns::guns[name]->get_access_level() == GlobalVariable::access_level::all) return Guns::guns[name];
     else if (Guns::guns[name]->get_access_level() == accessLevel) return Guns::guns[name];
-    else throw "invalid category gun";
+    else throw Error("invalid category gun");
 }

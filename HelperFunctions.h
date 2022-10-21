@@ -18,7 +18,7 @@ public:
         else if (team == "Terrorist")
             return GlobalVariable::team::Terrorist;
         else
-            throw "Invalid team named " + team;
+            throw Error("Invalid team named " + team);
     }
 
     static GlobalVariable::type_gun string_to_type_gun_enum(const string &gunType) {
@@ -29,7 +29,27 @@ public:
         else if (gunType == "knife")
             return GlobalVariable::type_gun::knife;
         else
-            throw "Invalid gun type " + gunType;
+            throw Error("Invalid gun type " + gunType);
+    }
+
+    static string team_enum_to_string(GlobalVariable::team team) {
+        if (team == GlobalVariable::team::Counter_Terrorist)
+            return "Counter-Terrorist";
+        else if (team == GlobalVariable::team::Terrorist)
+            return "Terrorist";
+        else
+            throw Error("Invalid team enum ");
+    }
+
+    static string type_gun_enum_to_string(GlobalVariable::type_gun gunType) {
+        if (gunType == GlobalVariable::type_gun::heavy)
+            return "heavy";
+        else if (gunType == GlobalVariable::type_gun::pistol)
+            return "pistol";
+        else if (gunType == GlobalVariable::type_gun::knife)
+            return "knife";
+        else
+            throw Error("Invalid gun type enum");
     }
 };
 

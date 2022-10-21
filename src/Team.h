@@ -13,7 +13,7 @@ bool Team::has_player(const std::string &name) const { return this->players.coun
 
 Player *Team::get_player(const std::string &name) const {
     if (this->players.count(name))
-        throw "invalid username";
+        throw Error("invalid username");
     return this->players.at(name);
 }
 

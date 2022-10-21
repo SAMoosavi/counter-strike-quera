@@ -3,6 +3,7 @@
 //
 
 #include "../include/Time.h"
+#include "../Errors.h"
 
 #include <regex>
 
@@ -28,7 +29,7 @@ bool Time::operator>(const string &other) const {
 
 long long int Time::correct_str_to_milliseconds(const std::string &time) {
     if (!Time::str_is_correct(time))
-        throw "Time::correct_str_to_milliseconds() failed: " + std::string(time);
+        throw Error("Time::correct_str_to_milliseconds() failed: " + std::string(time));
     long long int minute = stoll(time.substr(0, 2));
     long long int second = stoll(time.substr(3, 2));
     long long int millisecond = stoll(time.substr(6, 3));

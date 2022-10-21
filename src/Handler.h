@@ -4,6 +4,7 @@
 
 #include "../include/Handler.h"
 #include "../include/Logger.h"
+#include "../HelperFunctions.h"
 
 Player *Handler::find_player(const std::string &name) const {
     if (this->terrorist_class->has_player(name))
@@ -12,7 +13,7 @@ Player *Handler::find_player(const std::string &name) const {
     if (this->counter_terrorist_class->has_player(name))
         return this->counter_terrorist_class->get_player(name);
 
-    throw "invalid username";
+    throw Error("invalid username");
 }
 
 bool Handler::has_player(const std::string &name) const {
@@ -22,7 +23,7 @@ bool Handler::has_player(const std::string &name) const {
 void Handler::add_user(const std::string &name, GlobalVariable::team team, const string &time) {
 // check has player
     if (this->has_player(name))
-        throw "you are already in this game";
+        throw Error("you are already in this game");
 // set time
     auto time_of_add = Time(time, this->round);
 // add player
@@ -34,7 +35,7 @@ void Handler::add_user(const std::string &name, GlobalVariable::team team, const
             this->counter_terrorist_class->add_player(name, time_of_add);
             break;
         default:
-            throw "Unsupported variable type: " + team;
+            throw Error("Unsupported variable type: " + HelperFunctions::team_enum_to_string(team));
     }
 // log successes
     string msg =
@@ -62,13 +63,13 @@ void Handler::tap(const std::string &attacker, const std::string &attacked, cons
     auto attacker_player = this->find_player(attacker);
     auto attacked_player = this->find_player(attacked);
 
-    if (!attacker_player->is_live()) throw "attacker is dead";
-    if (!attacked_player->is_live()) throw "attacked is dead";
+    if (!attacker_player->is_live()) throw Error("attacker is dead");
+    if (!attacked_player->is_live()) throw Error("attacked is dead");
 
-    if (!attacker_player->has_gun(type)) throw "no such gun";
+    if (!attacker_player->has_gun(type)) throw Error("no such gun");
 
     if (this->terrorist_class->has_player(attacker) ^ this->terrorist_class->has_player(attacked))
-        throw "friendly fire";
+        throw Error("friendly fire");
 
     Logger::log_successes("nice shot");
 
@@ -79,9 +80,9 @@ void Handler::tap(const std::string &attacker, const std::string &attacked, cons
 void Handler::buy(const string &username, const string &gunName, const string &time) const {
     auto player = this->find_player(username);
 
-    if (!player->is_live()) throw "deads can not buy";
+    if (!player->is_live()) throw Error("deads can not buy");
 
-    if (Time(time) > Time(Setting::get_time_buy_gun())) throw "you are out of time";
+    if (Time(time) > Time(Setting::get_time_buy_gun())) throw Error("you are out of time");
 
     player->bye_gun(gunName);
 
