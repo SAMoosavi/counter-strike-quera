@@ -31,7 +31,7 @@ void Player::buy_gun(const string &name) {
 
 void Player::can_bye(Gun *gun) const {
     if (this->guns.count(gun->get_type())) {
-        throw Error("you have a" + HelperFunctions::type_gun_enum_to_string(gun->get_type()));
+        throw Error("you have a " + HelperFunctions::type_gun_enum_to_string(gun->get_type()));
     }
 
     if (gun->get_price() > this->money) {
