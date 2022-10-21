@@ -103,6 +103,12 @@ void Handler::score_board() const {
 
 void Handler::new_round() {
     this->round++;
+
+    if ((!this->counter_terrorist_class->has_life()) && this->terrorist_class->has_life())
+        Logger::log_successes("Terrorist won");
+    else
+        Logger::log_successes("Counter-Terrorist won");
+
     this->terrorist_class->new_round();
     this->counter_terrorist_class->new_round();
 }
