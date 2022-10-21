@@ -24,6 +24,8 @@ public:
 
     void buy(const string &username, const string &gunName, const string &time) const;
 
+    void score_board() const;
+
 private:
     int round = 0;
     Terrorist *terrorist_class = Terrorist::create_class();

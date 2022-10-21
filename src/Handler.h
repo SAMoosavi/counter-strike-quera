@@ -87,3 +87,16 @@ void Handler::buy(const string &username, const string &gunName, const string &t
 
     Logger::log_successes("I hope you can use it");
 }
+
+void Handler::score_board() const {
+    Logger::log_successes(":Counter-Terrorist-Players");
+    auto counter_terrorist_score_board = this->counter_terrorist_class->get_score_board();
+    for (int i = 0; i < counter_terrorist_score_board.size(); ++i) {
+        Logger::log_successes(std::to_string(i + 1) + " " + counter_terrorist_score_board[i]->to_string());
+    }
+    Logger::log_successes(":Terrorist-Players");
+    auto terrorist_score_board = this->terrorist_class->get_score_board();
+    for (int i = 0; i < terrorist_score_board.size(); ++i) {
+        Logger::log_successes(std::to_string(i + 1) + " " + terrorist_score_board[i]->to_string());
+    }
+}
