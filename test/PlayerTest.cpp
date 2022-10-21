@@ -6,6 +6,7 @@
 #include "gmock/gmock.h"
 #include "../include/Player.h"
 
+using testing::IsNull;
 using testing::Eq;
 using testing::IsTrue;
 using testing::IsFalse;
@@ -108,5 +109,11 @@ TEST_F(PlayerTest, HasGun) {
     EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
     EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::knife), IsFalse());
     this->player->reset();
-
 }
+
+TEST_F(PlayerTest, GetGun) {
+    this->player->bye_gun("Revolver");
+    EXPECT_THAT(this->player->get_gun(GlobalVariable::type_gun::pistol)->get_name(), Eq("Revolver"));
+    EXPECT_THAT(this->player->get_gun(GlobalVariable::type_gun::heavy), IsNull());
+}
+
