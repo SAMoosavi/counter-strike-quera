@@ -32,6 +32,10 @@ public:
 
     bool has_life() const;
 
+    void won() const;
+
+    void lose() const;
+
     ~Team();
 
 private:

@@ -41,3 +41,13 @@ Team::~Team() {
         delete player.second;
     this->players.clear();
 }
+
+void Team::won() const {
+    for (auto &player: this->players)
+        player.second->won();
+}
+
+void Team::lose() const {
+    for (auto &player: this->players)
+        player.second->lose();
+}
