@@ -52,3 +52,7 @@ bool Time::operator==(const string &other) const {
 Time Time::operator*(int i) const {
     return Time(this->Milliseconds * i);
 }
+
+Time Time::operator%(const Time &other) const {
+    return Time(this->Milliseconds % other.Milliseconds);
+}

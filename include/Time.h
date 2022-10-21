@@ -31,6 +31,8 @@ public:
 
     Time operator*(int i) const;
 
+    Time operator%(const Time &other) const;
+
 private:
     long long int Milliseconds;
 
