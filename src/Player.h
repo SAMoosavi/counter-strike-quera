@@ -95,3 +95,19 @@ ostream &operator<<(ostream &output, const Player &player) {
     output << player.NAME << " " << player.kills << " " << player.killed << "\n";
     return output;
 }
+
+bool Player::operator<(const Player &other) const {
+    if (this->kills < other.kills)
+        return true;
+    if (this->kills == other.kills) {
+        if (this->killed > other.killed)
+            return true;
+        if (this->killed == other.killed)
+            return this->TIME > other.TIME;
+    }
+    return false;
+}
+
+bool Player::operator>(const Player &other) const {
+    return !(*this < other);
+}

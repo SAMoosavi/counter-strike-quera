@@ -29,7 +29,7 @@ public:
 
     bool shut(int health);
 
-    void bye_gun(const string& name);
+    void bye_gun(const string &name);
 
     int get_health() const;
 
@@ -51,7 +51,11 @@ public:
 
     Gun *get_gun(GlobalVariable::type_gun type) const;
 
-    friend ostream &operator<<( ostream &output, const Player &player );
+    friend ostream &operator<<(ostream &output, const Player &player);
+
+    bool operator<(const Player &other) const;
+
+    bool operator>(const Player &other) const;
 
 private:
     const string NAME;
