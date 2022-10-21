@@ -53,6 +53,8 @@ public:
 
     friend ostream &operator<<(ostream &output, const Player &player);
 
+    string to_string() const;
+
     bool operator<(const Player &other) const;
 
     bool operator>(const Player &other) const;

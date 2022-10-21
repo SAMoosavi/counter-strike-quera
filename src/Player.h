@@ -92,7 +92,7 @@ Gun *Player::get_gun(GlobalVariable::type_gun type) const {
 }
 
 ostream &operator<<(ostream &output, const Player &player) {
-    output << player.NAME << " " << player.kills << " " << player.killed << "\n";
+    output << player.to_string();
     return output;
 }
 
@@ -110,4 +110,8 @@ bool Player::operator<(const Player &other) const {
 
 bool Player::operator>(const Player &other) const {
     return !(*this < other);
+}
+
+string Player::to_string() const {
+    return string(this->NAME + " " + std::to_string(this->kills) + " " + std::to_string(this->killed));
 }
