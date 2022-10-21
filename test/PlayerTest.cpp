@@ -17,7 +17,7 @@ protected:
     }
 
     Player *player{};
-    Time TIME = Time("00:10:000");
+    Time TIME = Time("00:01:000");
     const GlobalVariable::access_level ACCESS_LEVEL = GlobalVariable::access_level::terrorist;
 };
 
