@@ -33,7 +33,7 @@ public:
 
     bool shut(int health_);
 
-    void bye_gun(const string &name);
+    void buy_gun(const string &name);
 
     int get_health() const;
 

@@ -84,7 +84,7 @@ void Handler::buy(const string &username, const string &gunName, const string &t
 
     if (Time(time) > Time(Setting::get_time_buy_gun())) throw Error("you are out of time");
 
-    player->bye_gun(gunName);
+    player->buy_gun(gunName);
 
     Logger::log_successes("I hope you can use it");
 }

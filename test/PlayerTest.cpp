@@ -27,19 +27,19 @@ TEST_F(PlayerTest, GetTime) {
 }
 
 TEST_F(PlayerTest, ByeGunNotEnoughMoney) {
-    EXPECT_ANY_THROW(this->player->bye_gun("AK"));
+    EXPECT_ANY_THROW(this->player->buy_gun("AK"));
 }
 
 TEST_F(PlayerTest, ByeGuns) {
     this->player->won();
     this->player->won();
-    EXPECT_NO_THROW(this->player->bye_gun("Revolver"));
-    EXPECT_NO_THROW(this->player->bye_gun("AWP"));
+    EXPECT_NO_THROW(this->player->buy_gun("Revolver"));
+    EXPECT_NO_THROW(this->player->buy_gun("AWP"));
 }
 
 TEST_F(PlayerTest, ByeGunHaveAType) {
-    this->player->bye_gun("Revolver");
-    EXPECT_ANY_THROW(this->player->bye_gun("Glock-18"));
+    this->player->buy_gun("Revolver");
+    EXPECT_ANY_THROW(this->player->buy_gun("Glock-18"));
 }
 
 TEST_F(PlayerTest, GetMoneyStart) {
@@ -47,7 +47,7 @@ TEST_F(PlayerTest, GetMoneyStart) {
 }
 
 TEST_F(PlayerTest, GetMoneyAfterBye) {
-    this->player->bye_gun("Revolver");
+    this->player->buy_gun("Revolver");
     EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() - 600));
 }
 
@@ -91,11 +91,11 @@ TEST_F(PlayerTest, Shut) {
 
 TEST_F(PlayerTest, Reset) {
     this->player->shut(50);
-    EXPECT_NO_THROW(this->player->bye_gun("Revolver"));
+    EXPECT_NO_THROW(this->player->buy_gun("Revolver"));
     this->player->reset();
     EXPECT_THAT(this->player->get_health(), Eq(100));
     EXPECT_THAT(this->player->get_money(), Eq(Setting::get_start_money() - 600));
-    EXPECT_ANY_THROW(this->player->bye_gun("Revolver"));
+    EXPECT_ANY_THROW(this->player->buy_gun("Revolver"));
 }
 
 TEST_F(PlayerTest, HasGun) {
@@ -103,7 +103,7 @@ TEST_F(PlayerTest, HasGun) {
     EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
     for (int i = 0; i < Setting::get_max_money() / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
         this->player->add_kill(GlobalVariable::type_gun::knife);
-    this->player->bye_gun("AWP");
+    this->player->buy_gun("AWP");
     EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsTrue());
     this->player->shut(110);
     EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
@@ -112,7 +112,7 @@ TEST_F(PlayerTest, HasGun) {
 }
 
 TEST_F(PlayerTest, GetGun) {
-    this->player->bye_gun("Revolver");
+    this->player->buy_gun("Revolver");
     EXPECT_THAT(this->player->get_gun(GlobalVariable::type_gun::pistol)->get_name(), Eq("Revolver"));
     EXPECT_THAT(this->player->get_gun(GlobalVariable::type_gun::heavy), IsNull());
 }
