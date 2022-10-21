@@ -13,8 +13,8 @@ bool Team::has_player(const std::string &name) const { return this->players.coun
 
 Player *Team::get_player(const std::string &name) const {
     if (this->players.count(name))
-        throw Error("invalid username");
-    return this->players.at(name);
+        return this->players.at(name);
+    throw Error("invalid username");
 }
 
 void Team::new_round() {
@@ -53,7 +53,7 @@ void Team::lose() const {
 
 int Team::get_live_num() const {
     int liveNum = 0;
-    for(auto &player: this->players)
-        if(player.second->is_live()) liveNum++;
+    for (auto &player: this->players)
+        if (player.second->is_live()) liveNum++;
     return liveNum;
 }
