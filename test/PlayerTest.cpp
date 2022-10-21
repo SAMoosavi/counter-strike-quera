@@ -22,10 +22,6 @@ protected:
     const GlobalVariable::access_level ACCESS_LEVEL = GlobalVariable::access_level::terrorist;
 };
 
-TEST_F(PlayerTest, GetTime) {
-    EXPECT_THAT(this->player->get_time(), Eq(this->TIME));
-}
-
 TEST_F(PlayerTest, ByeGunNotEnoughMoney) {
     EXPECT_ANY_THROW(this->player->buy_gun("AK"));
 }

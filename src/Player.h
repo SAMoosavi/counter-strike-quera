@@ -58,10 +58,6 @@ int Player::get_killed() const {
     return this->killed;
 }
 
-Time Player::get_time() const {
-    return this->TIME;
-}
-
 void Player::won() {
     this->add_money(Setting::get_won_money());
 }

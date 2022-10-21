@@ -43,8 +43,6 @@ public:
 
     int get_killed() const;
 
-    Time get_time() const;
-
     bool is_live() const;
 
     void won();
