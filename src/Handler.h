@@ -6,6 +6,8 @@
 #include "../include/Logger.h"
 #include "../HelperFunctions.h"
 
+using std::to_string;
+
 Player *Handler::find_player(const std::string &name) const {
     if (this->terrorist_class->has_player(name))
         return this->terrorist_class->get_player(name);
@@ -45,18 +47,22 @@ void Handler::add_user(const std::string &name, GlobalVariable::team team, const
     Logger::log_successes(msg);
 }
 
-void Handler::get_money(const std::string &username) const {
+int Handler::get_money(const std::string &username) const {
 //    get money
     int money = this->find_player(username)->get_money();
 //    log success
-    Logger::log_successes(std::to_string(money));
+    Logger::log_successes(to_string(money));
+
+    return money;
 }
 
-void Handler::get_health(const std::string &username) const {
-    //    get health
+int Handler::get_health(const std::string &username) const {
+//    get health
     int health = this->find_player(username)->get_health();
 //    log success
-    Logger::log_successes(std::to_string(health));
+    Logger::log_successes(to_string(health));
+
+    return health;
 }
 
 void Handler::tap(const std::string &attacker, const std::string &attacked, const GlobalVariable::type_gun type) const {
@@ -92,12 +98,12 @@ void Handler::score_board() const {
     Logger::log_successes(":Counter-Terrorist-Players");
     auto counter_terrorist_score_board = this->counter_terrorist_class->get_score_board();
     for (int i = 0; i < counter_terrorist_score_board.size(); ++i) {
-        Logger::log_successes(std::to_string(i + 1) + " " + counter_terrorist_score_board[i]->to_string());
+        Logger::log_successes(to_string(i + 1) + " " + counter_terrorist_score_board[i]->to_string());
     }
     Logger::log_successes(":Terrorist-Players");
     auto terrorist_score_board = this->terrorist_class->get_score_board();
     for (int i = 0; i < terrorist_score_board.size(); ++i) {
-        Logger::log_successes(std::to_string(i + 1) + " " + terrorist_score_board[i]->to_string());
+        Logger::log_successes(to_string(i + 1) + " " + terrorist_score_board[i]->to_string());
     }
 }
 

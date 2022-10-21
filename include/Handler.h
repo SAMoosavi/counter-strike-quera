@@ -16,9 +16,9 @@ class Handler {
 public:
     void add_user(const string &username, GlobalVariable::team team, const string &time);
 
-    void get_money(const string &username) const;
+    int get_money(const string &username) const;
 
-    void get_health(const string &username) const;
+    int get_health(const string &username) const;
 
     void tap(const string &attacker, const string &attacked, GlobalVariable::type_gun type) const;
 
