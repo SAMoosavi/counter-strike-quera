@@ -10,3 +10,7 @@ using std::endl;
 void Logger::log_successes(const std::string &message) {
     cout << message << endl;
 }
+
+void Logger::log_error(const string &message) {
+    cout << message << endl;
+}

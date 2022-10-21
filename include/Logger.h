@@ -12,6 +12,7 @@ using std::string;
 class Logger {
 public:
     static void log_successes(const string &message);
+    static void log_error(const string &message);
 };
 
 #endif //COUNTER_STRIKE_QUERA_LOGGER_H
