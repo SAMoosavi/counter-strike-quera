@@ -20,7 +20,7 @@ public:
 
     void get_health(const string &username) const;
 
-    void tap(const string &attacker, const string &attacked, const GlobalVariable::type_gun type) const;
+    void tap(const string &attacker, const string &attacked, GlobalVariable::type_gun type) const;
 
     void buy(const string &username, const string &gunName, const string &time) const;
 
