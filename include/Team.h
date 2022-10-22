@@ -18,7 +18,7 @@ using std::string;
 
 class Team {
 public:
-    explicit Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
+    explicit Team(GlobalVariable::access_level accessLevel);
 
     void add_player(const string &name, const Time &time);
 

@@ -3,6 +3,9 @@
 //
 #include "../include/Team.h"
 
+Team::Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
+
+
 void Team::add_player(const string &name, const Time &time) {
     if (this->players.size() == Setting::get_max_member_team())
         throw Error("this team is full");
