@@ -38,6 +38,10 @@ protected:
 
 TEST_F(HandlerTest, AddUser) {
     ASSERT_NO_THROW(handler->add_user("T0", GlobalVariable::team::Terrorist, "00:00:001"));
+
+    ASSERT_THAT(handler->add_user("CT0", GlobalVariable::team::Counter_Terrorist, "00:00:001"),
+                Eq("this user added to Counter-Terrorist"));
+
     ASSERT_ANY_THROW(handler->add_user("T0", GlobalVariable::team::Counter_Terrorist, "00:00:001"));
     ASSERT_ANY_THROW(handler->add_user("T" + std::to_string(Setting::get_max_member_team() + 1),
                                        GlobalVariable::team::Terrorist, "00:00:001"));
@@ -53,6 +57,7 @@ TEST_F(HandlerTest, GetHealth) {
 
 TEST_F(HandlerTest, Tap) {
     EXPECT_NO_THROW(this->handler->tap("T1", "CT1", GlobalVariable::type_gun::knife));
+    EXPECT_THAT(this->handler->tap("T1", "CT2", GlobalVariable::type_gun::knife), Eq("nice shot"));
     EXPECT_ANY_THROW(this->handler->tap("T1", "CT1", GlobalVariable::type_gun::heavy));
     EXPECT_ANY_THROW(this->handler->tap("T1", "T2", GlobalVariable::type_gun::knife));
     EXPECT_ANY_THROW(this->handler->tap("CT0", "CT1", GlobalVariable::type_gun::knife));
@@ -66,6 +71,7 @@ TEST_F(HandlerTest, Tap) {
 
 TEST_F(HandlerTest, Buy) {
     EXPECT_NO_THROW(this->handler->buy("T1", "Revolver", "00:01:000"));
+    EXPECT_THAT(this->handler->buy("T2", "Revolver", "00:01:000"), Eq("I hope you can use it"));
     EXPECT_ANY_THROW(this->handler->buy("T1", "AK", "00:01:000"));
     EXPECT_ANY_THROW(this->handler->buy("T1", "UPS-S", "00:01:000"));
     EXPECT_ANY_THROW(this->handler->buy("T1", "Revolver", "00:50:000"));
@@ -77,9 +83,18 @@ TEST_F(HandlerTest, Buy) {
 }
 
 TEST_F(HandlerTest, NewRound) {
-    this->handler->new_round();
-    ASSERT_THAT(this->handler->get_money("T1"), Eq(Setting::get_start_money() + Setting::get_lose_money()));
-    ASSERT_THAT(this->handler->get_money("CT1"), Eq(Setting::get_start_money() + Setting::get_won_money()));
+    ASSERT_THAT(this->handler->new_round(), Eq("Counter-Terrorist won"));
+    ASSERT_THAT(this->handler->get_money("T2"), Eq(Setting::get_start_money() + Setting::get_lose_money()));
+    ASSERT_THAT(this->handler->get_money("CT2"), Eq(Setting::get_start_money() + Setting::get_won_money()));
+    for (int i = 1; i < Setting::get_max_member_team(); ++i)
+        for (int j = 0; j <= 100 / Setting::get_start_gun()->get_health(); ++j)
+            this->handler->tap("T1", "CT" + to_string(i), GlobalVariable::type_gun::knife);
+
+    ASSERT_THAT(this->handler->new_round(), Eq("Counter-Terrorist won"));
+    ASSERT_THAT(this->handler->get_money("T2"),
+                Eq(Setting::get_start_money() + Setting::get_lose_money() + Setting::get_won_money()));
+    ASSERT_THAT(this->handler->get_money("CT2"),
+                Eq(Setting::get_start_money() + Setting::get_won_money() + Setting::get_lose_money()));
 }
 
 
