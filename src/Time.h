@@ -64,3 +64,5 @@ Time Time::operator%(const Time &other) const {
 Time Time::operator+(const Time &other) const {
     return Time(this->Milliseconds + other.Milliseconds);
 }
+
+Time::Time(long long int time) : Milliseconds(time) {}

@@ -13,9 +13,7 @@ using std::string;
 
 class Time {
 public:
-    Time(const string &time, int round = 1);
-
-    explicit Time(long long int time) { this->Milliseconds = time; }
+    explicit Time(const string &time, int round = 1);
 
     bool operator<(const Time &other) const;
 
@@ -41,6 +39,8 @@ private:
     static long long int correct_str_to_milliseconds(const string &time);
 
     static bool str_is_correct(const string &time);
+
+    explicit Time(long long int time);
 };
 
 #include "../src/Time.h"
