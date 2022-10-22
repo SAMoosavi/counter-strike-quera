@@ -97,4 +97,14 @@ TEST_F(HandlerTest, NewRound) {
                 Eq(Setting::get_start_money() + Setting::get_won_money() + Setting::get_lose_money()));
 }
 
-
+TEST_F(HandlerTest, ScoreBoard) {
+    string msg = ":Counter-Terrorist-Players\n";
+    for (int i = 1; i < Setting::get_max_member_team(); ++i) {
+        msg += to_string(i) + " " + "CT" + to_string(i) + " 0 0\n";
+    }
+    msg += ":Terrorist-Players\n";
+    for (int i = 1; i < Setting::get_max_member_team(); ++i) {
+        msg += to_string(i) + " " + "T" + to_string(i) + " 0 0\n";
+    }
+    ASSERT_THAT(this->handler->score_board(), testing::StrCaseEq(msg));
+}
