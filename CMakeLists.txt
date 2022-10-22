@@ -14,7 +14,7 @@ set(SOURCES
         src/Time.h
         src/Handler.h
         src/Logger.h
-        HelperFunctions.h
+        src/HelperFunctions.h
         Errors.h
         )
 
