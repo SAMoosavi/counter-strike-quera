@@ -5,6 +5,15 @@
 #include "../include/Player.h"
 #include "../HelperFunctions.h"
 
+Player::Player(std::string name, const Time &time, GlobalVariable::access_level accessLevel) :
+        NAME(std::move(name)),
+        TIME(time),
+        ACCESS_LEVEL(accessLevel) {
+    this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun();
+    if ((time % Time(Setting::get_end_time())) > Time(Setting::get_time_add_player()))
+        this->health = 0;
+}
+
 void Player::reset() {
     this->health = 100;
     this->guns[Setting::get_start_gun()->get_type()] = Setting::get_start_gun();
