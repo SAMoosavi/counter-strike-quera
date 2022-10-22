@@ -3,7 +3,7 @@
 //
 
 #include "../include/Player.h"
-#include "../HelperFunctions.h"
+#include "../include/HelperFunctions.h"
 
 Player::Player(std::string name, const Time &time, GlobalVariable::access_level accessLevel) :
         NAME(std::move(name)),

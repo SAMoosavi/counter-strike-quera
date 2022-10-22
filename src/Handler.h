@@ -4,7 +4,7 @@
 
 #include "../include/Handler.h"
 #include "../include/Logger.h"
-#include "../HelperFunctions.h"
+#include "../include/HelperFunctions.h"
 
 using std::to_string;
 
