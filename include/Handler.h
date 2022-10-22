@@ -30,7 +30,7 @@ public:
     ~Handler();
 
 private:
-    int round = 0;
+    int round = 1;
     Team *terrorist_class = new Team(GlobalVariable::access_level::terrorist);
     Team *counter_terrorist_class = new Team(GlobalVariable::access_level::counter_terrorist);
 
