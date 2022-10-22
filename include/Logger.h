@@ -7,11 +7,15 @@
 
 #include <string>
 #include <iostream>
+
 using std::string;
 
 class Logger {
 public:
     static void log_successes(const string &message);
+
+    static void log_successes(long long int message);
+
     static void log_error(const string &message);
 };
 
