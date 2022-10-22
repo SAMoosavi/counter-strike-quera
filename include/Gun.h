@@ -13,32 +13,20 @@ using std::string;
 
 class Gun {
 public:
-    Gun(
-            string name,
-            int price,
-            int health,
-            int money,
-            GlobalVariable::type_gun type,
-            GlobalVariable::access_level accessLevel
-    ) :
-            NAME(std::move(name)),
-            PRICE(price),
-            HEALTH(health),
-            MONEY(money),
-            TYPE(type),
-            ACCESS_LEVEL(accessLevel) {}
+    Gun(string name, int price, int health, int money, GlobalVariable::type_gun type,
+        GlobalVariable::access_level accessLevel);
 
-    int get_price() const { return this->PRICE; }
+    int get_price() const;
 
-    GlobalVariable::type_gun get_type() const { return this->TYPE; }
+    GlobalVariable::type_gun get_type() const;
 
-    GlobalVariable::access_level get_access_level() const { return this->ACCESS_LEVEL; }
+    GlobalVariable::access_level get_access_level() const;
 
-    int get_money() const { return this->MONEY; }
+    int get_money() const;
 
-    int get_health() const { return this->HEALTH; }
+    int get_health() const;
 
-    string get_name() const { return this->NAME; }
+    string get_name() const;
 
 private:
     const GlobalVariable::access_level ACCESS_LEVEL;
