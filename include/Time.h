@@ -6,7 +6,7 @@
 #define COUNTER_STRIKE_QUERA_TIME_H
 
 #include <string>
-#include "../Setting.h"
+#include "Setting.h"
 
 
 using std::string;

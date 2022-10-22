@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCES
         main.cpp
-        Setting.h
+        src/Setting.h
         GlobalVariable.h
         src/Gun.h
         src/Player.h

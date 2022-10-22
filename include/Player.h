@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include <iostream>
-#include "../Setting.h"
+#include "Setting.h"
 #include "Time.h"
 #include "Gun.h"
 
