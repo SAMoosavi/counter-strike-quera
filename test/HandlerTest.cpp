@@ -90,7 +90,7 @@ TEST_F(HandlerTest, NewRound) {
         for (int j = 0; j <= 100 / Setting::get_start_gun()->get_health(); ++j)
             this->handler->tap("T1", "CT" + to_string(i), GlobalVariable::type_gun::knife);
 
-    ASSERT_THAT(this->handler->new_round(), Eq("Counter-Terrorist won"));
+    ASSERT_THAT(this->handler->new_round(), Eq("Terrorist won"));
     ASSERT_THAT(this->handler->get_money("T2"),
                 Eq(Setting::get_start_money() + Setting::get_lose_money() + Setting::get_won_money()));
     ASSERT_THAT(this->handler->get_money("CT2"),
