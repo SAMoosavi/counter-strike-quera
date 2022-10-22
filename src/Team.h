@@ -30,7 +30,7 @@ vector<Player *> Team::get_score_board() const {
     vector<Player *> result_players;
     for (const auto &player: this->players)
         result_players.push_back(player.second);
-    std::sort(result_players.begin(), result_players.end());
+    std::sort(result_players.begin(), result_players.end(), [](auto a, auto b) { return *a > *b; });
     return result_players;
 }
 
