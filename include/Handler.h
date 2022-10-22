@@ -13,19 +13,19 @@ using std::string;
 
 class Handler {
 public:
-    void add_user(const string &username, GlobalVariable::team team, const string &time);
+    string add_user(const string &username, GlobalVariable::team team, const string &time);
 
     int get_money(const string &username) const;
 
     int get_health(const string &username) const;
 
-    void tap(const string &attacker, const string &attacked, GlobalVariable::type_gun type) const;
+    string tap(const string &attacker, const string &attacked, GlobalVariable::type_gun type) const;
 
-    void buy(const string &username, const string &gunName, const string &time) const;
+    string buy(const string &username, const string &gunName, const string &time) const;
 
-    void score_board() const;
+    string score_board() const;
 
-    void new_round();
+    string new_round();
 
     ~Handler();
 
