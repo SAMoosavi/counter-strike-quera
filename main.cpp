@@ -2,6 +2,8 @@
 #include <string>
 #include "include/Handler.h"
 #include "HelperFunctions.h"
+#include "Logger.h"
+#include "Errors.h"
 
 using std::string;
 using std::cin;
