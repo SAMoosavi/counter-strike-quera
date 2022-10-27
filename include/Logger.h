@@ -12,13 +12,13 @@ using std::string;
 
 class Logger {
 public:
-    static void log_successes(const string &message);
+    inline static void log_successes(const string &message);
 
-    static void log_successes(long long int message);
+    inline static void log_successes(long long int message);
 
-    static void log_error(const string &message);
+    inline static void log_error(const string &message);
 };
 
 #include "../src/Logger.h"
 
-#endif //COUNTER_STRIKE_QUERA_LOGGER_H
+#endif // COUNTER_STRIKE_QUERA_LOGGER_H

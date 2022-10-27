@@ -12,13 +12,13 @@ using std::string;
 
 class HelperFunctions {
 public:
-    static GlobalVariable::team string_to_team_enum(const string &team);
+    inline static GlobalVariable::team string_to_team_enum(const string &team);
 
-    static GlobalVariable::type_gun string_to_type_gun_enum(const string &gunType);
+    inline static GlobalVariable::type_gun string_to_type_gun_enum(const string &gunType);
 
-    static string team_enum_to_string(GlobalVariable::team team);
+    inline static string team_enum_to_string(GlobalVariable::team team);
 
-    static string type_gun_enum_to_string(GlobalVariable::type_gun gunType);
+    inline static string type_gun_enum_to_string(GlobalVariable::type_gun gunType);
 };
 
 #include "../src/HelperFunctions.h"

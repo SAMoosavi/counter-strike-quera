@@ -13,32 +13,32 @@ using std::string;
 
 class Handler {
 public:
-    string add_user(const string &username, GlobalVariable::team team, const string &time);
+    inline string add_user(const string &username, GlobalVariable::team team, const string &time);
 
-    int get_money(const string &username) const;
+    inline int get_money(const string &username) const;
 
-    int get_health(const string &username) const;
+    inline int get_health(const string &username) const;
 
-    string tap(const string &attacker, const string &attacked, GlobalVariable::type_gun type) const;
+    inline string tap(const string &attacker, const string &attacked, GlobalVariable::type_gun type) const;
 
-    string buy(const string &username, const string &gunName, const string &time) const;
+    inline string buy(const string &username, const string &gunName, const string &time) const;
 
-    string score_board() const;
+    inline string score_board() const;
 
-    string new_round();
+    inline string new_round();
 
-    ~Handler();
+    inline ~Handler();
 
 private:
     int round = 1;
     Team *terrorist_class = new Team(GlobalVariable::access_level::terrorist);
     Team *counter_terrorist_class = new Team(GlobalVariable::access_level::counter_terrorist);
 
-    Player *find_player(const string &name) const;
+    inline Player *find_player(const string &name) const;
 
-    bool has_player(const string &name) const;
+    inline bool has_player(const string &name) const;
 };
 
 #include "../src/Handler.h"
 
-#endif //COUNTER_STRIKE_QUERA_HANDLER_H
+#endif // COUNTER_STRIKE_QUERA_HANDLER_H

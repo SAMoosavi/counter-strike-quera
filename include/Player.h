@@ -12,47 +12,47 @@
 #include "Time.h"
 #include "Gun.h"
 
-using std::string;
 using std::map;
 using std::ostream;
+using std::string;
 
 class Player {
 public:
-    explicit Player(string name, const Time &time, GlobalVariable::access_level accessLevel) ;
+    inline explicit Player(string name, const Time &time, GlobalVariable::access_level accessLevel);
 
-    void reset();
+    inline void reset();
 
-    void add_kill(GlobalVariable::type_gun type);
+    inline void add_kill(GlobalVariable::type_gun type);
 
-    bool shut(int health_);
+    inline bool shut(int health_);
 
-    void buy_gun(const string &name);
+    inline void buy_gun(const string &name);
 
-    int get_health() const;
+    inline int get_health() const;
 
-    int get_money() const;
+    inline int get_money() const;
 
-    int get_kills() const;
+    inline int get_kills() const;
 
-    int get_killed() const;
+    inline int get_killed() const;
 
-    bool is_live() const;
+    inline bool is_live() const;
 
-    void won();
+    inline void won();
 
-    void lose();
+    inline void lose();
 
-    bool has_gun(GlobalVariable::type_gun type) const;
+    inline bool has_gun(GlobalVariable::type_gun type) const;
 
-    Gun *get_gun(GlobalVariable::type_gun type) const;
+    inline Gun *get_gun(GlobalVariable::type_gun type) const;
 
-    friend ostream &operator<<(ostream &output, const Player &player);
+    inline friend ostream &operator<<(ostream &output, const Player &player);
 
-    string to_string() const;
+    inline string to_string() const;
 
-    bool operator<(const Player &other) const;
+    inline bool operator<(const Player &other) const;
 
-    bool operator>(const Player &other) const;
+    inline bool operator>(const Player &other) const;
 
 private:
     const string NAME;
@@ -64,11 +64,11 @@ private:
     const GlobalVariable::access_level ACCESS_LEVEL;
     const Time TIME;
 
-    void can_bye(Gun *gun) const;
+    inline void can_bye(Gun *gun) const;
 
-    void add_money(int _money);
+    inline void add_money(int _money);
 };
 
 #include "../src/Player.h"
 
-#endif //COUNTER_STRIKE_QUERA_PLAYER_H
+#endif // COUNTER_STRIKE_QUERA_PLAYER_H

@@ -13,20 +13,20 @@ using std::string;
 
 class Gun {
 public:
-    Gun(string name, int price, int health, int money, GlobalVariable::type_gun type,
-        GlobalVariable::access_level accessLevel);
+    inline Gun(string name, int price, int health, int money, GlobalVariable::type_gun type,
+               GlobalVariable::access_level accessLevel);
 
-    int get_price() const;
+    inline int get_price() const;
 
-    GlobalVariable::type_gun get_type() const;
+    inline GlobalVariable::type_gun get_type() const;
 
-    GlobalVariable::access_level get_access_level() const;
+    inline GlobalVariable::access_level get_access_level() const;
 
-    int get_money() const;
+    inline int get_money() const;
 
-    int get_health() const;
+    inline int get_health() const;
 
-    string get_name() const;
+    inline string get_name() const;
 
 private:
     const GlobalVariable::access_level ACCESS_LEVEL;
@@ -39,4 +39,4 @@ private:
 
 #include "../src/Gun.h"
 
-#endif //COUNTER_STRIKE_QUERA_GUN_H
+#endif // COUNTER_STRIKE_QUERA_GUN_H

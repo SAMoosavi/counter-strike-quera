@@ -13,32 +13,32 @@
 #include "Guns.h"
 
 using std::map;
-using std::vector;
 using std::string;
+using std::vector;
 
 class Team {
 public:
-    explicit Team(GlobalVariable::access_level accessLevel);
+    inline explicit Team(GlobalVariable::access_level accessLevel);
 
-    void add_player(const string &name, const Time &time);
+    inline void add_player(const string &name, const Time &time);
 
-    bool has_player(const string &name) const;
+    inline bool has_player(const string &name) const;
 
-    Player *get_player(const string &name) const;
+    inline Player *get_player(const string &name) const;
 
-    void new_round();
+    inline void new_round();
 
-    vector<Player *> get_score_board() const;
+    inline vector<Player *> get_score_board() const;
 
-    bool has_live() const;
+    inline bool has_live() const;
 
-    void won() const;
+    inline void won() const;
 
-    void lose() const;
+    inline void lose() const;
 
-    int get_live_num() const;
+    inline int get_live_num() const;
 
-    ~Team();
+    inline ~Team();
 
 private:
     map<string, Player *> players;
@@ -47,4 +47,4 @@ private:
 
 #include "../src/Team.h"
 
-#endif //COUNTER_STRIKE_QUERA_TEAM_H
+#endif // COUNTER_STRIKE_QUERA_TEAM_H

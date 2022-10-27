@@ -5,7 +5,6 @@
 #ifndef COUNTER_STRIKE_QUERA_SETTING_H
 #define COUNTER_STRIKE_QUERA_SETTING_H
 
-
 #include "Gun.h"
 #include "Guns.h"
 #include <string>
@@ -14,23 +13,23 @@ using std::string;
 
 class Setting {
 public:
-    static auto get_start_money();
+    inline static int get_start_money();
 
-    static auto get_max_money();
+    inline static int get_max_money();
 
-    static auto get_won_money();
+    inline static int get_won_money();
 
-    static auto get_lose_money();
+    inline static int get_lose_money();
 
-    static auto get_end_time();
+    inline static string get_end_time();
 
-    static auto get_time_buy_gun();
+    inline static string get_time_buy_gun();
 
-    static auto get_time_add_player();
+    inline static string get_time_add_player();
 
-    static auto get_start_gun();
+    inline static const Gun *get_start_gun();
 
-    static auto get_max_member_team();
+    inline static int get_max_member_team();
 
 private:
     static const int START_MONEY = 1000;
@@ -54,4 +53,4 @@ const Gun *Setting::START_GUN = Guns::get_gun("knife", GlobalVariable::access_le
 
 #include "../src/Setting.h"
 
-#endif //COUNTER_STRIKE_QUERA_SETTING_H
+#endif // COUNTER_STRIKE_QUERA_SETTING_H
