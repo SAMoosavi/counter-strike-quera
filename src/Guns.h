@@ -27,3 +27,9 @@ Gun *Guns::get_gun(const string &name, GlobalVariable::access_level accessLevel)
     else if (Guns::guns[name]->get_access_level() == accessLevel) return Guns::guns[name];
     else throw Error("invalid category gun");
 }
+
+void Guns::delete_guns() {
+    for (const auto &gun: Guns::guns) {
+        delete gun.second;
+    }
+}

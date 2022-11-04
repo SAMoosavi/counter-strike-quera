@@ -8,8 +8,6 @@
 
 using std::to_string;
 using std::string;
-using testing::IsTrue;
-using testing::IsFalse;
 using testing::NotNull;
 using testing::Eq;
 
@@ -39,8 +37,8 @@ TEST_F(TeamTest, HasPlayer) {
     int muxMemberTeam = Setting::get_max_member_team();
     for (int i = 0; i < muxMemberTeam - 2; ++i)
         this->team->add_player(to_string(i), Time("00:00:001") * i);
-    ASSERT_THAT(this->team->has_player("0"), IsTrue());
-    ASSERT_THAT(this->team->has_player("-1"), IsFalse());
+    ASSERT_TRUE(this->team->has_player("0"));
+    ASSERT_FALSE(this->team->has_player("-1"));
 }
 
 TEST_F(TeamTest, GetPlayer) {
@@ -51,11 +49,11 @@ TEST_F(TeamTest, GetPlayer) {
 
 TEST_F(TeamTest, HasLive) {
     this->team->add_player("0", Time("00:00:001"));
-    ASSERT_THAT(this->team->has_live(), IsTrue());
+    ASSERT_TRUE(this->team->has_live());
     this->team->get_player("0")->shut(100);
-    ASSERT_THAT(this->team->has_live(), IsFalse());
+    ASSERT_FALSE(this->team->has_live());
     this->team->add_player("1", Time(Setting::get_time_add_player()) + Time("00:00:001"));
-    ASSERT_THAT(this->team->has_live(), IsFalse());
+    ASSERT_FALSE(this->team->has_live());
 }
 
 TEST_F(TeamTest, Won) {

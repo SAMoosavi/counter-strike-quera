@@ -39,9 +39,7 @@ string Handler::add_user(const std::string &name, GlobalVariable::team team, con
             throw Error("Unsupported variable type: " + HelperFunctions::team_enum_to_string(team));
     }
 
-    string msg =
-            "this user added to " +
-            string((team == GlobalVariable::team::Terrorist) ? "Terrorist" : "Counter-Terrorist");
+    string msg = "this user added to " + HelperFunctions::team_enum_to_string(team);
 
     return msg;
 }
@@ -84,18 +82,19 @@ string Handler::buy(const string &username, const string &gunName, const string 
     return "I hope you can use it";
 }
 
+string Handler::time_score_board_to_string(vector<Player *> team_score_board) {
+    string msg;
+    for (int i = 0; i < team_score_board.size(); ++i) {
+        msg += to_string(i + 1) + " " + team_score_board[i]->to_string() + "\n";
+    }
+    return msg;
+}
+
 string Handler::score_board() const {
     string msg = ":Counter-Terrorist-Players\n";
-    auto counter_terrorist_score_board = this->counter_terrorist_class->get_score_board();
-    for (int i = 0; i < counter_terrorist_score_board.size(); ++i) {
-        msg += to_string(i + 1) + " " + counter_terrorist_score_board[i]->to_string() + "\n";
-    }
+    msg += Handler::time_score_board_to_string(this->counter_terrorist_class->get_score_board());
     msg += ":Terrorist-Players\n";
-    auto terrorist_score_board = this->terrorist_class->get_score_board();
-    for (int i = 0; i < terrorist_score_board.size(); ++i) {
-        msg += to_string(i + 1) + " " + terrorist_score_board[i]->to_string() + "\n";
-    }
-
+    msg += Handler::time_score_board_to_string(this->terrorist_class->get_score_board());
     return msg;
 }
 

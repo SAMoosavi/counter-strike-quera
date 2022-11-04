@@ -37,6 +37,8 @@ private:
     inline Player *find_player(const string &name) const;
 
     inline bool has_player(const string &name) const;
+
+    inline static string time_score_board_to_string(vector<Player *> team_score_board);
 };
 
 #include "../src/Handler.h"

@@ -51,4 +51,5 @@ int main() {
         }
         Logger::log_successes(handler->new_round());
     }
+    Guns::delete_guns();
 }

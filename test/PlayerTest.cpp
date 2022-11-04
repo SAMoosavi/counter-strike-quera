@@ -8,8 +8,6 @@
 
 using testing::IsNull;
 using testing::Eq;
-using testing::IsTrue;
-using testing::IsFalse;
 
 class PlayerTest : public ::testing::Test {
 protected:
@@ -70,17 +68,17 @@ TEST_F(PlayerTest, Lose) {
 }
 
 TEST_F(PlayerTest, Shut) {
-    EXPECT_THAT(this->player->shut(50), IsFalse());
-    EXPECT_THAT(this->player->is_live(), IsTrue());
+    EXPECT_FALSE(this->player->shut(50));
+    EXPECT_TRUE(this->player->is_live());
     EXPECT_THAT(this->player->get_killed(), Eq(0));
     EXPECT_THAT(this->player->get_health(), Eq(50));
-    EXPECT_THAT(this->player->shut(50), IsTrue());
-    EXPECT_THAT(this->player->is_live(), IsFalse());
+    EXPECT_TRUE(this->player->shut(50));
+    EXPECT_FALSE(this->player->is_live());
     EXPECT_THAT(this->player->get_killed(), Eq(1));
     EXPECT_THAT(this->player->get_health(), Eq(0));
 
     EXPECT_ANY_THROW(this->player->shut(10));
-    EXPECT_THAT(this->player->is_live(), IsFalse());
+    EXPECT_FALSE(this->player->is_live());
     EXPECT_THAT(this->player->get_killed(), Eq(1));
     EXPECT_THAT(this->player->get_health(), Eq(0));
 }
@@ -95,15 +93,15 @@ TEST_F(PlayerTest, Reset) {
 }
 
 TEST_F(PlayerTest, HasGun) {
-    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::knife), IsTrue());
-    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
+    EXPECT_TRUE(this->player->has_gun(GlobalVariable::type_gun::knife));
+    EXPECT_FALSE(this->player->has_gun(GlobalVariable::type_gun::heavy));
     for (int i = 0; i < Setting::get_max_money() / Guns::get_gun("knife", this->ACCESS_LEVEL)->get_money() + 1; ++i)
         this->player->add_kill(GlobalVariable::type_gun::knife);
     this->player->buy_gun("AWP");
-    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsTrue());
+    EXPECT_TRUE(this->player->has_gun(GlobalVariable::type_gun::heavy));
     this->player->shut(110);
-    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::heavy), IsFalse());
-    EXPECT_THAT(this->player->has_gun(GlobalVariable::type_gun::knife), IsFalse());
+    EXPECT_FALSE(this->player->has_gun(GlobalVariable::type_gun::heavy));
+    EXPECT_FALSE(this->player->has_gun(GlobalVariable::type_gun::knife));
     this->player->reset();
 }
 

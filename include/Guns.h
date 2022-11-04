@@ -14,6 +14,8 @@ class Guns {
 public:
     inline static Gun *get_gun(const string &name, GlobalVariable::access_level accessLevel);
 
+    inline static void delete_guns();
+
 private:
     static map<string, Gun *> guns;
 
