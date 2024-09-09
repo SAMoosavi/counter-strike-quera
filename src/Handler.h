@@ -1,124 +1,40 @@
-//
-// Created by moosavi on 10/20/22.
-//
+#ifndef COUNTER_STRIKE_QUERA_HANDLER_H
+#define COUNTER_STRIKE_QUERA_HANDLER_H
 
-#include "../include/Handler.h"
-#include "../include/Logger.h"
-#include "../include/HelperFunctions.h"
+#include <string>
+#include "Time.h"
+#include "Team.h"
 
-using std::to_string;
+using std::string;
 
-Player *Handler::find_player(const std::string &name) const {
-    if (this->terrorist_class->has_player(name))
-        return this->terrorist_class->get_player(name);
+class Handler {
+public:
+    string add_user(const string &username, Gun::type_team team, const string &time);
 
-    if (this->counter_terrorist_class->has_player(name))
-        return this->counter_terrorist_class->get_player(name);
+    int get_money(const string &username) const;
 
-    throw Error("invalid username");
-}
+    int get_health(const string &username) const;
 
-bool Handler::has_player(const std::string &name) const {
-    return this->terrorist_class->has_player(name) || this->counter_terrorist_class->has_player(name);
-}
+    string tap(const string &attacker, const string &attacked, Gun::type_gun type) const;
 
-string Handler::add_user(const std::string &name, GlobalVariable::team team, const string &time) {
-    if (this->has_player(name))
-        throw Error("you are already in this game");
+    string buy(const string &username, const string &gunName, const string &time) const;
 
-    auto time_of_add = Time(time, this->round);
+    string score_board() const;
 
-    switch (team) {
-        case GlobalVariable::team::Terrorist:
-            this->terrorist_class->add_player(name, time_of_add);
-            break;
-        case GlobalVariable::team::Counter_Terrorist:
-            this->counter_terrorist_class->add_player(name, time_of_add);
-            break;
-        default:
-            throw Error("Unsupported variable type: " + HelperFunctions::team_enum_to_string(team));
-    }
+    string new_round();
 
-    string msg = "this user added to " + HelperFunctions::team_enum_to_string(team);
+    ~Handler();
 
-    return msg;
-}
+private:
+    int round = 1;
+    Team *terrorist_class = new Team(Gun::access_level::terrorist);
+    Team *counter_terrorist_class = new Team(Gun::access_level::counter_terrorist);
 
-int Handler::get_money(const std::string &username) const {
-    return this->find_player(username)->get_money();
-}
+    Player *find_player(const string &name) const;
 
-int Handler::get_health(const std::string &username) const {
-    return this->find_player(username)->get_health();
-}
+    bool has_player(const string &name) const;
 
-string
-Handler::tap(const std::string &attacker, const std::string &attacked, const GlobalVariable::type_gun type) const {
-    auto attacker_player = this->find_player(attacker);
-    auto attacked_player = this->find_player(attacked);
+    static string time_score_board_to_string(vector<Player *> team_score_board);
+};
 
-    if (!attacker_player->is_live()) throw Error("attacker is dead");
-    if (!attacked_player->is_live()) throw Error("attacked is dead");
-
-    if (!attacker_player->has_gun(type)) throw Error("no such gun");
-
-    if (!(this->terrorist_class->has_player(attacker) ^ this->terrorist_class->has_player(attacked)))
-        throw Error("friendly fire");
-
-    if (attacked_player->shut(attacker_player->get_gun(type)->get_health())) { attacker_player->add_kill(type); }
-
-    return "nice shot";
-}
-
-string Handler::buy(const string &username, const string &gunName, const string &time) const {
-    auto player = this->find_player(username);
-
-    if (!player->is_live()) throw Error("deads can not buy");
-
-    if (Time(time) > Time(Setting::get_time_buy_gun())) throw Error("you are out of time");
-
-    player->buy_gun(gunName);
-
-    return "I hope you can use it";
-}
-
-string Handler::time_score_board_to_string(vector<Player *> team_score_board) {
-    string msg;
-    for (int i = 0; i < team_score_board.size(); ++i) {
-        msg += to_string(i + 1) + " " + team_score_board[i]->to_string() + "\n";
-    }
-    return msg;
-}
-
-string Handler::score_board() const {
-    string msg = ":Counter-Terrorist-Players\n";
-    msg += Handler::time_score_board_to_string(this->counter_terrorist_class->get_score_board());
-    msg += ":Terrorist-Players\n";
-    msg += Handler::time_score_board_to_string(this->terrorist_class->get_score_board());
-    return msg;
-}
-
-string Handler::new_round() {
-    string msg;
-    this->round++;
-
-    if ((!this->counter_terrorist_class->has_live()) && this->terrorist_class->has_live()) {
-        msg = "Terrorist won";
-        this->terrorist_class->won();
-        this->counter_terrorist_class->lose();
-    } else {
-        msg = "Counter-Terrorist won";
-        this->terrorist_class->lose();
-        this->counter_terrorist_class->won();
-    }
-
-    this->terrorist_class->new_round();
-    this->counter_terrorist_class->new_round();
-
-    return msg;
-}
-
-Handler::~Handler() {
-    delete this->terrorist_class;
-    delete this->counter_terrorist_class;
-}
+#endif

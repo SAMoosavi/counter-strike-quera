@@ -1,9 +1,9 @@
 #include <iostream>
 #include <string>
-#include "include/Handler.h"
-#include "HelperFunctions.h"
+#include "Handler.h"
+#include "Gun.h"
 #include "Logger.h"
-#include "Errors.h"
+#include "Error.h"
 
 using std::string;
 using std::cin;
@@ -22,7 +22,7 @@ int main() {
                 if (order == "ADD-USER") {
                     string username, team;
                     cin >> username >> team >> time;
-                    Logger::log_successes(handler->add_user(username, HelperFunctions::string_to_team_enum(team), time));
+                    Logger::log_successes(handler->add_user(username, Gun::string_to_team_enum(team), time));
                 } else if (order == "GET-MONEY") {
                     string username;
                     cin >> username >> time;
@@ -35,7 +35,7 @@ int main() {
                     string attacker, attacked, gunType;
                     cin >> attacker >> attacked >> gunType >> time;
                     Logger::log_successes(
-                            handler->tap(attacker, attacked, HelperFunctions::string_to_type_gun_enum(gunType)));
+                            handler->tap(attacker, attacked, Gun::string_to_type_gun_enum(gunType)));
                 } else if (order == "BUY") {
                     string username, gunName;
                     cin >> username >> gunName >> time;
@@ -51,5 +51,4 @@ int main() {
         }
         Logger::log_successes(handler->new_round());
     }
-    Guns::delete_guns();
 }

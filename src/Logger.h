@@ -1,20 +1,19 @@
-//
-// Created by moosavi on 10/20/22.
-//
+#ifndef COUNTER_STRIKE_QUERA_LOGGER_H
+#define COUNTER_STRIKE_QUERA_LOGGER_H
 
-#include "../include/Logger.h"
+#include <string>
+#include <iostream>
 
-using std::cout;
-using std::endl;
+using std::string;
 
-void Logger::log_successes(const std::string &message) {
-    cout << message << endl;
-}
+class Logger {
+public:
+    static void log_successes(const string &message);
 
-void Logger::log_error(const string &message) {
-    cout << message << endl;
-}
+    static void log_successes(long long int message);
 
-void Logger::log_successes(long long int message) {
-    cout << std::to_string(message) << endl;
-}
+    static void log_error(const string &message);
+};
+
+
+#endif

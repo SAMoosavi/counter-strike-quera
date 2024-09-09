@@ -1,12 +1,7 @@
-//
-// Created by moosavi on 10/20/22.
-//
-
-
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../include/Time.h"
+#include "../src/Time.h"
 
 using testing::Gt;
 using testing::Eq;

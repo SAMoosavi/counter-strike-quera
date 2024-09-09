@@ -1,21 +1,45 @@
-//
-// Created by moosavi on 10/22/22.
-//
+#ifndef COUNTER_STRIKE_QUERA_SETTING_H
+#define COUNTER_STRIKE_QUERA_SETTING_H
 
-int Setting::get_start_money() { return Setting::START_MONEY; }
+#include "Gun.h"
+#include "Guns.h"
+#include <string>
 
-int Setting::get_max_money() { return Setting::MAX_MONEY; }
+using std::string;
 
-int Setting::get_won_money() { return Setting::WON_MONEY; }
+class Setting
+{
+public:
+    static int get_start_money();
 
-int Setting::get_lose_money() { return Setting::LOSE_MONEY; }
+    static int get_max_money();
 
-string Setting::get_end_time() { return Setting::END_TIME; }
+    static int get_won_money();
 
-string Setting::get_time_buy_gun() { return Setting::TIME_BUY_GUN; }
+    static int get_lose_money();
 
-string Setting::get_time_add_player() { return Setting::TIME_ADD_PLAYER; }
+    static string get_end_time();
 
-const Gun *Setting::get_start_gun() { return Setting::START_GUN; }
+    static string get_time_buy_gun();
 
-int Setting::get_max_member_team() { return Setting::MAX_MEMBER_TEAM; }
+    static string get_time_add_player();
+
+    static const GunPointer & get_start_gun();
+
+    static int get_max_member_team();
+
+private:
+    static const int START_MONEY = 1000;
+    static const int MAX_MONEY = 10000;
+    static const int WON_MONEY = 2700;
+    static const int LOSE_MONEY = 2400;
+    static const int MAX_MEMBER_TEAM = 10;
+    static const string END_TIME;
+    static const string TIME_BUY_GUN;
+    static const string TIME_ADD_PLAYER;
+    static const GunPointer & START_GUN;
+
+    Setting() = default;
+};
+
+#endif

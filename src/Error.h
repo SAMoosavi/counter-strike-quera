@@ -1,9 +1,5 @@
-//
-// Created by moosavi on 10/21/22.
-//
-
-#ifndef COUNTER_STRIKE_QUERA_ERRORS_H
-#define COUNTER_STRIKE_QUERA_ERRORS_H
+#ifndef COUNTER_STRIKE_QUERA_ERROR_H
+#define COUNTER_STRIKE_QUERA_ERROR_H
 
 #include <exception>
 
@@ -22,4 +18,4 @@ private:
     const string MESSAGE;
 };
 
-#endif //COUNTER_STRIKE_QUERA_ERRORS_H
+#endif

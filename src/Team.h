@@ -1,62 +1,45 @@
-//
-// Created by moosavi on 10/19/22.
-//
-#include "../include/Team.h"
+#ifndef COUNTER_STRIKE_QUERA_TEAM_H
+#define COUNTER_STRIKE_QUERA_TEAM_H
 
-Team::Team(GlobalVariable::access_level accessLevel) : ACCESS_LEVEL(accessLevel) {}
+#include <string>
+#include <map>
+#include <vector>
+#include "Gun.h"
+#include "Player.h"
+#include "Guns.h"
+#include "Time.h"
 
+using std::map;
+using std::string;
+using std::vector;
 
-void Team::add_player(const string &name, const Time &time) {
-    if (this->players.size() == Setting::get_max_member_team())
-        throw Error("this team is full");
-    this->players[name] = new Player(name, time, this->ACCESS_LEVEL);
-}
+class Team {
+public:
+    explicit Team(Gun::access_level accessLevel);
 
-bool Team::has_player(const std::string &name) const { return this->players.count(name); }
+    void add_player(const string &name, const Time &time);
 
-Player *Team::get_player(const std::string &name) const {
-    if (this->players.count(name))
-        return this->players.at(name);
-    throw Error("invalid username");
-}
+    bool has_player(const string &name) const;
 
-void Team::new_round() {
-    for (auto &player: this->players) {
-        player.second->reset();
-    }
-}
+    Player *get_player(const string &name) const;
 
-vector<Player *> Team::get_score_board() const {
-    vector<Player *> result_players;
-    for (const auto &player: this->players)
-        result_players.push_back(player.second);
-    std::sort(result_players.begin(), result_players.end(), [](auto a, auto b) { return *a > *b; });
-    return result_players;
-}
+    void new_round();
 
-bool Team::has_live() const {
-    return this->get_live_num() > 0;
-}
+    vector<Player *> get_score_board() const;
 
-Team::~Team() {
-    for (const auto &player: this->players)
-        delete player.second;
-    this->players.clear();
-}
+    bool has_live() const;
 
-void Team::won() const {
-    for (auto &player: this->players)
-        player.second->won();
-}
+    void won() const;
 
-void Team::lose() const {
-    for (auto &player: this->players)
-        player.second->lose();
-}
+    void lose() const;
 
-int Team::get_live_num() const {
-    int liveNum = 0;
-    for (auto &player: this->players)
-        if (player.second->is_live()) liveNum++;
-    return liveNum;
-}
+    int get_live_num() const;
+
+    ~Team();
+
+private:
+    map<string, Player *> players;
+    const Gun::access_level ACCESS_LEVEL;
+};
+
+#endif

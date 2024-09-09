@@ -1,29 +1,21 @@
-cmake_minimum_required(VERSION 3.23)
-project(Counter_Strike_Quera)
+cmake_minimum_required(VERSION 3.25)
+project(Counter_Strike_Quera VERSION 1.1)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(SOURCES
-        main.cpp
-        src/Setting.h
-        GlobalVariable.h
-        src/Gun.h
-        src/Player.h
-        src/Team.h
-        src/Guns.h
-        src/Time.h
-        src/Handler.h
-        src/Logger.h
-        src/HelperFunctions.h
-        Errors.h
-        )
-
-add_executable(Counter_Strike_Quera ${SOURCES})
-
-target_include_directories(Counter_Strike_Quera
-        PRIVATE
-        ${PROJECT_SOURCE_DIR}/include
-        )
-
+add_subdirectory(src)
 
 add_subdirectory(test)
+
+if(NOT CMAKE_BUILD_TYPE)
+        set(CMAKE_BUILD_TYPE Release)
+endif()
+
+# Add compiler flags
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-Wall -Wextra -pedantic)
+elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        add_compile_options(/W4)
+endif()

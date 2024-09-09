@@ -16,5 +16,8 @@ set(TEST_FILES
         )
 
 # 'Google_Tests_run' is the target name
-add_executable(Google_Tests_run ${TEST_FILES})
-target_link_libraries(Google_Tests_run gtest gtest_main)
+foreach (TEST_FILE ${TEST_FILES})
+        get_filename_component(TEST_NAME ${TEST_FILE} NAME_WE)
+        add_executable(${TEST_NAME} ${TEST_FILE})
+        target_link_libraries(${TEST_NAME} gtest_main gmock_main)
+endforeach ()

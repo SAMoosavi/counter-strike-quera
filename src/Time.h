@@ -1,68 +1,41 @@
-//
-// Created by moosavi on 10/20/22.
-//
+#ifndef COUNTER_STRIKE_QUERA_TIME_H
+#define COUNTER_STRIKE_QUERA_TIME_H
 
-#include "../include/Time.h"
-#include "../Errors.h"
+#include <string>
+#include "Setting.h"
 
-#include <regex>
+using std::string;
 
-using std::regex;
+class Time {
+public:
+    explicit Time(const string &time, int round = 1);
 
-Time::Time(const string &time, int round) {
-    if (round == 1)
-        this->Milliseconds = Time::correct_str_to_milliseconds(time);
-    else
-        this->Milliseconds =
-                (Time(Setting::get_end_time()) * (round - 1)).Milliseconds +
-                Time::correct_str_to_milliseconds(time);
-}
+    bool operator<(const Time &other) const;
 
-bool Time::operator<(const Time &other) const { return this->Milliseconds < other.Milliseconds; }
+    bool operator>(const Time &other) const;
 
-bool Time::operator<(const string &other) const {
-    return this->Milliseconds < Time::correct_str_to_milliseconds(other);
-}
+    bool operator<(const string &other) const;
 
-bool Time::operator>(const Time &other) const { return this->Milliseconds > other.Milliseconds; }
+    bool operator>(const string &other) const;
 
-bool Time::operator>(const string &other) const {
-    return this->Milliseconds > Time::correct_str_to_milliseconds(other);
-}
+    bool operator==(const Time &other) const;
 
-long long int Time::correct_str_to_milliseconds(const std::string &time) {
-    if (!Time::str_is_correct(time))
-        throw Error("Time::correct_str_to_milliseconds() failed: " + std::string(time));
-    long long int minute = stoll(time.substr(0, 2));
-    long long int second = stoll(time.substr(3, 2));
-    long long int millisecond = stoll(time.substr(6, 3));
+    bool operator==(const string &other) const;
 
-    return minute * 60 * 1000 + second * 1000 + millisecond;
-}
+    Time operator*(int i) const;
 
-bool Time::str_is_correct(const std::string &time) {
-    regex timePattern(R"(\d\d:\d\d:\d\d\d)");
-    return regex_match(time, timePattern);
-}
+    Time operator%(const Time &other) const;
 
-bool Time::operator==(const Time &other) const {
-    return this->Milliseconds == other.Milliseconds;
-}
+    Time operator+(const Time &other) const;
 
-bool Time::operator==(const string &other) const {
-    return this->Milliseconds == Time::correct_str_to_milliseconds(other);
-}
+private:
+    long long int Milliseconds{};
 
-Time Time::operator*(int i) const {
-    return Time(this->Milliseconds * i);
-}
+    static long long int correct_str_to_milliseconds(const string &time);
 
-Time Time::operator%(const Time &other) const {
-    return Time(this->Milliseconds % other.Milliseconds);
-}
+    static bool str_is_correct(const string &time);
 
-Time Time::operator+(const Time &other) const {
-    return Time(this->Milliseconds + other.Milliseconds);
-}
+    explicit Time(long long int time);
+};
 
-Time::Time(long long int time) : Milliseconds(time) {}
+#endif

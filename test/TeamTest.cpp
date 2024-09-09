@@ -1,8 +1,4 @@
-//
-// Created by moosavi on 10/21/22.
-//
-
-#include "../include/Team.h"
+#include "../src/Team.h"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -14,7 +10,7 @@ using testing::Eq;
 class TeamTest : public testing::Test {
 protected:
     void SetUp() override {
-        this->team = new Team(GlobalVariable::access_level::terrorist);
+        this->team = new Team(Gun::access_level::terrorist);
     }
 
     void TearDown() override {
