@@ -33,4 +33,4 @@ set(TEMP_HEADERS
 )
 
 # Add the executable
-add_executable(Counter_Strike_Quera ${SOURCES} ${HEADERS} ${INLINE_HEADERS} ${TEMP_HEADERS})
+add_executable(counter_strike_quera ${SOURCES} ${HEADERS} ${INLINE_HEADERS} ${TEMP_HEADERS})
