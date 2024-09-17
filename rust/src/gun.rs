@@ -45,8 +45,8 @@ mod tests_of_type_of_gun {
 pub struct Gun {
     name: String,
     price: i32,
-    health: i32,
-    money: i32,
+    damage: i32,
+    gift: i32,
     type_of: TypeOfGun,
 }
 
@@ -55,28 +55,28 @@ impl Gun {
         &self.name
     }
 
-    pub fn get_price(&self) -> &i32 {
-        &self.price
+    pub fn get_price(&self) -> i32 {
+        self.price
     }
 
-    pub fn get_health(&self) -> &i32 {
-        &self.health
+    pub fn get_damage(&self) -> i32 {
+        self.damage
     }
 
-    pub fn get_money(&self) -> i32 {
-        self.money
+    pub fn get_gift(&self) -> i32 {
+        self.gift
     }
 
     pub fn get_type_of(&self) -> TypeOfGun {
         self.type_of.clone()
     }
 
-    pub fn new(name: String, price: i32, health: i32, money: i32, type_of: TypeOfGun) -> Gun {
+    pub fn new(name: String, price: i32, damage: i32, gift: i32, type_of: TypeOfGun) -> Gun {
         Gun {
             name,
             price,
-            health,
-            money,
+            damage,
+            gift,
             type_of,
         }
     }
@@ -84,8 +84,8 @@ impl Gun {
 
 impl PartialEq for Gun {
     fn eq(&self, other: &Self) -> bool {
-        self.health == other.health
-            && self.money == other.money
+        self.damage == other.damage
+            && self.gift == other.gift
             && self.name == other.name
             && self.price == other.price
             && self.type_of == other.type_of
@@ -105,18 +105,26 @@ impl Guns {
     }
 
     pub fn add_gun(
-        & mut self,
+        &mut self,
         name: String,
         price: i32,
-        health: i32,
-        money: i32,
+        damage: i32,
+        gift: i32,
         type_of: TypeOfGun,
-    ) -> Result<(), String> {
+    ) -> Result<(), &str> {
         if self.list.iter().any(|gun| name == gun.get_name()) {
-            return Err("the gun is exist!".to_string());
+            return Err("the gun is exist!");
+        } else if type_of == TypeOfGun::Knife
+            && self
+                .list
+                .iter()
+                .any(|gun| gun.get_type_of() == TypeOfGun::Knife)
+        {
+            return Err("The knife exist");
         }
+
         self.list
-            .push(Rc::new(Gun::new(name, price, health, money, type_of)));
+            .push(Rc::new(Gun::new(name, price, damage, gift, type_of)));
         Ok(())
     }
 
@@ -136,12 +144,16 @@ impl Guns {
         }
     }
 
-    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) ->  Result<Vec<Rc<Gun>>, ()>
-    {
+    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, ()> {
         if type_of_gun == TypeOfGun::Knife {
             return Err(());
         }
-        Ok(self.list.iter().filter(|gun| gun.get_type_of() == type_of_gun).cloned().collect())
+        Ok(self
+            .list
+            .iter()
+            .filter(|gun| gun.get_type_of() == type_of_gun)
+            .cloned()
+            .collect())
     }
 }
 
@@ -168,16 +180,16 @@ mod tests_guns {
         let mut guns = Guns::new();
         let name = "knife";
         let price = 100;
-        let health = 20;
-        let money = 10;
+        let damage = 20;
+        let gift = 10;
         let type_of = TypeOfGun::Knife;
         assert!(guns
-            .add_gun(name.to_string(), price, health, money, type_of)
+            .add_gun(name.to_string(), price, damage, gift, type_of)
             .is_ok());
         assert_eq!(guns.list.len(), 1);
         assert_eq!(
             guns.list[0],
-            Rc::new(Gun::new(name.to_string(), price, health, money, type_of))
+            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
@@ -194,16 +206,16 @@ mod tests_guns {
         let mut guns = Guns::new();
         let name = "knife";
         let price = 100;
-        let health = 20;
-        let money = 10;
+        let damage = 20;
+        let gift = 10;
         let type_of = TypeOfGun::Knife;
-        guns.add_gun(name.to_string(), price, health, money, type_of)
+        guns.add_gun(name.to_string(), price, damage, gift, type_of)
             .unwrap();
         let result = guns.get_knife();
         assert!(result.is_ok());
         assert_eq!(
             result.unwrap(),
-            Rc::new(Gun::new(name.to_string(), price, health, money, type_of))
+            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
@@ -222,21 +234,21 @@ mod tests_guns {
         let mut guns = Guns::new();
         let name = "knife";
         let price = 100;
-        let health = 20;
-        let money = 10;
+        let damage = 20;
+        let gift = 10;
         let type_of = TypeOfGun::Knife;
-        guns.add_gun(name.to_string(), price, health, money, type_of)
+        guns.add_gun(name.to_string(), price, damage, gift, type_of)
             .unwrap();
         let result = guns.get_gun(&name);
         assert!(result.is_ok());
         assert_eq!(
             result.unwrap(),
-            Rc::new(Gun::new(name.to_string(), price, health, money, type_of))
+            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
     #[test]
-    pub fn get_guns_func_when_get_knife_type_should_be_error(){
+    pub fn get_guns_func_when_get_knife_type_should_be_error() {
         let guns = Guns::new();
         assert!(guns.get_guns_with_type(TypeOfGun::Knife).is_err());
     }
@@ -257,6 +269,6 @@ mod tests_guns {
 
         let result = guns.get_guns_with_type(type_of);
         assert!(result.is_ok());
-        assert_eq!(result.unwrap().len(),3);
+        assert_eq!(result.unwrap().len(), 3);
     }
 }

@@ -42,12 +42,12 @@ impl Player {
     }
 
     pub fn buy_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
-        if self.money < gun.get_money() {
+        if self.money < gun.get_gift() {
             return Err(format!(
                 "{}'s money is {} but need {}",
                 self.name,
                 self.money,
-                gun.get_money()
+                gun.get_gift()
             ));
         }
 
@@ -56,7 +56,7 @@ impl Player {
             return Err(format!("the {} gun type is  exist.", gun.get_type_of()));
         }
 
-        self.money -= gun.get_money();
+        self.money -= gun.get_gift();
         self.guns[gun_type] = Some(gun);
         Ok(())
     }
