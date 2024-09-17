@@ -1,6 +1,7 @@
 use std::{fmt, rc::Rc};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[allow(dead_code)]
 pub enum TypeOfGun {
     Heavy = 0,
     Pistol,
@@ -55,14 +56,17 @@ impl Gun {
         &self.name
     }
 
+    #[allow(dead_code)]
     pub fn get_price(&self) -> i32 {
         self.price
     }
 
+    #[allow(dead_code)]
     pub fn get_damage(&self) -> i32 {
         self.damage
     }
 
+    #[allow(dead_code)]
     pub fn get_gift(&self) -> i32 {
         self.gift
     }
@@ -143,15 +147,18 @@ mod tests_gun {
     }
 }
 
+#[allow(dead_code)]
 pub struct Guns {
     list: Vec<Rc<Gun>>,
 }
 
 impl Guns {
+    #[allow(dead_code)]
     pub fn new() -> Guns {
         Guns { list: vec![] }
     }
 
+    #[allow(dead_code)]
     pub fn add_gun(
         &mut self,
         name: String,
@@ -176,6 +183,7 @@ impl Guns {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn get_knife(&self) -> Result<Rc<Gun>, ()> {
         for gun in &self.list {
             if gun.get_type_of() == TypeOfGun::Knife {
@@ -185,6 +193,7 @@ impl Guns {
         Err(())
     }
 
+    #[allow(dead_code)]
     pub fn get_gun(&self, name: &str) -> Result<Rc<Gun>, ()> {
         match self.list.iter().position(|gun| gun.get_name() == name) {
             Some(index) => Ok(self.list[index].clone()),
@@ -192,6 +201,7 @@ impl Guns {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, ()> {
         if type_of_gun == TypeOfGun::Knife {
             return Err(());

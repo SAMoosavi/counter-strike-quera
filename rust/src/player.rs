@@ -1,6 +1,7 @@
 use crate::gun::{Gun, TypeOfGun};
 use std::rc::Rc;
 
+#[allow(dead_code)]
 pub struct Player {
     name: String,
     health: i32,
@@ -11,6 +12,7 @@ pub struct Player {
 }
 
 impl Player {
+    #[allow(dead_code)]
     pub fn new(knife: Rc<Gun>, name: String) -> Result<Player, ()> {
         if knife.get_type_of() != TypeOfGun::Knife {
             return Err(());
@@ -26,6 +28,7 @@ impl Player {
         })
     }
 
+    #[allow(dead_code)]
     pub fn shut(&mut self, health: i32) -> Result<i32, String> {
         if self.health <= 0 {
             return Err(format!("{} did!", self.name));
@@ -40,6 +43,7 @@ impl Player {
         Ok(self.health)
     }
 
+    #[allow(dead_code)]
     pub fn buy_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
         if self.money < gun.get_gift() {
             return Err(format!(
