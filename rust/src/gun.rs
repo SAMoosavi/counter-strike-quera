@@ -141,7 +141,7 @@ impl Guns {
         if type_of_gun == TypeOfGun::Knife {
             return Err(());
         }
-        Ok(self.list.iter().filter(|gun| gun.get_type_of() == type_of_gun).collect())
+        Ok(self.list.iter().filter(|gun| gun.get_type_of() == type_of_gun).cloned().collect())
     }
 }
 
