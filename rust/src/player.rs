@@ -11,25 +11,18 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(
-        knife: Rc<Gun>,
-        name: String,
-        health: i32,
-        money: i32,
-        kills: i32,
-        killed: i32,
-    ) -> Result<Player, ()> {
+    pub fn new(knife: Rc<Gun>, name: String) -> Result<Player, ()> {
         if knife.get_type_of() != TypeOfGun::Knife {
             return Err(());
         }
-        let guns: [Option<Rc<Gun>>; 3] = [Some(knife), None, None];
+
         Ok(Player {
             name,
-            health,
-            money,
-            kills,
-            killed,
-            guns,
+            health: 100,
+            money: 0,
+            kills: 0,
+            killed: 0,
+            guns: [Some(knife), None, None],
         })
     }
 
@@ -37,6 +30,7 @@ impl Player {
         if self.health <= 0 {
             return Err(format!("{} did!", self.name));
         }
+
         self.health -= health;
         if self.health <= 0 {
             self.killed += 1;
@@ -84,6 +78,11 @@ mod tests {
         ))
     }
 
+    fn create_player() -> Player {
+        let knife: Rc<Gun> = create_knife();
+        Player::new(knife, "p1".to_string()).unwrap()
+    }
+
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
         let knife: Rc<Gun> = Rc::new(Gun::new(
@@ -93,19 +92,19 @@ mod tests {
             20,
             crate::gun::TypeOfGun::Pistol,
         ));
-        assert!(Player::new(knife, "p1".to_string(), 0, 100, 0, 0).is_err());
+        assert!(Player::new(knife, "p1".to_string()).is_err());
     }
 
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
         let knife: Rc<Gun> = create_knife();
-        assert!(Player::new(knife, "p1".to_string(), 0, 100, 0, 0).is_ok());
+        assert!(Player::new(knife, "p1".to_string()).is_ok());
     }
 
     #[test]
     pub fn shut_did_player() {
-        let knife: Rc<Gun> = create_knife();
-        let mut player: Player = Player::new(knife, "p1".to_string(), 0, 100, 0, 0).unwrap();
+        let mut player: Player = create_player();
+        player.health = 0;
         let result = player.shut(10);
 
         assert!(result.is_err());
@@ -113,9 +112,8 @@ mod tests {
     }
 
     #[test]
-    fn shut_live_player_and_live_after_suth() {
-        let knife: Rc<Gun> = create_knife();
-        let mut player: Player = Player::new(knife, "p1".to_string(), 100, 100, 0, 0).unwrap();
+    fn player_should_be_live_when_its_health_has_more_then_shut() {
+        let mut player: Player = create_player();
         let result = player.shut(10);
 
         assert!(result.is_ok());
@@ -125,9 +123,9 @@ mod tests {
     }
 
     #[test]
-    fn shut_live_player_and_did_after_suth() {
-        let knife: Rc<Gun> = create_knife();
-        let mut player: Player = Player::new(knife, "p1".to_string(), 100, 100, 0, 0).unwrap();
+    fn player_should_be_dead_when_its_health_has_lese_then_shut() {
+        let mut player: Player = create_player();
+        player.health = 5;
         let result = player.shut(10);
 
         assert!(result.is_ok());
