@@ -94,10 +94,6 @@ impl PartialEq for Gun {
             && self.price == other.price
             && self.type_of == other.type_of
     }
-
-    fn ne(&self, other: &Self) -> bool {
-        !(self == other)
-    }
 }
 
 #[cfg(test)]
