@@ -1,6 +1,5 @@
-use crate::gun::{Gun,TypeOfGun};
+use crate::gun::{Gun, TypeOfGun};
 use std::rc::Rc;
-
 
 pub struct Player {
     name: String,
@@ -11,9 +10,15 @@ pub struct Player {
     guns: [Option<Rc<Gun>>; 3],
 }
 
-
 impl Player {
-    pub fn new(knife: Rc<Gun>,name: String, health: i32, money: i32, kills: i32, killed: i32) -> Result<Player,()> {
+    pub fn new(
+        knife: Rc<Gun>,
+        name: String,
+        health: i32,
+        money: i32,
+        kills: i32,
+        killed: i32,
+    ) -> Result<Player, ()> {
         if knife.get_type_of() != TypeOfGun::Knife {
             return Err(());
         }
@@ -69,21 +74,37 @@ mod tests {
 
     use super::Player;
 
+    fn create_knife() -> Rc<Gun> {
+        Rc::new(Gun::new(
+            "knife".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Knife,
+        ))
+    }
+
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
-        let knife :Rc<Gun> = Rc::new(Gun::new("not knife".to_string(), 100, 10, 20, crate::gun::TypeOfGun::Pistol));
-        assert!(Player::new(knife, "p1".to_string(), 0, 100, 0, 0).is_err());   
+        let knife: Rc<Gun> = Rc::new(Gun::new(
+            "not knife".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Pistol,
+        ));
+        assert!(Player::new(knife, "p1".to_string(), 0, 100, 0, 0).is_err());
     }
 
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
-        let knife :Rc<Gun> = Rc::new(Gun::new("knife".to_string(), 100, 10, 20, crate::gun::TypeOfGun::Knife));
-        assert!(Player::new(knife, "p1".to_string(), 0, 100, 0, 0).is_ok());   
+        let knife: Rc<Gun> = create_knife();
+        assert!(Player::new(knife, "p1".to_string(), 0, 100, 0, 0).is_ok());
     }
 
     #[test]
     pub fn shut_did_player() {
-        let knife :Rc<Gun> = Rc::new(Gun::new("knife".to_string(), 100, 10, 20, crate::gun::TypeOfGun::Knife));
+        let knife: Rc<Gun> = create_knife();
         let mut player: Player = Player::new(knife, "p1".to_string(), 0, 100, 0, 0).unwrap();
         let result = player.shut(10);
 
@@ -93,7 +114,7 @@ mod tests {
 
     #[test]
     fn shut_live_player_and_live_after_suth() {
-        let knife :Rc<Gun> = Rc::new(Gun::new("knife".to_string(), 100, 10, 20, crate::gun::TypeOfGun::Knife));
+        let knife: Rc<Gun> = create_knife();
         let mut player: Player = Player::new(knife, "p1".to_string(), 100, 100, 0, 0).unwrap();
         let result = player.shut(10);
 
@@ -105,7 +126,7 @@ mod tests {
 
     #[test]
     fn shut_live_player_and_did_after_suth() {
-        let knife :Rc<Gun> = Rc::new(Gun::new("knife".to_string(), 100, 10, 20, crate::gun::TypeOfGun::Knife));
+        let knife: Rc<Gun> = create_knife();
         let mut player: Player = Player::new(knife, "p1".to_string(), 100, 100, 0, 0).unwrap();
         let result = player.shut(10);
 
