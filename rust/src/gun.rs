@@ -1,9 +1,9 @@
 use std::{fmt, rc::Rc};
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[allow(dead_code)]
 pub enum TypeOfGun {
-    Heavy = 0,
+    Heavy,
     Pistol,
     Knife,
 }

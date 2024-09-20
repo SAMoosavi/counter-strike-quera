@@ -1,4 +1,5 @@
 use crate::gun::{Gun, TypeOfGun};
+use std::collections::HashMap;
 use std::rc::Rc;
 
 #[allow(dead_code)]
@@ -8,7 +9,7 @@ pub struct Player {
     money: i32,
     kills: i32,
     killed: i32,
-    guns: [Option<Rc<Gun>>; 3],
+    guns: HashMap<TypeOfGun, Rc<Gun>>,
 }
 
 impl Player {
@@ -24,7 +25,7 @@ impl Player {
             money: 0,
             kills: 0,
             killed: 0,
-            guns: [Some(knife), None, None],
+            guns: HashMap::from([(TypeOfGun::Knife, knife)]),
         })
     }
 
@@ -38,7 +39,9 @@ impl Player {
         if self.health <= 0 {
             self.killed += 1;
             self.health = 0;
-            self.guns.iter_mut().for_each(|e| *e = None);
+            let knife = self.guns.get(&TypeOfGun::Knife).unwrap().clone();
+            self.guns.clear();
+            self.guns.insert(TypeOfGun::Knife, knife);
         }
         Ok(self.health)
     }
@@ -54,13 +57,13 @@ impl Player {
             ));
         }
 
-        let gun_type = gun.get_type_of() as usize;
-        if self.guns[gun_type].is_none() {
-            return Err(format!("the {} gun type is  exist.", gun.get_type_of()));
+        let gun_type = gun.get_type_of();
+        if self.guns.get(&gun_type).is_some() {
+            return Err(format!("the {} gun type is exist.", gun.get_type_of()));
         }
 
-        self.money -= gun.get_gift();
-        self.guns[gun_type] = Some(gun);
+        self.money -= gun.get_price();
+        self.guns.insert(gun_type, gun);
         Ok(())
     }
 }
@@ -116,7 +119,7 @@ mod tests {
     }
 
     #[test]
-    fn player_should_be_live_when_its_health_has_more_then_shut() {
+    pub fn player_should_be_live_when_its_health_has_more_then_shut() {
         let mut player: Player = create_player();
         let result = player.shut(10);
 
@@ -127,7 +130,7 @@ mod tests {
     }
 
     #[test]
-    fn player_should_be_dead_when_its_health_has_lese_then_shut() {
+    pub fn player_should_be_dead_when_its_health_has_lese_then_shut() {
         let mut player: Player = create_player();
         player.health = 5;
         let result = player.shut(10);
