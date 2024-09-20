@@ -13,7 +13,7 @@ impl fmt::Display for SettingData {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "Setting {{ max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?} }}",
+            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}}}",
             self.max_money_of_player,
             self.default_money_of_player,
             self.default_gun
@@ -53,6 +53,13 @@ impl SettingData {
         }
         self.default_gun = Some(gun);
         Ok(())
+    }
+
+    #[cfg(test)]
+    pub fn reset(&mut self) {
+        self.max_money_of_player = 0;
+        self.default_money_of_player = 0;
+        self.default_gun = None;
     }
 }
 
@@ -138,6 +145,11 @@ impl Setting {
         let mut setting = Self::get_setting().lock().unwrap();
         setting.set_default_gun(gun)
     }
+
+    #[cfg(test)]
+    pub fn reset() {
+        Self::get_setting().lock().unwrap().reset();
+    }
 }
 
 impl fmt::Display for Setting {
@@ -155,33 +167,39 @@ mod tests_setting {
     pub fn test_get_and_set_max_money_of_player() {
         assert!(Setting::set_max_money_of_player(1000).is_ok());
         assert_eq!(Setting::get_max_money_of_player(), 1000);
+        Setting::reset();
     }
     #[test]
     pub fn test_set_max_money_of_player_fail() {
         assert!(Setting::set_max_money_of_player(0).is_err());
         assert_eq!(Setting::get_max_money_of_player(), 0);
+        Setting::reset();
     }
     #[test]
     pub fn test_get_and_set_default_money_of_player() {
         assert!(Setting::set_default_money_of_player(100).is_ok());
         assert_eq!(Setting::get_default_money_of_player(), 100);
+        Setting::reset();
     }
     #[test]
     pub fn test_set_default_money_of_player_fail() {
         assert!(Setting::set_default_money_of_player(0).is_err());
         assert_eq!(Setting::get_default_money_of_player(), 0);
+        Setting::reset();
     }
     #[test]
     pub fn test_get_and_set_default_gun() {
         let gun = Arc::new(Gun::new("knife".to_string(), 100, 20, 100, TypeOfGun::Knife));
         assert!(Setting::set_default_gun(gun.clone()).is_ok());
         assert_eq!(Setting::get_default_gun(), Some(gun));
+        Setting::reset();
     }
     #[test]
     pub fn test_set_default_gun_fail() {
         let gun = Arc::new(Gun::new("not knife".to_string(), 100, 20, 100, TypeOfGun::Pistol));
         assert!(Setting::set_default_gun(gun).is_err());
         assert_eq!(Setting::get_default_gun(), None);
+        Setting::reset();
     }
     #[test]
     pub fn test_get_setting() {
@@ -189,10 +207,12 @@ mod tests_setting {
         assert_eq!(setting.lock().unwrap().max_money_of_player, 0);
         assert_eq!(setting.lock().unwrap().default_money_of_player, 0);
         assert_eq!(setting.lock().unwrap().default_gun, None);
+        Setting::reset();
     }
     #[test]
     pub fn test_setting_display() {
         let setting = Setting::get_setting();
-        assert_eq!(format!("{}", setting.lock().unwrap()), "{max_money_of_player: 0, default_money_of_player: 0, default_gun: None}");
+        assert_eq!(format!("{}", setting.lock().unwrap()), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None}");
+        Setting::reset();
     }
 }

@@ -106,6 +106,7 @@ mod tests {
 
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
+        Setting::reset();
         assert!(Player::new("p1".to_string()).is_err());
     }
 
