@@ -1,4 +1,5 @@
-use std::{fmt, rc::Rc};
+use std::sync::Arc;
+use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[allow(dead_code)]
@@ -42,7 +43,7 @@ mod tests_of_type_of_gun {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Eq)]
 pub struct Gun {
     name: String,
     price: i32,
@@ -86,6 +87,14 @@ impl Gun {
     }
 }
 
+impl fmt::Display for Gun {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Gun {{ name: {}, price: {}, damage: {}, gift: {}, type_of: {} }}",
+            self.name, self.price, self.damage, self.gift, self.type_of)
+    }
+}
 impl PartialEq for Gun {
     fn eq(&self, other: &Self) -> bool {
         self.damage == other.damage
@@ -145,7 +154,7 @@ mod tests_gun {
 
 #[allow(dead_code)]
 pub struct Guns {
-    list: Vec<Rc<Gun>>,
+    list: Vec<Arc<Gun>>,
 }
 
 impl Guns {
@@ -167,20 +176,20 @@ impl Guns {
             return Err("the gun is exist!");
         } else if type_of == TypeOfGun::Knife
             && self
-                .list
-                .iter()
-                .any(|gun| gun.get_type_of() == TypeOfGun::Knife)
+            .list
+            .iter()
+            .any(|gun| gun.get_type_of() == TypeOfGun::Knife)
         {
             return Err("The knife exist");
         }
 
         self.list
-            .push(Rc::new(Gun::new(name, price, damage, gift, type_of)));
+            .push(Arc::new(Gun::new(name, price, damage, gift, type_of)));
         Ok(())
     }
 
     #[allow(dead_code)]
-    pub fn get_knife(&self) -> Result<Rc<Gun>, ()> {
+    pub fn get_knife(&self) -> Result<Arc<Gun>, ()> {
         for gun in &self.list {
             if gun.get_type_of() == TypeOfGun::Knife {
                 return Ok(gun.clone());
@@ -190,7 +199,7 @@ impl Guns {
     }
 
     #[allow(dead_code)]
-    pub fn get_gun(&self, name: &str) -> Result<Rc<Gun>, ()> {
+    pub fn get_gun(&self, name: &str) -> Result<Arc<Gun>, ()> {
         match self.list.iter().position(|gun| gun.get_name() == name) {
             Some(index) => Ok(self.list[index].clone()),
             None => Err(()),
@@ -198,7 +207,7 @@ impl Guns {
     }
 
     #[allow(dead_code)]
-    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, ()> {
+    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Arc<Gun>>, ()> {
         if type_of_gun == TypeOfGun::Knife {
             return Err(());
         }
@@ -213,9 +222,9 @@ impl Guns {
 
 #[cfg(test)]
 mod tests_guns {
+    use std::sync::Arc;
     use super::{Guns, TypeOfGun};
     use crate::gun::Gun;
-    use std::rc::Rc;
 
     #[test]
     pub fn add_gun_should_return_error_when_gun_name_is_exist() {
@@ -243,7 +252,7 @@ mod tests_guns {
         assert_eq!(guns.list.len(), 1);
         assert_eq!(
             guns.list[0],
-            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
+            Arc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
@@ -269,7 +278,7 @@ mod tests_guns {
         assert!(result.is_ok());
         assert_eq!(
             result.unwrap(),
-            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
+            Arc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
@@ -297,7 +306,7 @@ mod tests_guns {
         assert!(result.is_ok());
         assert_eq!(
             result.unwrap(),
-            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
+            Arc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
