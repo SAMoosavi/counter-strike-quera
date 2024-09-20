@@ -210,4 +210,55 @@ mod tests {
         assert_eq!(player.money, 900);
         assert_eq!(player.guns.get(&crate::gun::TypeOfGun::Heavy), Some(&gun));
     }
+
+    #[test]
+    pub fn players_health_set_100_when_call_reset_function() {
+        let mut player = create_player();
+        player.health = 30;
+
+        player.reset();
+        assert_eq!(player.health, 100);
+    }
+
+    #[test]
+    pub fn the_add_kill_func_should_be_return_error_when_player_is_did() {
+        let mut player = create_player();
+        player.health = 0;
+
+        let result = player.add_kill(&crate::gun::TypeOfGun::Knife);
+
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "the p1 is did!");
+    }
+
+    #[test]
+    pub fn the_add_kill_func_should_be_return_error_when_player_does_not_have_this_type_of_gun() {
+        let mut player = create_player();
+
+        let result = player.add_kill(&crate::gun::TypeOfGun::Heavy);
+
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "the p1 does not have Heavy gun!");
+    }
+
+    #[test]
+    pub fn the_add_kill_func_should_be_add_kill_number_and_money() {
+        let mut player = create_player();
+        player.money = 1100;
+        let gun = Rc::new(Gun::new(
+            "heavy gun".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Heavy,
+        ));
+
+        player.buy_gun(gun.clone()).unwrap();
+
+        let result = player.add_kill(&crate::gun::TypeOfGun::Heavy);
+
+        assert!(result.is_ok());
+        assert_eq!(player.kills, 1);
+        assert_eq!(player.money, 1020);
+    }
 }
