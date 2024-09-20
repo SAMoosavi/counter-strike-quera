@@ -66,6 +66,28 @@ impl Player {
         self.guns.insert(gun_type, gun);
         Ok(())
     }
+
+    #[allow(dead_code)]
+    pub fn reset(&mut self) {
+        self.health = 100;
+    }
+
+    #[allow(dead_code)]
+    pub fn add_kill(&mut self, gun_type: &TypeOfGun) -> Result<(), String> {
+        if self.health == 0 {
+            return Err(format!("the {} is did!", self.name));
+        }
+        match self.guns.get(gun_type) {
+            Some(x) => {
+                self.money += x.get_gift();
+                self.kills += 1;
+                return Ok(());
+            },
+            None => {
+                Err(format!("the {} does not have {} gun!", self.name, gun_type))                
+            },
+        } 
+    }
 }
 
 #[cfg(test)]
