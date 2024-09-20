@@ -48,12 +48,12 @@ impl Player {
 
     #[allow(dead_code)]
     pub fn buy_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
-        if self.money < gun.get_gift() {
+        if self.money < gun.get_price() {
             return Err(format!(
                 "{}'s money is {} but need {}",
                 self.name,
                 self.money,
-                gun.get_gift()
+                gun.get_price()
             ));
         }
 
@@ -139,5 +139,75 @@ mod tests {
         assert_eq!(result.unwrap(), 0);
         assert_eq!(player.health, 0);
         assert_eq!(player.killed, 1);
+    }
+
+    #[test]
+    pub fn player_can_not_buy_gun_when_does_not_have_enough_money() {
+        let mut player: Player = create_player();
+        player.money = 10;
+
+        let gun = Rc::new(Gun::new(
+            "new gun".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Heavy,
+        ));
+
+        let result = player.buy_gun(gun);
+
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "p1's money is 10 but need 100");
+    }
+
+    #[test]
+    pub fn player_can_not_buy_gun_when_exist_its_type() {
+        let mut player: Player = create_player();
+        player.money = 1000;
+
+        let heavy_gun_1 = Rc::new(Gun::new(
+            "heavy gun 1".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Heavy,
+        ));
+
+        let heavy_gun_2 = Rc::new(Gun::new(
+            "heavy gun 2".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Heavy,
+        ));
+
+        let result = player.buy_gun(heavy_gun_1);
+
+        assert!(result.is_ok());
+
+        let result = player.buy_gun(heavy_gun_2);
+        assert!(result.is_err());
+
+        assert_eq!(result.unwrap_err(), "the Heavy gun type is exist.");
+    }
+
+    #[test]
+    pub fn player_can_buy_gun_when_does_not_have_its_type_and_enough_money() {
+        let mut player: Player = create_player();
+        player.money = 1000;
+
+        let gun = Rc::new(Gun::new(
+            "heavy gun 1".to_string(),
+            100,
+            10,
+            20,
+            crate::gun::TypeOfGun::Heavy,
+        ));
+
+        let result = player.buy_gun(gun.clone());
+
+        assert!(result.is_ok());
+        assert_eq!(player.money, 900);
+        assert_eq!(player.guns.get(&crate::gun::TypeOfGun::Heavy), Some(&gun));
     }
 }
