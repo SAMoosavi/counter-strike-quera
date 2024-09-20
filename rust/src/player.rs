@@ -1,6 +1,7 @@
 use crate::gun::{Gun, TypeOfGun};
+use crate::setting::Setting;
 use std::collections::HashMap;
-use std::rc::Rc;
+use std::sync::Arc;
 
 #[allow(dead_code)]
 pub struct Player {
@@ -9,23 +10,24 @@ pub struct Player {
     money: i32,
     kills: i32,
     killed: i32,
-    guns: HashMap<TypeOfGun, Rc<Gun>>,
+    guns: HashMap<TypeOfGun, Arc<Gun>>,
 }
 
 impl Player {
     #[allow(dead_code)]
-    pub fn new(knife: Rc<Gun>, name: String) -> Result<Player, ()> {
-        if knife.get_type_of() != TypeOfGun::Knife {
+    pub fn new(name: String) -> Result<Self, ()> {
+        let default_gun = Setting::get_default_gun();
+        if let None =  default_gun {
             return Err(());
         }
 
-        Ok(Player {
+        Ok(Self {
             name,
             health: 100,
             money: 0,
             kills: 0,
             killed: 0,
-            guns: HashMap::from([(TypeOfGun::Knife, knife)]),
+            guns: HashMap::from([(TypeOfGun::Knife, default_gun.unwrap())]),
         })
     }
 
@@ -47,7 +49,7 @@ impl Player {
     }
 
     #[allow(dead_code)]
-    pub fn buy_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
+    pub fn buy_gun(&mut self, gun: Arc<Gun>) -> Result<(), String> {
         if self.money < gun.get_price() {
             return Err(format!(
                 "{}'s money is {} but need {}",
@@ -81,53 +83,37 @@ impl Player {
             Some(x) => {
                 self.money += x.get_gift();
                 self.kills += 1;
-                return Ok(());
-            },
-            None => {
-                Err(format!("the {} does not have {} gun!", self.name, gun_type))                
-            },
-        } 
+                Ok(())
+            }
+            None => Err(format!("the {} does not have {} gun!", self.name, gun_type)),
+        }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::gun::Gun;
-    use std::rc::Rc;
-
+    use std::sync::Arc;
+    use crate::gun::{Gun, TypeOfGun};
+    use crate::setting::Setting;
     use super::Player;
 
-    fn create_knife() -> Rc<Gun> {
-        Rc::new(Gun::new(
-            "knife".to_string(),
-            100,
-            10,
-            20,
-            crate::gun::TypeOfGun::Knife,
-        ))
-    }
 
     fn create_player() -> Player {
-        let knife: Rc<Gun> = create_knife();
-        Player::new(knife, "p1".to_string()).unwrap()
+        let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
+        Setting::set_default_gun(Arc::new(gun)).unwrap();
+        Player::new("p1".to_string()).unwrap()
     }
 
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
-        let knife: Rc<Gun> = Rc::new(Gun::new(
-            "not knife".to_string(),
-            100,
-            10,
-            20,
-            crate::gun::TypeOfGun::Pistol,
-        ));
-        assert!(Player::new(knife, "p1".to_string()).is_err());
+        assert!(Player::new("p1".to_string()).is_err());
     }
 
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
-        let knife: Rc<Gun> = create_knife();
-        assert!(Player::new(knife, "p1".to_string()).is_ok());
+        let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
+        Setting::set_default_gun(Arc::new(gun)).unwrap();
+        assert!(Player::new("p1".to_string()).is_ok());
     }
 
     #[test]
@@ -168,7 +154,7 @@ mod tests {
         let mut player: Player = create_player();
         player.money = 10;
 
-        let gun = Rc::new(Gun::new(
+        let gun = Arc::new(Gun::new(
             "new gun".to_string(),
             100,
             10,
@@ -187,7 +173,7 @@ mod tests {
         let mut player: Player = create_player();
         player.money = 1000;
 
-        let heavy_gun_1 = Rc::new(Gun::new(
+        let heavy_gun_1 = Arc::new(Gun::new(
             "heavy gun 1".to_string(),
             100,
             10,
@@ -195,7 +181,7 @@ mod tests {
             crate::gun::TypeOfGun::Heavy,
         ));
 
-        let heavy_gun_2 = Rc::new(Gun::new(
+        let heavy_gun_2 = Arc::new(Gun::new(
             "heavy gun 2".to_string(),
             100,
             10,
@@ -218,7 +204,7 @@ mod tests {
         let mut player: Player = create_player();
         player.money = 1000;
 
-        let gun = Rc::new(Gun::new(
+        let gun = Arc::new(Gun::new(
             "heavy gun 1".to_string(),
             100,
             10,
@@ -267,7 +253,7 @@ mod tests {
     pub fn the_add_kill_func_should_be_add_kill_number_and_money() {
         let mut player = create_player();
         player.money = 1100;
-        let gun = Rc::new(Gun::new(
+        let gun = Arc::new(Gun::new(
             "heavy gun".to_string(),
             100,
             10,
