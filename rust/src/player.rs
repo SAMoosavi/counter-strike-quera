@@ -1,10 +1,10 @@
 use crate::gun::{Gun, TypeOfGun};
 use crate::setting::Setting;
 use crate::game_time::GameTime;
-use std::collections::HashMap;
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc, cmp::Ordering};
 
 #[allow(dead_code)]
+#[derive(Debug, Eq)]
 pub struct Player {
     name: String,
     health: u32,
@@ -130,6 +130,47 @@ impl Player {
             self.money += money;
         }
     }
+
+    #[allow(dead_code)]
+    pub fn subtract_money(&mut self, money: u32) {
+        if self.money < money {
+            self.money = 0;
+        } else {
+            self.money -= money;
+        }
+    }
+}
+
+impl PartialEq<Self> for Player {
+    fn eq(&self, other: &Self) -> bool {
+        self.kills == other.kills &&
+            self.killed == other.killed &&
+            self.start_time == other.start_time
+    }
+}
+
+impl PartialOrd<Self> for Player {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Player {
+    fn cmp(&self, other: &Self) -> Ordering {
+        if self.kills < other.kills {
+            return Ordering::Less;
+        }
+        if self.kills == other.kills {
+            if self.killed > other.killed
+            {
+                return Ordering::Less;
+            }
+            if self.killed == other.killed {
+                return self.start_time.cmp(&other.start_time).reverse();
+            }
+        }
+        Ordering::Greater
+    }
 }
 
 #[cfg(test)]
@@ -153,7 +194,7 @@ mod tests {
     pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
         Setting::reset();
         let time = GameTime::new(0, 0, 0, 10);
-        assert!(Player::new("p1".to_string(),time).is_err());
+        assert!(Player::new("p1".to_string(), time).is_err());
     }
 
     #[test]
@@ -338,5 +379,38 @@ mod tests {
         player.add_money(1100);
 
         assert_eq!(player.money, 1000);
+    }
+
+    #[test]
+    pub fn the_subtract_money_should_be_set_money_sum_of_current_money_and_subtracted_money_when_the_sum_is_more_than_0() {
+        let mut player = create_player();
+        player.money = 1000;
+
+        player.subtract_money(500);
+
+        assert_eq!(player.money, 500);
+    }
+    #[test]
+    pub fn the_subtract_money_should_be_set_0_when_the_sum_is_less_than_0() {
+        let mut player = create_player();
+        player.money = 100;
+
+        player.subtract_money(1500);
+
+        assert_eq!(player.money, 0);
+    }
+    #[test]
+    pub fn test_cmp() {
+        let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+        let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 0, 20)).unwrap();
+        assert!(p1 > p2);
+        let p3 = Player::new("p3".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+        assert_eq!(p1, p3);
+        let mut p4 = Player::new("p4".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+        p4.kills = 1;
+        assert!(p4 > p1);
+        let mut p5 = Player::new("p4".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+        p5.killed = 1;
+        assert!(p5 < p1);
     }
 }
