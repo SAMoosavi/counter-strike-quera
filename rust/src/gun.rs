@@ -46,9 +46,9 @@ mod tests_of_type_of_gun {
 #[derive(Debug, Clone, Eq)]
 pub struct Gun {
     name: String,
-    price: i32,
-    damage: i32,
-    gift: i32,
+    price: u32,
+    damage: u32,
+    gift: u32,
     type_of: TypeOfGun,
 }
 
@@ -58,17 +58,17 @@ impl Gun {
     }
 
     #[allow(dead_code)]
-    pub fn get_price(&self) -> i32 {
+    pub fn get_price(&self) -> u32 {
         self.price
     }
 
     #[allow(dead_code)]
-    pub fn get_damage(&self) -> i32 {
+    pub fn get_damage(&self) -> u32 {
         self.damage
     }
 
     #[allow(dead_code)]
-    pub fn get_gift(&self) -> i32 {
+    pub fn get_gift(&self) -> u32 {
         self.gift
     }
 
@@ -76,7 +76,7 @@ impl Gun {
         self.type_of.clone()
     }
 
-    pub fn new(name: String, price: i32, damage: i32, gift: i32, type_of: TypeOfGun) -> Gun {
+    pub fn new(name: String, price: u32, damage: u32, gift: u32, type_of: TypeOfGun) -> Gun {
         Gun {
             name,
             price,
@@ -167,9 +167,9 @@ impl Guns {
     pub fn add_gun(
         &mut self,
         name: String,
-        price: i32,
-        damage: i32,
-        gift: i32,
+        price: u32,
+        damage: u32,
+        gift: u32,
         type_of: TypeOfGun,
     ) -> Result<(), &str> {
         if self.list.iter().any(|gun| name == gun.get_name()) {

@@ -6,10 +6,10 @@ use std::sync::Arc;
 #[allow(dead_code)]
 pub struct Player {
     name: String,
-    health: i32,
-    money: i32,
-    kills: i32,
-    killed: i32,
+    health: u32,
+    money: u32,
+    kills: u32,
+    killed: u32,
     guns: HashMap<TypeOfGun, Arc<Gun>>,
 }
 
@@ -20,11 +20,15 @@ impl Player {
         if let None =  default_gun {
             return Err(());
         }
+        let money = Setting::get_default_money_of_player();
+        if money <= 0 {
+            return Err(());
+        }
 
         Ok(Self {
             name,
             health: 100,
-            money: 0,
+            money,
             kills: 0,
             killed: 0,
             guns: HashMap::from([(TypeOfGun::Knife, default_gun.unwrap())]),
@@ -32,18 +36,20 @@ impl Player {
     }
 
     #[allow(dead_code)]
-    pub fn shut(&mut self, health: i32) -> Result<i32, String> {
+    pub fn shut(&mut self, health: u32) -> Result<u32, String> {
         if self.health <= 0 {
             return Err(format!("{} did!", self.name));
         }
-
-        self.health -= health;
-        if self.health <= 0 {
+        
+        if self.health <= health {
             self.killed += 1;
             self.health = 0;
             let knife = self.guns.get(&TypeOfGun::Knife).unwrap().clone();
             self.guns.clear();
             self.guns.insert(TypeOfGun::Knife, knife);
+        }
+        else {
+            self.health -= health;
         }
         Ok(self.health)
     }
@@ -87,6 +93,27 @@ impl Player {
             }
             None => Err(format!("the {} does not have {} gun!", self.name, gun_type)),
         }
+    }
+
+    #[allow(dead_code)]
+    pub fn get_kills(&self) -> u32 {
+        self.kills
+    }
+    #[allow(dead_code)]
+    pub fn get_killed(&self) -> u32 {
+        self.killed
+    }
+    #[allow(dead_code)]
+    pub fn get_health(&self) -> u32 {
+        self.health
+    }
+    #[allow(dead_code)]
+    pub fn get_money(&self) -> u32 {
+        self.money
+    }
+    #[allow(dead_code)]
+    pub fn get_gun_with_type(&self, gun_type: &TypeOfGun) -> Option<&Arc<Gun>> {
+        self.guns.get(gun_type)
     }
 }
 
