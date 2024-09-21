@@ -40,7 +40,7 @@ impl Player {
         if self.health <= 0 {
             return Err(format!("{} did!", self.name));
         }
-        
+
         if self.health <= health {
             self.killed += 1;
             self.health = 0;
@@ -128,6 +128,7 @@ mod tests {
     fn create_player() -> Player {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
         Setting::set_default_gun(Arc::new(gun)).unwrap();
+        Setting::set_default_money_of_player(1000).unwrap();
         Player::new("p1".to_string()).unwrap()
     }
 
@@ -141,6 +142,7 @@ mod tests {
     pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
         Setting::set_default_gun(Arc::new(gun)).unwrap();
+        Setting::set_default_money_of_player(1000).unwrap();
         assert!(Player::new("p1".to_string()).is_ok());
     }
 
