@@ -17,7 +17,7 @@ impl Player {
     #[allow(dead_code)]
     pub fn new(name: String) -> Result<Self, ()> {
         let default_gun = Setting::get_default_gun();
-        if let None =  default_gun {
+        if let None = default_gun {
             return Err(());
         }
         let money = Setting::get_default_money_of_player();
@@ -47,8 +47,7 @@ impl Player {
             let knife = self.guns.get(&TypeOfGun::Knife).unwrap().clone();
             self.guns.clear();
             self.guns.insert(TypeOfGun::Knife, knife);
-        }
-        else {
+        } else {
             self.health -= health;
         }
         Ok(self.health)
@@ -114,6 +113,19 @@ impl Player {
     #[allow(dead_code)]
     pub fn get_gun_with_type(&self, gun_type: &TypeOfGun) -> Option<&Arc<Gun>> {
         self.guns.get(gun_type)
+    }
+
+    #[allow(dead_code)]
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+    #[allow(dead_code)]
+    pub fn add_money(&mut self, money: u32) -> () {
+        if self.money + money > Setting::get_max_money_of_player() {
+            self.money = Setting::get_max_money_of_player();
+        } else {
+            self.money += money;
+        }
     }
 }
 
@@ -298,5 +310,26 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(player.kills, 1);
         assert_eq!(player.money, 1020);
+    }
+
+    #[test]
+    pub fn the_add_money_should_be_set_money_sum_of_current_money_and_added_money_when_the_sum_is_less_than_max_money_of_player() {
+        let mut player = create_player();
+        player.money = 100;
+        Setting::set_max_money_of_player(1000).unwrap();
+
+        player.add_money(200);
+
+        assert_eq!(player.money, 300);
+    }
+    #[test]
+    pub fn the_add_money_should_be_set_max_money_when_the_sum_is_more_than_max_money_of_player() {
+        let mut player = create_player();
+        player.money = 100;
+        Setting::set_max_money_of_player(1000).unwrap();
+
+        player.add_money(1100);
+
+        assert_eq!(player.money, 1000);
     }
 }
