@@ -31,6 +31,7 @@ impl SettingData {
     }
 
 
+    #[allow(dead_code)]
     pub fn set_max_money_of_player(&mut self, max_money_of_player: u32) -> Result<(), String> {
         if max_money_of_player <= 0 {
             return Err("the max money of player should be greater than 0.".to_string());
@@ -39,6 +40,7 @@ impl SettingData {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn set_default_money_of_player(&mut self, default_money_of_player: u32) -> Result<(), String> {
         if default_money_of_player <= 0 {
             return Err("the default money of player should be greater than 0.".to_string());
@@ -47,6 +49,7 @@ impl SettingData {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn set_default_gun(&mut self, gun: Arc<Gun>) -> Result<(), String> {
         if gun.get_type_of() != TypeOfGun::Knife {
             return Err("the default gun should be knife type.".to_string());
@@ -122,17 +125,21 @@ impl Setting {
         static SETTING: OnceLock<Mutex<SettingData>> = OnceLock::new();
         SETTING.get_or_init(|| Mutex::new(SettingData::default()))
     }
+    #[allow(dead_code)]
     pub fn get_max_money_of_player() -> u32 {
         Self::get_setting().lock().unwrap().max_money_of_player
     }
 
+    #[allow(dead_code)]
     pub fn set_max_money_of_player(max_money_of_player: u32) -> Result<(), String> {
         let mut setting = Self::get_setting().lock().unwrap();
         setting.set_max_money_of_player(max_money_of_player)
     }
+    #[allow(dead_code)]
     pub fn get_default_money_of_player() -> u32 {
         Self::get_setting().lock().unwrap().default_money_of_player
     }
+    #[allow(dead_code)]
     pub fn set_default_money_of_player(default_money_of_player: u32) -> Result<(), String> {
         let mut setting = Self::get_setting().lock().unwrap();
         setting.set_default_money_of_player(default_money_of_player)
@@ -141,6 +148,7 @@ impl Setting {
         Self::get_setting().lock().unwrap().default_gun.clone()
     }
 
+    #[allow(dead_code)]
     pub fn set_default_gun(gun: Arc<Gun>) -> Result<(), String> {
         let mut setting = Self::get_setting().lock().unwrap();
         setting.set_default_gun(gun)
