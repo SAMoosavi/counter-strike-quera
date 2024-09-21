@@ -1,5 +1,6 @@
 use crate::gun::{Gun, TypeOfGun};
 use crate::setting::Setting;
+use crate::game_time::GameTime;
 use std::collections::HashMap;
 use std::sync::Arc;
 
@@ -11,11 +12,12 @@ pub struct Player {
     kills: u32,
     killed: u32,
     guns: HashMap<TypeOfGun, Arc<Gun>>,
+    start_time: GameTime,
 }
 
 impl Player {
     #[allow(dead_code)]
-    pub fn new(name: String) -> Result<Self, ()> {
+    pub fn new(name: String, time: GameTime) -> Result<Self, ()> {
         let default_gun = Setting::get_default_gun();
         if let None = default_gun {
             return Err(());
@@ -32,6 +34,7 @@ impl Player {
             kills: 0,
             killed: 0,
             guns: HashMap::from([(TypeOfGun::Knife, default_gun.unwrap())]),
+            start_time: time,
         })
     }
 
@@ -134,6 +137,7 @@ mod tests {
     use std::sync::Arc;
     use crate::gun::{Gun, TypeOfGun};
     use crate::setting::Setting;
+    use crate::game_time::GameTime;
     use super::Player;
 
 
@@ -141,13 +145,15 @@ mod tests {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
         Setting::set_default_gun(Arc::new(gun)).unwrap();
         Setting::set_default_money_of_player(1000).unwrap();
-        Player::new("p1".to_string()).unwrap()
+        let time = GameTime::new(0, 0, 0, 10);
+        Player::new("p1".to_string(), time).unwrap()
     }
 
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
         Setting::reset();
-        assert!(Player::new("p1".to_string()).is_err());
+        let time = GameTime::new(0, 0, 0, 10);
+        assert!(Player::new("p1".to_string(),time).is_err());
     }
 
     #[test]
@@ -155,7 +161,8 @@ mod tests {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
         Setting::set_default_gun(Arc::new(gun)).unwrap();
         Setting::set_default_money_of_player(1000).unwrap();
-        assert!(Player::new("p1".to_string()).is_ok());
+        let time = GameTime::new(0, 0, 0, 10);
+        assert!(Player::new("p1".to_string(), time).is_ok());
     }
 
     #[test]
