@@ -1,4 +1,5 @@
 use std::sync::Arc;
+use crate::game_time::GameTime;
 use crate::gun::Guns;
 use crate::player::Player;
 
@@ -14,12 +15,19 @@ impl Team {
             guns: Guns::new(),
         }
     }
+
+    pub fn add_player(&mut self, name: &str, time: &GameTime) -> Result<(), String> {
+        Ok(())
+    }
 }
 
 
 #[cfg(test)]
 mod tests {
+    use crate::game_time::GameTime;
     use crate::gun::Guns;
+    use crate::player::Player;
+    use crate::setting::Setting;
     use super::Team;
     #[test]
     pub fn test_default() {
@@ -27,5 +35,64 @@ mod tests {
         assert_eq!(team.guns, Guns::new());
         assert_eq!(team.players, vec!());
     }
-    
+
+    #[test]
+    pub fn test_add_player_should_be_return_error_when_does_not_set_max_number_of_players_in_setting() {
+        Setting::reset();
+        let mut team = Team::default();
+        let time = GameTime::new(0, 0, 0, 1);
+
+        let result = team.add_player("Player", &time);
+
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "the maximum number of players doesn't set!");
+        Setting::reset();
+    }
+
+    #[test]
+    pub fn test_add_player_should_be_return_error_when_team_is_full() {
+        Setting::reset();
+        let mut team = Team::default();
+        let time = GameTime::new(0, 0, 0, 1);
+        Setting::set_max_money_of_player(1).unwrap();
+        team.add_player("Player 1", &time).unwrap();
+
+        let result = team.add_player("Player 2", &time);
+
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "the team is full!");
+        Setting::reset();
+    }
+
+    #[test]
+    pub fn test_add_player_should_be_return_error_when_player_exists_with_same_name() {
+        Setting::reset();
+        let mut team = Team::default();
+        let time = GameTime::new(0, 0, 0, 1);
+        let name = "Player";
+        Setting::set_max_money_of_player(2).unwrap();
+        team.add_player(name, &time).unwrap();
+
+        let result = team.add_player(name, &time);
+
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), format!("player exist with same name: {}", name));
+        Setting::reset();
+    }
+
+    #[test]
+    pub fn test_add_player_added_to_least_of_players() {
+        Setting::reset();
+        let mut team = Team::default();
+        Setting::set_max_money_of_player(2).unwrap();
+        let name = "Player";
+        let time = GameTime::new(0, 0, 0, 1);
+
+        let result = team.add_player(name, &time);
+
+        assert!(result.is_ok());
+        assert_eq!(team.players.len(), 1);
+        assert_eq!(*team.players[0], Player::new(name.to_string(), time).unwrap());
+        Setting::reset();
+    }
 }
