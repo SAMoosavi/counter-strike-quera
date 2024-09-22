@@ -153,6 +153,7 @@ mod tests_gun {
 }
 
 #[allow(dead_code)]
+#[derive(PartialEq, Eq, Debug)]
 pub struct Guns {
     list: Vec<Arc<Gun>>,
 }
