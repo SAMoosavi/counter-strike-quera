@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use crate::game_time::GameTime;
 use crate::gun::Guns;
-use crate::player::Player;
+use crate::player::{self, Player};
 use crate::setting::Setting;
 
 pub struct Team {
@@ -26,6 +26,10 @@ impl Team {
             return Err("the team is full!".to_string());
         }
         
+        if self.players.iter().any(|player| player.get_name() == name) {
+            return Err(format!("player exist with same name: {}", name));
+        }
+
         let player = Player::new(name.to_string(), time.clone())?;
         Ok(self.players.push(Arc::new(player)))
     }
