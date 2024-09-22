@@ -17,14 +17,14 @@ pub struct Player {
 
 impl Player {
     #[allow(dead_code)]
-    pub fn new(name: String, time: GameTime) -> Result<Self, ()> {
+    pub fn new(name: String, time: GameTime) -> Result<Self, String> {
         let default_gun = Setting::get_default_gun();
         if let None = default_gun {
-            return Err(());
+            return Err("the default gun doesn't set!".to_string());
         }
         let money = Setting::get_default_money_of_player();
         if money <= 0 {
-            return Err(());
+            return Err("the default money doesn't set!".to_string());
         }
 
         Ok(Self {
