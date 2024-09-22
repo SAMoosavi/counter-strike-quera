@@ -7,16 +7,18 @@ struct SettingData {
     max_money_of_player: u32,
     default_money_of_player: u32,
     default_gun: Option<Arc<Gun>>,
+    max_number_of_team_players: u32,
 }
 
 impl fmt::Display for SettingData {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}}}",
+            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}}}",
             self.max_money_of_player,
             self.default_money_of_player,
-            self.default_gun
+            self.default_gun,
+            self.max_number_of_team_players
         )
     }
 }
@@ -27,6 +29,7 @@ impl SettingData {
             max_money_of_player: 0,
             default_money_of_player: 0,
             default_gun: None,
+            max_number_of_team_players: 0,
         }
     }
 
@@ -58,6 +61,17 @@ impl SettingData {
         Ok(())
     }
 
+    #[allow(dead_code)]
+    pub fn set_max_number_of_team_players(&mut self, max_number_of_team_players: u32) -> Result<(), String> {
+        if max_number_of_team_players == 0 {
+            return Err("the max_number_of_team_players should be positive!".to_string());
+        }
+        Ok(self.max_number_of_team_players = max_number_of_team_players)
+    }
+    #[allow(dead_code)]
+    pub fn get_max_number_of_team_players(&self) -> u32 {
+        self.max_number_of_team_players
+    }
     #[cfg(test)]
     pub fn reset(&mut self) {
         self.max_money_of_player = 0;
@@ -154,6 +168,18 @@ impl Setting {
         setting.set_default_gun(gun)
     }
 
+    #[allow(dead_code)]
+    pub fn set_max_number_of_team_players(max_number_of_team_players: u32) -> Result<(), String> {
+        let mut setting = Self::get_setting().lock().unwrap();
+        setting.set_max_number_of_team_players(max_number_of_team_players)
+    }
+
+    #[allow(dead_code)]
+    pub fn get_max_number_of_team_players() -> u32 {
+        let setting = Self::get_setting().lock().unwrap();
+        setting.get_max_number_of_team_players()
+    }
+
     #[cfg(test)]
     pub fn reset() {
         Self::get_setting().lock().unwrap().reset();
@@ -228,7 +254,7 @@ mod tests_setting {
     pub fn test_setting_display() {
         Setting::reset();
         let setting = Setting::get_setting();
-        assert_eq!(format!("{}", setting.lock().unwrap()), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None}");
+        assert_eq!(format!("{}", setting.lock().unwrap()), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0}");
         Setting::reset();
     }
 }
