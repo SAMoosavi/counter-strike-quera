@@ -200,10 +200,10 @@ impl Guns {
     }
 
     #[allow(dead_code)]
-    pub fn get_gun(&self, name: &str) -> Result<Arc<Gun>, ()> {
+    pub fn get_gun(&self, name: &str) -> Result<Arc<Gun>, String> {
         match self.list.iter().position(|gun| gun.get_name() == name) {
             Some(index) => Ok(self.list[index].clone()),
-            None => Err(()),
+            None => Err(format!("the gun with name {} does not exist!", name)),
         }
     }
 
