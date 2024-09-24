@@ -1,6 +1,7 @@
 use super::Setting;
 use crate::gun::{Gun, TypeOfGun};
-use std::sync::Arc;
+use std::rc::Rc;
+
 #[test]
 pub fn test_get_and_set_max_money_of_player() {
     Setting::reset();
@@ -31,7 +32,7 @@ pub fn test_set_default_money_of_player_fail() {
 }
 #[test]
 pub fn test_get_and_set_default_gun() {
-    let gun = Arc::new(Gun::new(
+    let gun = Rc::new(Gun::new(
         "knife".to_string(),
         100,
         20,
@@ -45,7 +46,7 @@ pub fn test_get_and_set_default_gun() {
 }
 #[test]
 pub fn test_set_default_gun_fail() {
-    let gun = Arc::new(Gun::new(
+    let gun = Rc::new(Gun::new(
         "not knife".to_string(),
         100,
         20,
@@ -61,15 +62,15 @@ pub fn test_set_default_gun_fail() {
 pub fn test_get_setting() {
     Setting::reset();
     let setting = Setting::get_setting();
-    assert_eq!(setting.lock().unwrap().max_money_of_player, 0);
-    assert_eq!(setting.lock().unwrap().default_money_of_player, 0);
-    assert_eq!(setting.lock().unwrap().default_gun, None);
+    assert_eq!(setting.max_money_of_player, 0);
+    assert_eq!(setting.default_money_of_player, 0);
+    assert_eq!(setting.default_gun, None);
     Setting::reset();
 }
 #[test]
 pub fn test_setting_display() {
     Setting::reset();
     let setting = Setting::get_setting();
-    assert_eq!(format!("{}", setting.lock().unwrap()), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0}");
+    assert_eq!(format!("{}", setting), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0}");
     Setting::reset();
 }

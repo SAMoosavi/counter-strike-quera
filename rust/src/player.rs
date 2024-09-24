@@ -1,7 +1,7 @@
 use crate::gun::{Gun, TypeOfGun};
 use crate::setting::Setting;
 use crate::game_time::GameTime;
-use std::{collections::HashMap, sync::Arc, cmp::Ordering};
+use std::{collections::HashMap, rc::Rc, cmp::Ordering};
 
 #[allow(dead_code)]
 #[derive(Debug, Eq)]
@@ -11,7 +11,7 @@ pub struct Player {
     money: u32,
     kills: u32,
     killed: u32,
-    guns: HashMap<TypeOfGun, Arc<Gun>>,
+    guns: HashMap<TypeOfGun, Rc<Gun>>,
     start_time: GameTime,
 }
 
@@ -57,7 +57,7 @@ impl Player {
     }
 
     #[allow(dead_code)]
-    pub fn buy_gun(&mut self, gun: Arc<Gun>) -> Result<(), String> {
+    pub fn buy_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
         if self.money < gun.get_price() {
             return Err(format!(
                 "{}'s money is {} but need {}",
@@ -114,7 +114,7 @@ impl Player {
         self.money
     }
     #[allow(dead_code)]
-    pub fn get_gun_with_type(&self, gun_type: &TypeOfGun) -> Option<&Arc<Gun>> {
+    pub fn get_gun_with_type(&self, gun_type: &TypeOfGun) -> Option<&Rc<Gun>> {
         self.guns.get(gun_type)
     }
 
@@ -175,7 +175,7 @@ impl Ord for Player {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
+    use std::rc::Rc;
     use crate::gun::{Gun, TypeOfGun};
     use crate::setting::Setting;
     use crate::game_time::GameTime;
@@ -184,7 +184,7 @@ mod tests {
 
     fn create_player() -> Player {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-        Setting::set_default_gun(Arc::new(gun)).unwrap();
+        Setting::set_default_gun(Rc::new(gun)).unwrap();
         Setting::set_default_money_of_player(1000).unwrap();
         let time = GameTime::new(0, 0, 0, 10);
         Player::new("p1".to_string(), time).unwrap()
@@ -200,7 +200,7 @@ mod tests {
     #[test]
     pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-        Setting::set_default_gun(Arc::new(gun)).unwrap();
+        Setting::set_default_gun(Rc::new(gun)).unwrap();
         Setting::set_default_money_of_player(1000).unwrap();
         let time = GameTime::new(0, 0, 0, 10);
         assert!(Player::new("p1".to_string(), time).is_ok());
@@ -244,7 +244,7 @@ mod tests {
         let mut player: Player = create_player();
         player.money = 10;
 
-        let gun = Arc::new(Gun::new(
+        let gun = Rc::new(Gun::new(
             "new gun".to_string(),
             100,
             10,
@@ -263,7 +263,7 @@ mod tests {
         let mut player: Player = create_player();
         player.money = 1000;
 
-        let heavy_gun_1 = Arc::new(Gun::new(
+        let heavy_gun_1 = Rc::new(Gun::new(
             "heavy gun 1".to_string(),
             100,
             10,
@@ -271,7 +271,7 @@ mod tests {
             crate::gun::TypeOfGun::Heavy,
         ));
 
-        let heavy_gun_2 = Arc::new(Gun::new(
+        let heavy_gun_2 = Rc::new(Gun::new(
             "heavy gun 2".to_string(),
             100,
             10,
@@ -294,7 +294,7 @@ mod tests {
         let mut player: Player = create_player();
         player.money = 1000;
 
-        let gun = Arc::new(Gun::new(
+        let gun = Rc::new(Gun::new(
             "heavy gun 1".to_string(),
             100,
             10,
@@ -343,7 +343,7 @@ mod tests {
     pub fn the_add_kill_func_should_be_add_kill_number_and_money() {
         let mut player = create_player();
         player.money = 1100;
-        let gun = Arc::new(Gun::new(
+        let gun = Rc::new(Gun::new(
             "heavy gun".to_string(),
             100,
             10,

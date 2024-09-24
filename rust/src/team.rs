@@ -2,10 +2,10 @@ use crate::game_time::GameTime;
 use crate::gun::Guns;
 use crate::player::Player;
 use crate::setting::Setting;
-use std::sync::Arc;
+use std::rc::Rc;
 
 pub struct Team {
-    players: Vec<Arc<Player>>,
+    players: Vec<Rc<Player>>,
     guns: Box<Guns>,
 }
 
@@ -31,10 +31,10 @@ impl Team {
         }
 
         let player = Player::new(name.to_string(), time.clone())?;
-        Ok(self.players.push(Arc::new(player)))
+        Ok(self.players.push(Rc::new(player)))
     }
 
-    pub fn get_player(&self, name: &str) -> Option<Arc<Player>> {
+    pub fn get_player(&self, name: &str) -> Option<Rc<Player>> {
         match self.players.iter().find(|player| player.get_name() == name) {
             Some(player) => Some(player.clone()),
             None => None,
@@ -76,7 +76,7 @@ impl Team {
         self.guns = guns
     }
 
-    pub fn get_players(&self) -> &Vec<Arc<Player>> {
+    pub fn get_players(&self) -> &Vec<Rc<Player>> {
         &self.players
     }
 
@@ -101,7 +101,7 @@ impl Team {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
+    use std::rc::Rc;
 
     use super::Team;
     use crate::game_time::GameTime;
@@ -111,7 +111,7 @@ mod tests {
 
     fn fill_setting_for_create_player() {
         let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-        Setting::set_default_gun(Arc::new(gun)).unwrap();
+        Setting::set_default_gun(Rc::new(gun)).unwrap();
         Setting::set_default_money_of_player(1000).unwrap();
     }
 

@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -155,7 +155,7 @@ mod tests_gun {
 #[allow(dead_code)]
 #[derive(PartialEq, Eq, Debug)]
 pub struct Guns {
-    list: Vec<Arc<Gun>>,
+    list: Vec<Rc<Gun>>,
 }
 
 impl Guns {
@@ -185,12 +185,12 @@ impl Guns {
         }
 
         self.list
-            .push(Arc::new(Gun::new(name, price, damage, gift, type_of)));
+            .push(Rc::new(Gun::new(name, price, damage, gift, type_of)));
         Ok(())
     }
 
     #[allow(dead_code)]
-    pub fn get_knife(&self) -> Result<Arc<Gun>, ()> {
+    pub fn get_knife(&self) -> Result<Rc<Gun>, ()> {
         for gun in &self.list {
             if gun.get_type_of() == TypeOfGun::Knife {
                 return Ok(gun.clone());
@@ -200,7 +200,7 @@ impl Guns {
     }
 
     #[allow(dead_code)]
-    pub fn get_gun(&self, name: &str) -> Result<Arc<Gun>, String> {
+    pub fn get_gun(&self, name: &str) -> Result<Rc<Gun>, String> {
         match self.list.iter().position(|gun| gun.get_name() == name) {
             Some(index) => Ok(self.list[index].clone()),
             None => Err(format!("the gun with name {} does not exist!", name)),
@@ -208,7 +208,7 @@ impl Guns {
     }
 
     #[allow(dead_code)]
-    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Arc<Gun>>, ()> {
+    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, ()> {
         if type_of_gun == TypeOfGun::Knife {
             return Err(());
         }
@@ -223,7 +223,7 @@ impl Guns {
 
 #[cfg(test)]
 mod tests_guns {
-    use std::sync::Arc;
+    use std::rc::Rc;
     use super::{Guns, TypeOfGun};
     use crate::gun::Gun;
 
@@ -253,7 +253,7 @@ mod tests_guns {
         assert_eq!(guns.list.len(), 1);
         assert_eq!(
             guns.list[0],
-            Arc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
+            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
@@ -279,7 +279,7 @@ mod tests_guns {
         assert!(result.is_ok());
         assert_eq!(
             result.unwrap(),
-            Arc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
+            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 
@@ -307,7 +307,7 @@ mod tests_guns {
         assert!(result.is_ok());
         assert_eq!(
             result.unwrap(),
-            Arc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
+            Rc::new(Gun::new(name.to_string(), price, damage, gift, type_of))
         );
     }
 

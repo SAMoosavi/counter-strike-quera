@@ -1,14 +1,11 @@
 use crate::gun::{Gun, TypeOfGun};
-use std::{
-    fmt,
-    sync::{Arc, Mutex, OnceLock},
-};
+use std::{cell::RefCell, fmt, rc::Rc};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 struct SettingData {
     max_money_of_player: u32,
     default_money_of_player: u32,
-    default_gun: Option<Arc<Gun>>,
+    default_gun: Option<Rc<Gun>>,
     max_number_of_team_players: u32,
     won_team_money: u32,
     lose_team_money: u32,
@@ -54,14 +51,14 @@ impl SettingData {
 
 pub struct Setting {}
 
+thread_local! {
+    static SETTING: RefCell<SettingData> = RefCell::new(SettingData::default());
+}
+
 impl Setting {
-    fn get_setting() -> &'static Mutex<SettingData> {
-        static SETTING: OnceLock<Mutex<SettingData>> = OnceLock::new();
-        SETTING.get_or_init(|| Mutex::new(SettingData::default()))
-    }
     #[allow(dead_code)]
     pub fn get_max_money_of_player() -> u32 {
-        Self::get_setting().lock().unwrap().max_money_of_player
+        SETTING.take().max_money_of_player
     }
 
     #[allow(dead_code)]
@@ -69,32 +66,33 @@ impl Setting {
         if max_money_of_player <= 0 {
             return Err("the max money of player should be greater than 0.".to_string());
         }
-        Ok(Self::get_setting().lock().unwrap().max_money_of_player = max_money_of_player)
+        SETTING.with_borrow_mut(|x| x.max_money_of_player = max_money_of_player);
+        Ok(())
     }
 
     #[allow(dead_code)]
     pub fn get_default_money_of_player() -> u32 {
-        Self::get_setting().lock().unwrap().default_money_of_player
+        SETTING.take().default_money_of_player
     }
     #[allow(dead_code)]
     pub fn set_default_money_of_player(default_money_of_player: u32) -> Result<(), String> {
         if default_money_of_player <= 0 {
             return Err("the default money of player should be greater than 0.".to_string());
         }
-
-        Ok(Self::get_setting().lock().unwrap().default_money_of_player = default_money_of_player)
+        SETTING.with_borrow_mut(|x| x.default_money_of_player = default_money_of_player);
+        Ok(())
     }
-    pub fn get_default_gun() -> Option<Arc<Gun>> {
-        Self::get_setting().lock().unwrap().default_gun.clone()
+
+    pub fn get_default_gun() -> Option<Rc<Gun>> {
+        SETTING.take().default_gun
     }
 
     #[allow(dead_code)]
-    pub fn set_default_gun(gun: Arc<Gun>) -> Result<(), String> {
-        if gun.get_type_of() != TypeOfGun::Knife {
-            return Err("the default gun should be knife type.".to_string());
+    pub fn set_default_gun(gun: Rc<Gun>) -> Result<(), String> {
+        match gun.get_type_of() {
+            TypeOfGun::Knife => Ok(SETTING.with_borrow_mut(|x| x.default_gun = Some(gun))),
+            _ => Err("the default gun should be knife type.".to_string()),
         }
-
-        Ok(Self::get_setting().lock().unwrap().default_gun = Some(gun))
     }
 
     #[allow(dead_code)]
@@ -102,18 +100,13 @@ impl Setting {
         if max_number_of_team_players == 0 {
             return Err("the max_number_of_team_players should be positive!".to_string());
         }
-        Ok(Self::get_setting()
-            .lock()
-            .unwrap()
-            .max_number_of_team_players = max_number_of_team_players)
+        SETTING.with_borrow_mut(|x| x.max_number_of_team_players = max_number_of_team_players);
+        Ok(())
     }
 
     #[allow(dead_code)]
     pub fn get_max_number_of_team_players() -> u32 {
-        Self::get_setting()
-            .lock()
-            .unwrap()
-            .max_number_of_team_players
+        SETTING.take().max_number_of_team_players
     }
 
     #[allow(dead_code)]
@@ -121,12 +114,13 @@ impl Setting {
         if won_team_money == 0 {
             return Err("the won_team_money should be positive!".to_string());
         }
-        Ok(Self::get_setting().lock().unwrap().won_team_money = won_team_money)
+        SETTING.with_borrow_mut(|x| x.won_team_money = won_team_money);
+        Ok(())
     }
 
     #[allow(dead_code)]
     pub fn get_won_team_money() -> u32 {
-        Self::get_setting().lock().unwrap().won_team_money
+        SETTING.take().won_team_money
     }
 
     #[allow(dead_code)]
@@ -134,23 +128,30 @@ impl Setting {
         if lose_team_money == 0 {
             return Err("the lose_team_money should be positive!".to_string());
         }
-        Ok(Self::get_setting().lock().unwrap().lose_team_money = lose_team_money)
+        SETTING.with_borrow_mut(|x| x.lose_team_money = lose_team_money);
+        Ok(())
     }
 
     #[allow(dead_code)]
     pub fn get_lose_team_money() -> u32 {
-        Self::get_setting().lock().unwrap().lose_team_money
+        SETTING.take().lose_team_money
+    }
+}
+
+#[cfg(test)]
+impl Setting {
+    pub fn reset() {
+        SETTING.with_borrow_mut(|x| x.reset());
     }
 
-    #[cfg(test)]
-    pub fn reset() {
-        Self::get_setting().lock().unwrap().reset();
+    pub fn get_setting() -> SettingData {
+        SETTING.take()
     }
 }
 
 impl fmt::Display for Setting {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:}", Self::get_setting().lock().unwrap())
+        write!(f, "{:}", SETTING.take())
     }
 }
 
