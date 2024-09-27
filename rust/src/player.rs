@@ -401,6 +401,11 @@ mod tests {
     }
     #[test]
     pub fn test_cmp() {
+        let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
+        Setting::set_default_money_of_player(1000).unwrap();
+        Setting::set_default_gun(Rc::new(gun)).unwrap();
+
+
         let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
         let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 0, 20)).unwrap();
         assert!(p1 > p2);

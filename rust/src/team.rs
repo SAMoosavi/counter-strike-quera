@@ -42,12 +42,14 @@ impl Team {
     }
 
     pub fn reset(&mut self) {
-        for player in &mut self.players {
-            player.reset();
-        }
+        self.players.iter_mut()
+            .for_each(|player| {
+                let player = Rc::get_mut(player);
+                player.unwrap().reset();
+            });
     }
 
-    pub fn does_live_palyer_exist(&self) -> bool {
+    pub fn does_live_player_exist(&self) -> bool {
         self.players.iter().any(|player| player.get_health() > 0)
     }
 
@@ -59,19 +61,20 @@ impl Team {
     }
 
     pub fn won(&mut self) {
-        let won_team_money = Setting::get_won_team_money();
-        self.players.iter_mut().for_each(|player| {
-            player.add_money(won_team_money);
-        });
+        self.add_money(Setting::get_won_team_money());
     }
 
     pub fn lose(&mut self) {
-        let lose_team_money = Setting::get_lose_team_money();
-        self.players.iter_mut().for_each(|player| {
-            player.add_money(lose_team_money);
-        });
+        self.add_money(Setting::get_lose_team_money());
     }
 
+    fn add_money(&mut self, money: u32) {
+        self.players.iter_mut()
+            .for_each(|player| {
+                let player = Rc::get_mut(player);
+                player.unwrap().add_money(money);
+            });
+    }
     pub fn fill_gun(&mut self, guns: Box<Guns>) {
         self.guns = guns
     }
@@ -92,7 +95,8 @@ impl Team {
         {
             Some(player) => {
                 let gun = self.guns.get_gun(gun_name)?;
-                player.buy_gun(gun)
+                let player = Rc::get_mut(player);
+                player.unwrap().buy_gun(gun)
             }
             None => Err(format!("player with name {} does not find!", gun_name)),
         }
@@ -123,8 +127,7 @@ mod tests {
     }
 
     #[test]
-    pub fn test_add_player_should_be_return_error_when_does_not_set_max_number_of_players_in_setting(
-    ) {
+    pub fn test_add_player_should_be_return_error_when_does_not_set_max_number_of_players_in_setting() {
         Setting::reset();
         fill_setting_for_create_player();
         let mut team = Team::default();
