@@ -14,7 +14,7 @@ fn fill_setting_for_create_player() {
 
 #[test]
 pub fn test_default() {
-    let team = Team::default();
+    let team = Team::new("team".to_string());
     assert_eq!(team.guns, Box::new(Guns::new()));
     assert_eq!(team.players, vec!());
 }
@@ -23,7 +23,7 @@ pub fn test_default() {
 pub fn test_add_player_should_be_return_error_when_does_not_set_max_number_of_players_in_setting() {
     Setting::reset();
     fill_setting_for_create_player();
-    let mut team = Team::default();
+    let mut team = Team::new("team".to_string());
     let time = GameTime::new(0, 0, 0, 1);
 
     let result = team.add_player("Player", &time);
@@ -40,7 +40,7 @@ pub fn test_add_player_should_be_return_error_when_does_not_set_max_number_of_pl
 pub fn test_add_player_should_be_return_error_when_team_is_full() {
     Setting::reset();
     fill_setting_for_create_player();
-    let mut team = Team::default();
+    let mut team = Team::new("team".to_string());
     let time = GameTime::new(0, 0, 0, 1);
     Setting::set_max_money_of_player(1).unwrap();
     team.add_player("Player 1", &time).unwrap();
@@ -56,7 +56,7 @@ pub fn test_add_player_should_be_return_error_when_team_is_full() {
 pub fn test_add_player_should_be_return_error_when_player_exists_with_same_name() {
     Setting::reset();
     fill_setting_for_create_player();
-    let mut team = Team::default();
+    let mut team = Team::new("team".to_string());
     let time = GameTime::new(0, 0, 0, 1);
     let name = "Player";
     Setting::set_max_money_of_player(2).unwrap();
@@ -76,7 +76,7 @@ pub fn test_add_player_should_be_return_error_when_player_exists_with_same_name(
 pub fn test_add_player_added_to_least_of_players() {
     Setting::reset();
     fill_setting_for_create_player();
-    let mut team = Team::default();
+    let mut team = Team::new("team".to_string());
     Setting::set_max_money_of_player(2).unwrap();
     let name = "Player";
     let time = GameTime::new(0, 0, 0, 1);
@@ -86,7 +86,7 @@ pub fn test_add_player_added_to_least_of_players() {
     assert!(result.is_ok());
     assert_eq!(team.players.len(), 1);
     assert_eq!(
-        *team.players[0],
+        *team.players[0].borrow(),
         Player::new(name.to_string(), time).unwrap()
     );
     Setting::reset();

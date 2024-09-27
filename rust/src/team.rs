@@ -2,13 +2,14 @@ use crate::game_time::GameTime;
 use crate::gun::Guns;
 use crate::player::Player;
 use crate::setting::Setting;
+use std::cell::RefCell;
 use std::rc::Rc;
 
 #[cfg(test)]
 mod test;
 
 pub struct Team {
-    players: Vec<Rc<Player>>,
+    players: Vec<Rc<RefCell<Player>>>,
     guns: Box<Guns>,
     name : String,
 }
@@ -31,16 +32,16 @@ impl Team {
             return Err("the team is full!".to_string());
         }
 
-        if self.players.iter().any(|player| player.get_name() == name) {
+        if self.players.iter().any(|player| player.borrow().get_name() == name) {
             return Err(format!("player exist with same name: {}", name));
         }
 
         let player = Player::new(name.to_string(), time.clone())?;
-        Ok(self.players.push(Rc::new(player)))
+        Ok(self.players.push(Rc::new(RefCell::new(player))))
     }
 
-    pub fn get_player(&self, name: &str) -> Option<Rc<Player>> {
-        match self.players.iter().find(|player| player.get_name() == name) {
+    pub fn get_player(&self, name: &str) -> Option<Rc<RefCell<Player>>> {
+        match self.players.iter().find(|player| player.borrow().get_name() == name) {
             Some(player) => Some(player.clone()),
             None => None,
         }
@@ -48,19 +49,18 @@ impl Team {
 
     pub fn reset(&mut self) {
         self.players.iter_mut().for_each(|player| {
-            let player = Rc::get_mut(player);
-            player.unwrap().reset();
+            player.borrow_mut().reset();
         });
     }
 
     pub fn does_live_player_exist(&self) -> bool {
-        self.players.iter().any(|player| player.get_health() > 0)
+        self.players.iter().any(|player| player.borrow().get_health() > 0)
     }
 
     pub fn number_of_live_player(&self) -> usize {
         self.players
             .iter()
-            .filter(|player| player.get_health() > 0)
+            .filter(|player| player.borrow().get_health() > 0)
             .count()
     }
 
@@ -74,15 +74,14 @@ impl Team {
 
     fn add_money(&mut self, money: u32) {
         self.players.iter_mut().for_each(|player| {
-            let player = Rc::get_mut(player);
-            player.unwrap().add_money(money);
+            player.borrow_mut().add_money(money);
         });
     }
     pub fn fill_gun(&mut self, guns: Box<Guns>) {
         self.guns = guns
     }
 
-    pub fn get_players(&self) -> Vec<Rc<Player>> {
+    pub fn get_players(&self) -> Vec<Rc<RefCell<Player>>> {
         let mut players = self.players.clone();
         players.sort();
         players
@@ -96,12 +95,11 @@ impl Team {
         match self
             .players
             .iter_mut()
-            .find(|player| player.get_name() == player_name)
+            .find(|player| player.borrow().get_name() == player_name)
         {
             Some(player) => {
                 let gun = self.guns.get_gun(gun_name)?;
-                let player = Rc::get_mut(player);
-                player.unwrap().buy_gun(gun)
+                player.borrow_mut().buy_gun(gun)
             }
             None => Err(format!("player with name {} does not find!", gun_name)),
         }

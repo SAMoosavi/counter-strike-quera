@@ -103,6 +103,11 @@ impl Player {
     pub fn get_health(&self) -> u32 {
         self.health
     }
+
+    pub fn is_alive(&self) -> bool {
+        self.health > 0
+    }
+
     pub fn get_money(&self) -> u32 {
         self.money
     }
