@@ -10,19 +10,18 @@ mod test;
 pub struct Team {
     players: Vec<Rc<Player>>,
     guns: Box<Guns>,
+    name : String,
 }
 
-
-impl Default for Team {
-    fn default() -> Self {
+impl Team {
+    pub fn new(name: String) -> Self {
         Self {
+            name,
             players: vec![],
             guns: Box::new(Guns::new()),
         }
     }
-}
 
-impl Team {
     pub fn add_player(&mut self, name: &str, time: &GameTime) -> Result<(), String> {
         let max_money_of_player = Setting::get_max_money_of_player();
         if max_money_of_player == 0 {
@@ -106,5 +105,9 @@ impl Team {
             }
             None => Err(format!("player with name {} does not find!", gun_name)),
         }
+    }
+
+    pub fn get_name(&self) -> &str {
+        &self.name
     }
 }
