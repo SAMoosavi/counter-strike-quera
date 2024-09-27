@@ -20,7 +20,7 @@ pub struct Player {
 impl Player {
     pub fn new(name: String, time: GameTime) -> Result<Self, String> {
         let default_gun = Setting::get_default_gun();
-        if let None = default_gun {
+        if default_gun.is_none() {
             return Err("the default gun doesn't set!".to_string());
         }
         let money = Setting::get_default_money_of_player();
@@ -67,12 +67,12 @@ impl Player {
         }
 
         let gun_type = gun.get_type_of();
-        if self.guns.get(&gun_type).is_some() {
+        if self.guns.get(gun_type).is_some() {
             return Err(format!("the {} gun type is exist.", gun.get_type_of()));
         }
 
         self.money -= gun.get_price();
-        self.guns.insert(gun_type, gun);
+        self.guns.insert(*gun_type, gun);
         Ok(())
     }
 
@@ -113,7 +113,7 @@ impl Player {
     pub fn get_name(&self) -> &str {
         &self.name
     }
-    pub fn add_money(&mut self, money: u32) -> () {
+    pub fn add_money(&mut self, money: u32) {
         if self.money + money > Setting::get_max_money_of_player() {
             self.money = Setting::get_max_money_of_player();
         } else {

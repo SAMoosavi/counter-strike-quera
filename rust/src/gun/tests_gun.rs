@@ -12,7 +12,7 @@ pub fn test_getters() {
     assert_eq!(price, gun.get_price());
     assert_eq!(damage, gun.get_damage());
     assert_eq!(gift, gun.get_gift());
-    assert_eq!(type_of_gun, gun.get_type_of());
+    assert_eq!(&type_of_gun, gun.get_type_of());
 }
 
 #[test]

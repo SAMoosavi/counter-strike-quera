@@ -54,8 +54,8 @@ impl Gun {
         self.gift
     }
 
-    pub fn get_type_of(&self) -> TypeOfGun {
-        self.type_of.clone()
+    pub fn get_type_of(&self) -> &TypeOfGun {
+        &self.type_of
     }
 
     pub fn new(name: String, price: u32, damage: u32, gift: u32, type_of: TypeOfGun) -> Gun {
@@ -93,9 +93,16 @@ pub struct Guns {
     list: Vec<Rc<Gun>>,
 }
 
+
+impl Default for Guns {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Guns {
-    pub fn new() -> Guns {
-        Guns { list: vec![] }
+    pub fn new() -> Self {
+        Self { list: vec![] }
     }
 
     pub fn add_gun(
@@ -112,7 +119,7 @@ impl Guns {
             && self
                 .list
                 .iter()
-                .any(|gun| gun.get_type_of() == TypeOfGun::Knife)
+                .any(|gun| gun.get_type_of() == &TypeOfGun::Knife)
         {
             return Err("The knife exist");
         }
@@ -124,7 +131,7 @@ impl Guns {
 
     pub fn get_knife(&self) -> Result<Rc<Gun>, ()> {
         for gun in &self.list {
-            if gun.get_type_of() == TypeOfGun::Knife {
+            if gun.get_type_of() == &TypeOfGun::Knife {
                 return Ok(gun.clone());
             }
         }
@@ -145,7 +152,7 @@ impl Guns {
         Ok(self
             .list
             .iter()
-            .filter(|gun| gun.get_type_of() == type_of_gun)
+            .filter(|gun| gun.get_type_of() == &type_of_gun)
             .cloned()
             .collect())
     }

@@ -12,14 +12,17 @@ pub struct Team {
     guns: Box<Guns>,
 }
 
-impl Team {
-    pub fn default() -> Self {
+
+impl Default for Team {
+    fn default() -> Self {
         Self {
             players: vec![],
             guns: Box::new(Guns::new()),
         }
     }
+}
 
+impl Team {
     pub fn add_player(&mut self, name: &str, time: &GameTime) -> Result<(), String> {
         let max_money_of_player = Setting::get_max_money_of_player();
         if max_money_of_player == 0 {
@@ -86,7 +89,7 @@ impl Team {
         players
     }
 
-    pub fn get_guns(&self) -> &Box<Guns> {
+    pub fn get_guns(&self) -> &Guns {
         &self.guns
     }
 
