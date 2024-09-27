@@ -79,8 +79,10 @@ impl Team {
         self.guns = guns
     }
 
-    pub fn get_players(&self) -> &Vec<Rc<Player>> {
-        &self.players
+    pub fn get_players(&self) -> Vec<Rc<Player>> {
+        let mut players = self.players.clone();
+        players.sort();
+        players
     }
 
     pub fn get_guns(&self) -> &Box<Guns> {
