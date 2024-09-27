@@ -58,7 +58,7 @@ thread_local! {
 impl Setting {
     #[allow(dead_code)]
     pub fn get_max_money_of_player() -> u32 {
-        SETTING.take().max_money_of_player
+        SETTING.with(|x| x.borrow().max_money_of_player)
     }
 
     #[allow(dead_code)]
@@ -66,31 +66,29 @@ impl Setting {
         if max_money_of_player <= 0 {
             return Err("the max money of player should be greater than 0.".to_string());
         }
-        SETTING.with_borrow_mut(|x| x.max_money_of_player = max_money_of_player);
-        Ok(())
+        Ok(SETTING.with(|x| x.borrow_mut().max_money_of_player = max_money_of_player))
     }
 
-    #[allow(dead_code)]
+
     pub fn get_default_money_of_player() -> u32 {
-        SETTING.take().default_money_of_player
+        SETTING.with(|x| x.borrow().default_money_of_player)
     }
     #[allow(dead_code)]
     pub fn set_default_money_of_player(default_money_of_player: u32) -> Result<(), String> {
         if default_money_of_player <= 0 {
             return Err("the default money of player should be greater than 0.".to_string());
         }
-        SETTING.with_borrow_mut(|x| x.default_money_of_player = default_money_of_player);
-        Ok(())
+        Ok(SETTING.with(|x| x.borrow_mut().default_money_of_player = default_money_of_player))
     }
 
     pub fn get_default_gun() -> Option<Rc<Gun>> {
-        SETTING.take().default_gun
+        SETTING.with(|x| x.borrow().default_gun.clone())
     }
 
     #[allow(dead_code)]
     pub fn set_default_gun(gun: Rc<Gun>) -> Result<(), String> {
         match gun.get_type_of() {
-            TypeOfGun::Knife => Ok(SETTING.with_borrow_mut(|x| x.default_gun = Some(gun))),
+            TypeOfGun::Knife => Ok(SETTING.with(|x| x.borrow_mut().default_gun = Some(gun))),
             _ => Err("the default gun should be knife type.".to_string()),
         }
     }
@@ -100,13 +98,12 @@ impl Setting {
         if max_number_of_team_players == 0 {
             return Err("the max_number_of_team_players should be positive!".to_string());
         }
-        SETTING.with_borrow_mut(|x| x.max_number_of_team_players = max_number_of_team_players);
-        Ok(())
+        Ok(SETTING.with(|x| x.borrow_mut().max_number_of_team_players = max_number_of_team_players))
     }
 
     #[allow(dead_code)]
     pub fn get_max_number_of_team_players() -> u32 {
-        SETTING.take().max_number_of_team_players
+        SETTING.with(|x| x.borrow().max_number_of_team_players)
     }
 
     #[allow(dead_code)]
@@ -114,13 +111,12 @@ impl Setting {
         if won_team_money == 0 {
             return Err("the won_team_money should be positive!".to_string());
         }
-        SETTING.with_borrow_mut(|x| x.won_team_money = won_team_money);
-        Ok(())
+        Ok(SETTING.with(|x| x.borrow_mut().won_team_money = won_team_money))
     }
 
     #[allow(dead_code)]
     pub fn get_won_team_money() -> u32 {
-        SETTING.take().won_team_money
+        SETTING.with(|x| x.borrow().won_team_money)
     }
 
     #[allow(dead_code)]
@@ -128,13 +124,12 @@ impl Setting {
         if lose_team_money == 0 {
             return Err("the lose_team_money should be positive!".to_string());
         }
-        SETTING.with_borrow_mut(|x| x.lose_team_money = lose_team_money);
-        Ok(())
+        Ok(SETTING.with(|x| x.borrow_mut().lose_team_money = lose_team_money))
     }
 
     #[allow(dead_code)]
     pub fn get_lose_team_money() -> u32 {
-        SETTING.take().lose_team_money
+        SETTING.with(|x| x.borrow().lose_team_money)
     }
 }
 
@@ -144,7 +139,7 @@ impl Setting {
         SETTING.with_borrow_mut(|x| x.reset());
     }
 
-    pub fn get_setting() -> SettingData {
+    fn get_setting() -> SettingData {
         SETTING.take()
     }
 }
