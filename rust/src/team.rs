@@ -1,5 +1,5 @@
 use crate::game_time::GameTime;
-use crate::gun::Guns;
+use crate::gun::{Gun, Guns, TypeOfGun};
 use crate::player::Player;
 use crate::setting::Setting;
 use std::cell::RefCell;
@@ -11,7 +11,7 @@ mod test;
 pub struct Team {
     players: Vec<Rc<RefCell<Player>>>,
     guns: Box<Guns>,
-    name : String,
+    name: String,
 }
 
 impl Team {
@@ -32,7 +32,7 @@ impl Team {
             return Err("the team is full!".to_string());
         }
 
-        if self.players.iter().any(|player| player.borrow().get_name() == name) {
+        if self.has_player(name) {
             return Err(format!("player exist with same name: {}", name));
         }
 
@@ -40,10 +40,53 @@ impl Team {
         Ok(self.players.push(Rc::new(RefCell::new(player))))
     }
 
-    pub fn get_player(&self, name: &str) -> Option<Rc<RefCell<Player>>> {
-        match self.players.iter().find(|player| player.borrow().get_name() == name) {
-            Some(player) => Some(player.clone()),
-            None => None,
+    fn get_player(&self, name: &str) -> Option<Rc<RefCell<Player>>> {
+        self.players
+            .iter()
+            .find(|player| player.borrow().get_name() == name)
+            .map(|player| player.clone())
+            .clone()
+    }
+
+    pub fn has_player(&self, name: &str) -> bool {
+        self.get_player(name).is_some()
+    }
+
+    pub fn is_player_alive(&self, name: &str) -> Result<bool, String> {
+        match self.get_player(name) {
+            Some(player) => Ok(player.borrow().is_alive()),
+            None => Err(format!("the player {} is not found", name)),
+        }
+    }
+
+    pub fn get_players_gun(&self, name: &str, type_of_gun: &TypeOfGun) -> Result<Rc<Gun>, String> {
+        match self.get_player(name) {
+            Some(player) => match player.borrow().get_gun_with_type(type_of_gun) {
+                Some(gun) => Ok(gun.clone()),
+                None => Err(format!(
+                    "the player {} does not have gun with type {}.",
+                    name, type_of_gun
+                )),
+            },
+            None => Err(format!("the player {} does not exist.", name)),
+        }
+    }
+
+    pub fn shut(&mut self, name: &str, damage: u32) -> Result<u32, String> {
+        match self.get_player(name) {
+            Some(player) => Ok(player.borrow_mut().shut(damage)?),
+            None => Err(format!("the player {} does not exist.", name)),
+        }
+    }
+
+    pub fn add_kill_of_player(
+        &mut self,
+        name: &str,
+        type_of_gun: &TypeOfGun,
+    ) -> Result<(), String> {
+        match self.get_player(name) {
+            Some(player) => player.borrow_mut().add_kill(type_of_gun),
+            None => Err(format!("the player {} does not exist.", name)),
         }
     }
 
@@ -54,7 +97,9 @@ impl Team {
     }
 
     pub fn does_live_player_exist(&self) -> bool {
-        self.players.iter().any(|player| player.borrow().get_health() > 0)
+        self.players
+            .iter()
+            .any(|player| player.borrow().get_health() > 0)
     }
 
     pub fn number_of_live_player(&self) -> usize {
