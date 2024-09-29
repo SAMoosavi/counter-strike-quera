@@ -71,6 +71,6 @@ pub fn test_get_setting() {
 pub fn test_setting_display() {
     Setting::reset();
     let setting = Setting::get_setting();
-    assert_eq!(format!("{}", setting), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0, won_team_money: 0, lose_team_money: 0}");
+    assert_eq!(format!("{}", setting), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0, won_team_money: 0, lose_team_money: 0, friendly_fire: false}");
     Setting::reset();
 }
