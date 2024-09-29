@@ -8,6 +8,16 @@ enum TeamId {
     CounterTerrorist,
 }
 
+impl fmt::Display for TeamId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = match &self {
+            TeamId::Terrorist => "terrorist",
+            TeamId::CounterTerrorist => "counter_terrorist",
+        };
+        write!(f, "{}", name)
+    }
+}
+
 struct Game {
     teams: HashMap<TeamId, Team>,
     round: u32,
