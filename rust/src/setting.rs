@@ -12,19 +12,21 @@ struct SettingData {
     max_number_of_team_players: u32,
     won_team_money: u32,
     lose_team_money: u32,
+    friendly_fire: bool,
 }
 
 impl fmt::Display for SettingData {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}, won_team_money: {}, lose_team_money: {}}}",
+            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}, won_team_money: {}, lose_team_money: {}, friendly_fire: {}}}",
             self.max_money_of_player,
             self.default_money_of_player,
             self.default_gun,
             self.max_number_of_team_players,
             self.won_team_money,
-            self.lose_team_money
+            self.lose_team_money,
+            self.friendly_fire,
         )
     }
 }
@@ -38,6 +40,7 @@ impl SettingData {
             max_number_of_team_players: 0,
             won_team_money: 0,
             lose_team_money: 0,
+            friendly_fire : false,
         }
     }
 
@@ -49,6 +52,7 @@ impl SettingData {
         self.max_number_of_team_players = 0;
         self.won_team_money = 0;
         self.lose_team_money = 0;
+        self.friendly_fire = false;
     }
 }
 
@@ -126,6 +130,14 @@ impl Setting {
     pub fn get_lose_team_money() -> u32 {
         SETTING.with(|x| x.borrow().lose_team_money)
     }
+
+    pub fn set_friendly_fire(friendly_fire: bool) {
+        SETTING.with(|x| x.borrow_mut().friendly_fire = friendly_fire)
+    }
+
+    pub fn get_friendly_fire() -> bool {
+        SETTING.with(|x| x.borrow().friendly_fire)
+    }
 }
 
 #[cfg(test)]
@@ -141,6 +153,6 @@ impl Setting {
 
 impl fmt::Display for Setting {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:}", SETTING.take())
+        write!(f, "{}", SETTING.take())
     }
 }
