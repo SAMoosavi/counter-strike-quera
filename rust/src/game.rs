@@ -1,6 +1,6 @@
-use std::{borrow::BorrowMut, cell::RefCell, collections::HashMap, rc::Rc};
+use std::{collections::HashMap, fmt};
 
-use crate::{game_time::GameTime, gun::TypeOfGun, player::Player, team::Team};
+use crate::{game_time::GameTime, gun::TypeOfGun, setting::Setting, team::Team};
 
 #[derive(Eq, PartialEq, Hash)]
 enum TeamId {
@@ -37,11 +37,11 @@ impl Game {
         }
     }
 
-    fn find_player(&self, name: &str) -> Option<Rc<RefCell<Player>>> {
+    fn find_player(&self, name: &str) -> Option<&TeamId> {
         self.teams
             .iter()
-            .find(|team| team.1.get_player(name).is_some())
-            .map(|team| team.1.get_player(name).unwrap().clone())
+            .find(|team| team.1.has_player(name))
+            .map(|team| team.0)
             .clone()
     }
 
@@ -62,9 +62,9 @@ impl Game {
         team.add_player(name, time)
     }
 
-    pub fn get_player(&self, name: &str) -> Result<Rc<RefCell<Player>>, String> {
+    pub fn get_player(&self, name: &str) -> Result<&TeamId, String> {
         match self.find_player(name) {
-            Some(player) => Ok(player.clone()),
+            Some(team_id) => Ok(team_id),
             None => Err(format!("player not found: {}", name)),
         }
     }
@@ -75,36 +75,36 @@ impl Game {
         attacked: &str,
         type_of_gun: &TypeOfGun,
     ) -> Result<(), String> {
-        let mut attacker = self.get_player(attacker)?;
-        let mut attacked = self.get_player(attacked)?;
+        let attacker_team = self.teams.get_mut(self.get_player(attacker)?).unwrap();
+        let attacked_team = self.teams.get_mut(self.get_player(attacked)?).unwrap();
 
-        if !attacker.borrow().is_alive() {
+        if !attacker_team.is_player_alive(attacker)? {
             return Err("attacker is dead".to_string());
         }
-        if !attacked.borrow().is_alive() {
+        if !attacked_team.is_player_alive(attacked)? {
             return Err("attacked is dead".to_string());
         }
 
-        let mut attacker = attacker.as_ref().borrow_mut();
+        let gun = attacker_team.get_players_gun(attacker, type_of_gun)?;
 
-        let gun = attacker.get_gun_with_type(type_of_gun);
-        if gun.is_none() {
+        if attacked_team.get_name() == attacker_team.get_name() && !Setting::get_friendly_fire() {
             return Err(format!(
-                "{} has no {} gun.",
-                attacker.get_name(),
-                type_of_gun
+                "attacker and attacked in same team: {}",
+                attacked_team.get_name()
             ));
         }
-        let gun: &Rc<crate::gun::Gun> = gun.unwrap();
-        let mut borrow_mut = attacked.as_ref().borrow_mut();
-        let health = borrow_mut.shut(gun.get_damage())?;
-        if health <= 0 {
-            
-            // borrow_mut.
-            attacker.add_kill(type_of_gun)?;
 
+        let health = attacked_team.shut(attacked, gun.get_damage())?;
+
+        if health == 0 {
+            attacker_team.add_kill(attacker, type_of_gun)?;
         }
 
         Ok(())
+    }
+
+    pub fn buy(&mut self, player: &str, gun: &str, _time: &GameTime) -> Result<(), String> {
+        let team = self.teams.get_mut(self.get_player(player)?).unwrap();
+        team.buy_gun(player, gun)
     }
 }
