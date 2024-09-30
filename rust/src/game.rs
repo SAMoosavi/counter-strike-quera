@@ -2,7 +2,7 @@ use std::{collections::HashMap, fmt};
 
 use crate::{game_time::GameTime, gun::TypeOfGun, setting::Setting, team::Team};
 
-#[derive(Eq, PartialEq, Hash)]
+#[derive(Eq, PartialEq, Hash, Clone)]
 enum TeamId {
     Terrorist,
     CounterTerrorist,
@@ -62,9 +62,9 @@ impl Game {
         team.add_player(name, time)
     }
 
-    pub fn get_player(&self, name: &str) -> Result<&TeamId, String> {
+    pub fn get_player(&self, name: &str) -> Result<TeamId, String> {
         match self.find_player(name) {
-            Some(team_id) => Ok(team_id),
+            Some(team_id) => Ok((*team_id).clone()),
             None => Err(format!("player not found: {}", name)),
         }
     }
@@ -75,8 +75,8 @@ impl Game {
         attacked: &str,
         type_of_gun: &TypeOfGun,
     ) -> Result<(), String> {
-        let attacker_team = self.teams.get_mut(self.get_player(attacker)?).unwrap();
-        let attacked_team = self.teams.get_mut(self.get_player(attacked)?).unwrap();
+        let attacker_team = self.teams.get_mut(&self.get_player(attacker)?).unwrap();
+        let attacked_team = self.teams.get_mut(&self.get_player(attacked)?).unwrap();
 
         if !attacker_team.is_player_alive(attacker)? {
             return Err("attacker is dead".to_string());
@@ -97,14 +97,14 @@ impl Game {
         let health = attacked_team.shut(attacked, gun.get_damage())?;
 
         if health == 0 {
-            attacker_team.add_kill(attacker, type_of_gun)?;
+            attacker_team.add_kill_of_player(attacker, type_of_gun)?;
         }
 
         Ok(())
     }
 
     pub fn buy(&mut self, player: &str, gun: &str, _time: &GameTime) -> Result<(), String> {
-        let team = self.teams.get_mut(self.get_player(player)?).unwrap();
+        let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
         team.buy_gun(player, gun)
     }
 }
