@@ -70,34 +70,57 @@ impl Game {
     }
 
     pub fn tap(
-        &self,
+        &mut self,
         attacker: &str,
         attacked: &str,
         type_of_gun: &TypeOfGun,
     ) -> Result<(), String> {
-        let attacker_team = self.teams.get_mut(&self.get_player(attacker)?).unwrap();
-        let attacked_team = self.teams.get_mut(&self.get_player(attacked)?).unwrap();
+        let attacker_team = self.get_player(attacker)?;
+        let attacked_team = self.get_player(attacked)?;
 
-        if !attacker_team.is_player_alive(attacker)? {
+        if !self
+            .teams
+            .get_mut(&attacker_team)
+            .unwrap()
+            .is_player_alive(attacker)?
+        {
             return Err("attacker is dead".to_string());
         }
-        if !attacked_team.is_player_alive(attacked)? {
+
+        if !self
+            .teams
+            .get_mut(&attacked_team)
+            .unwrap()
+            .is_player_alive(attacked)?
+        {
             return Err("attacked is dead".to_string());
         }
 
-        let gun = attacker_team.get_players_gun(attacker, type_of_gun)?;
+        let gun = self
+            .teams
+            .get_mut(&attacker_team)
+            .unwrap()
+            .get_players_gun(attacker, type_of_gun)?;
 
-        if attacked_team.get_name() == attacker_team.get_name() && !Setting::get_friendly_fire() {
+        if attacked_team == attacker_team && !Setting::get_friendly_fire()
+        {
             return Err(format!(
                 "attacker and attacked in same team: {}",
-                attacked_team.get_name()
+                self.teams.get_mut(&attacked_team).unwrap().get_name()
             ));
         }
 
-        let health = attacked_team.shut(attacked, gun.get_damage())?;
+        let health = self
+            .teams
+            .get_mut(&attacked_team)
+            .unwrap()
+            .shut(attacked, gun.get_damage())?;
 
         if health == 0 {
-            attacker_team.add_kill_of_player(attacker, type_of_gun)?;
+            self.teams
+                .get_mut(&attacker_team)
+                .unwrap()
+                .add_kill_of_player(attacker, type_of_gun)?;
         }
 
         Ok(())
