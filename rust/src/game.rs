@@ -130,4 +130,35 @@ impl Game {
         let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
         team.buy_gun(player, gun)
     }
+
+    pub fn reset(&mut self) -> &str {
+        let msg;
+
+        if !self
+            .teams
+            .get(&TeamId::CounterTerrorist)
+            .unwrap()
+            .does_live_player_exist()
+            && self
+                .teams
+                .get(&TeamId::Terrorist)
+                .unwrap()
+                .does_live_player_exist()
+        {
+            self.teams.get_mut(&TeamId::Terrorist).unwrap().won();
+            self.teams
+                .get_mut(&TeamId::CounterTerrorist)
+                .unwrap()
+                .lose();
+            msg = "Terrorist won";
+        } else {
+            msg = "Counter-Terrorist won";
+            self.teams.get_mut(&TeamId::Terrorist).unwrap().lose();
+            self.teams.get_mut(&TeamId::CounterTerrorist).unwrap().won();
+        }
+
+        self.teams.iter_mut().for_each(|team| team.1.reset());
+
+        msg
+    }
 }
