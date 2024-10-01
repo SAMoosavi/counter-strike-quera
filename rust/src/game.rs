@@ -3,28 +3,51 @@ use std::{collections::HashMap, fmt};
 use crate::{game_time::GameTime, gun::TypeOfGun, setting::Setting, team::Team};
 
 #[derive(Eq, PartialEq, Hash, Clone)]
-enum TeamId {
+pub enum TeamId {
     Terrorist,
     CounterTerrorist,
+}
+
+impl TeamId {
+    pub fn to_string(&self) -> &str {
+        match &self {
+            TeamId::Terrorist => "Terrorist",
+            TeamId::CounterTerrorist => "Counter-Terrorist",
+        }
+    }
+
+    pub fn to_enum(name: &str) -> Result<TeamId, String> {
+        match &name.to_lowercase().replace("_", "-").replace(" ", "-")[0..] {
+            "counter-terrorist" => Ok(TeamId::CounterTerrorist),
+            "terrorist" => Ok(TeamId::Terrorist),
+            _ => Err(format!("the name of {} isn't correct.", name)),
+        }
+    }
 }
 
 impl fmt::Display for TeamId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match &self {
-            TeamId::Terrorist => "terrorist",
-            TeamId::CounterTerrorist => "counter_terrorist",
+            TeamId::Terrorist => "Terrorist",
+            TeamId::CounterTerrorist => "Counter-Terrorist",
         };
         write!(f, "{}", name)
     }
 }
 
-struct Game {
+pub struct Game {
     teams: HashMap<TeamId, Team>,
-    round: u32,
+    _round: u32,
 }
 
 impl Game {
-    fn new() -> Self {
+    pub fn new() -> Self {
+        Setting::set_max_money_of_player(10000).unwrap();
+        Setting::set_default_money_of_player(1000).unwrap();
+        Setting::set_max_number_of_team_players(10).unwrap();
+        Setting::set_won_team_money(2700).unwrap();
+        Setting::set_lose_team_money(2400).unwrap();
+    
         Self {
             teams: HashMap::from([
                 (TeamId::Terrorist, Team::new("Terrorist".to_string())),
@@ -33,7 +56,7 @@ impl Game {
                     Team::new("Counter-Terrorist".to_string()),
                 ),
             ]),
-            round: 0,
+            _round: 0,
         }
     }
 
@@ -102,8 +125,7 @@ impl Game {
             .unwrap()
             .get_players_gun(attacker, type_of_gun)?;
 
-        if attacked_team == attacker_team && !Setting::get_friendly_fire()
-        {
+        if attacked_team == attacker_team && !Setting::get_friendly_fire() {
             return Err(format!(
                 "attacker and attacked in same team: {}",
                 self.teams.get_mut(&attacked_team).unwrap().get_name()
