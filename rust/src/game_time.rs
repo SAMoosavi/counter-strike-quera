@@ -18,6 +18,16 @@ impl GameTime {
             millisecond,
         }
     }
+
+    pub fn new_from_str(time: &str) -> Self {
+        let time = time.split(":").collect::<Vec<&str>>();
+
+        Self {
+            minute: time.get(0).unwrap().trim().parse().unwrap(),
+            second: time.get(1).unwrap().trim().parse().unwrap(),
+            millisecond: time.get(2).unwrap().trim().parse().unwrap(),
+        }
+    }
 }
 
 impl Ord for GameTime {
