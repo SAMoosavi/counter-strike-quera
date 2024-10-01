@@ -8,14 +8,14 @@ fn create_player() -> Player {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
     Setting::set_default_gun(Rc::new(gun)).unwrap();
     Setting::set_default_money_of_player(1000).unwrap();
-    let time = GameTime::new(0, 0, 0, 10);
+    let time = GameTime::new(0, 0, 10);
     Player::new("p1".to_string(), time).unwrap()
 }
 
 #[test]
 pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
     Setting::reset();
-    let time = GameTime::new(0, 0, 0, 10);
+    let time = GameTime::new(0, 0, 10);
     assert!(Player::new("p1".to_string(), time).is_err());
 }
 
@@ -24,7 +24,7 @@ pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() 
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
     Setting::set_default_gun(Rc::new(gun)).unwrap();
     Setting::set_default_money_of_player(1000).unwrap();
-    let time = GameTime::new(0, 0, 0, 10);
+    let time = GameTime::new(0, 0, 10);
     assert!(Player::new("p1".to_string(), time).is_ok());
 }
 
@@ -229,15 +229,15 @@ pub fn test_cmp() {
     Setting::set_default_money_of_player(1000).unwrap();
     Setting::set_default_gun(Rc::new(gun)).unwrap();
 
-    let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
-    let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 0, 20)).unwrap();
+    let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 10)).unwrap();
+    let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 20)).unwrap();
     assert!(p1 > p2);
-    let p3 = Player::new("p3".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+    let p3 = Player::new("p3".to_string(), GameTime::new(0, 0, 10)).unwrap();
     assert_eq!(p1, p3);
-    let mut p4 = Player::new("p4".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+    let mut p4 = Player::new("p4".to_string(), GameTime::new(0, 0, 10)).unwrap();
     p4.kills = 1;
     assert!(p4 > p1);
-    let mut p5 = Player::new("p4".to_string(), GameTime::new(0, 0, 0, 10)).unwrap();
+    let mut p5 = Player::new("p4".to_string(), GameTime::new(0, 0, 10)).unwrap();
     p5.killed = 1;
     assert!(p5 < p1);
 }
