@@ -168,4 +168,13 @@ impl Team {
     pub fn get_name(&self) -> &str {
         &self.name
     }
+
+    pub fn score_board(&self) -> String {
+        let mut msg = format!("{}-Players:\n", self.name);
+        for (index, player) in self.get_players().iter().enumerate() {
+            msg += &format!("{} {}\n", index + 1, player.borrow().to_string());
+        }
+
+        msg
+    }
 }

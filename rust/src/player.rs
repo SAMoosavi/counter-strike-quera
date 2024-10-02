@@ -133,6 +133,10 @@ impl Player {
             self.money -= money;
         }
     }
+
+    pub fn to_string(&self) -> String {
+        format!("{} {} {}", self.name, self.kills, self.killed)
+    }
 }
 
 impl PartialEq<Self> for Player {

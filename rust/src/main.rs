@@ -44,6 +44,13 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
 
             game.tap(attacker, attacked, &gun_type, &time)
         }
+        "SCORE-BOARD" => {
+            let time = GameTime::new_from_str(query.get(1).unwrap());
+
+            let score_board = game.score_board(&time);
+            println!("{}", score_board);
+            Ok(())
+        }
         _ => Err(format!("the command {} is not found!", command)),
     }
 }

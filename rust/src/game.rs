@@ -237,4 +237,9 @@ impl Game {
         let team = self.teams.get(&team_id).unwrap();
         team.get_health(name)
     }
+
+    pub fn score_board(&self, _time: &GameTime) -> String {
+        self.teams.get(&TeamId::CounterTerrorist).unwrap().score_board()
+            + &self.teams.get(&TeamId::Terrorist).unwrap().score_board()
+    }
 }
