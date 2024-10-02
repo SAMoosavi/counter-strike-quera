@@ -88,9 +88,9 @@ impl Setting {
         SETTING.with(|x| x.borrow().default_gun.clone())
     }
 
-    pub fn set_default_gun(gun: Rc<Gun>) -> Result<(), String> {
+    pub fn set_default_gun(gun: &Rc<Gun>) -> Result<(), String> {
         match gun.get_type_of() {
-            TypeOfGun::Knife => Ok(SETTING.with(|x| x.borrow_mut().default_gun = Some(gun))),
+            TypeOfGun::Knife => Ok(SETTING.with(|x| x.borrow_mut().default_gun = Some(gun.clone()))),
             _ => Err("the default gun should be knife type.".to_string()),
         }
     }
