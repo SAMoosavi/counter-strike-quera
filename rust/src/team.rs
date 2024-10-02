@@ -130,6 +130,13 @@ impl Team {
         }
     }
 
+    pub fn get_health(&self, name: &str) -> Result<u32, String> {
+        match self.get_player(name) {
+            Some(player) => Ok(player.borrow().get_health()),
+            None => Err(format!("the player {} is not exist", name)),
+        }
+    }
+
     pub fn fill_gun(&mut self, guns: Box<Guns>) {
         self.guns = guns
     }

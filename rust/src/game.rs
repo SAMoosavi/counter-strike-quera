@@ -230,4 +230,10 @@ impl Game {
         let team = self.teams.get(&team_id).unwrap();
         team.get_money(name)
     }
+
+    pub fn get_health_of_player(&self, name: &str, _time: &GameTime) -> Result<u32, String> {
+        let team_id = self.get_player(name)?;
+        let team = self.teams.get(&team_id).unwrap();
+        team.get_health(name)
+    }
 }
