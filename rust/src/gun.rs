@@ -93,7 +93,6 @@ pub struct Guns {
     list: Vec<Rc<Gun>>,
 }
 
-
 impl Default for Guns {
     fn default() -> Self {
         Self::new()
@@ -105,27 +104,43 @@ impl Guns {
         Self { list: vec![] }
     }
 
-    pub fn add_gun(
+    pub fn create_gun(
         &mut self,
         name: String,
         price: u32,
         damage: u32,
         gift: u32,
         type_of: TypeOfGun,
-    ) -> Result<(), &str> {
+    ) -> Result<(), String> {
         if self.list.iter().any(|gun| name == gun.get_name()) {
-            return Err("the gun is exist!");
+            return Err("the gun is exist!".to_string());
         } else if type_of == TypeOfGun::Knife
             && self
                 .list
                 .iter()
                 .any(|gun| gun.get_type_of() == &TypeOfGun::Knife)
         {
-            return Err("The knife exist");
+            return Err("The knife exist".to_string());
         }
 
         self.list
             .push(Rc::new(Gun::new(name, price, damage, gift, type_of)));
+        Ok(())
+    }
+
+    pub fn add_gun(&mut self, gun: &Rc<Gun>) -> Result<(), String> {
+        if self.list.iter().any(|x| gun.get_name() == x.get_name()) {
+            return Err("the gun is exist!".to_string());
+        } else if gun.get_type_of() == &TypeOfGun::Knife
+            && self
+                .list
+                .iter()
+                .any(|gun| gun.get_type_of() == &TypeOfGun::Knife)
+        {
+            return Err("The knife exist".to_string());
+        }
+
+        self.list.push(gun.clone());
         Ok(())
     }
 
