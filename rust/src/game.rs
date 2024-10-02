@@ -138,6 +138,7 @@ impl Game {
         attacker: &str,
         attacked: &str,
         type_of_gun: &TypeOfGun,
+        _time: &GameTime,
     ) -> Result<(), String> {
         let attacker_team = self.get_player(attacker)?;
         let attacked_team = self.get_player(attacked)?;

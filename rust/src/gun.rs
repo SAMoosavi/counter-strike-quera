@@ -19,12 +19,26 @@ pub enum TypeOfGun {
 
 impl fmt::Display for TypeOfGun {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let name = match &self {
+        write!(f, "{}", self.to_string())
+    }
+}
+
+impl TypeOfGun {
+    pub fn to_string(&self) -> &str {
+        match &self {
             TypeOfGun::Heavy => "Heavy",
             TypeOfGun::Pistol => "Pistol",
             TypeOfGun::Knife => "Knife",
-        };
-        write!(f, "{}", name)
+        }
+    }
+
+    pub fn to_enum(name: &str) -> Result<TypeOfGun, String> {
+        match &name.to_lowercase().replace("_", "-").replace(" ", "-")[0..] {
+            "heavy" => Ok(TypeOfGun::Heavy),
+            "pistol" => Ok(TypeOfGun::Pistol),
+            "knife" => Ok(TypeOfGun::Knife),
+            _ => Err(format!("the name of {} isn't correct.", name)),
+        }
     }
 }
 

@@ -6,6 +6,8 @@ pub mod game_time;
 pub mod setting;
 pub mod team;
 
+use gun::TypeOfGun;
+
 use crate::game::{Game, TeamId};
 use crate::game_time::GameTime;
 
@@ -33,6 +35,14 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
             let health = game.get_health_of_player(name, &time)?;
             println!("{}", health);
             Ok(())
+        }
+        "TAP" => {
+            let attacker = *query.get(1).unwrap();
+            let attacked = *query.get(2).unwrap();
+            let gun_type = TypeOfGun::to_enum(*query.get(3).unwrap())?;
+            let time = GameTime::new_from_str(query.get(4).unwrap());
+
+            game.tap(attacker, attacked, &gun_type, &time)
         }
         _ => Err(format!("the command {} is not found!", command)),
     }
