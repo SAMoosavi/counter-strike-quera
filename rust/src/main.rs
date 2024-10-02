@@ -22,8 +22,10 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
         }
         "GET-MONEY" => {
             let name = *query.get(1).unwrap();
-            let time = GameTime::new_from_str(query.get(3).unwrap());
-            game.get_money_of_player(name, time)
+            let time = GameTime::new_from_str(query.get(2).unwrap());
+            let money = game.get_money_of_player(name, &time)?;
+            println!("{}", money);
+            Ok(())
         }
         _ => Err(format!("the command {} is not found!", command)),
     }

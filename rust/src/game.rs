@@ -58,24 +58,39 @@ impl Game {
 
         let mut terrorist_guns = Box::new(Guns::new());
         terrorist_guns.add_gun(&knife).unwrap();
-        terrorist_guns.create_gun("AK".to_string(), 2700, 31, 100, TypeOfGun::Heavy).unwrap();
-        terrorist_guns.create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy).unwrap();
-        terrorist_guns.create_gun("Revolver".to_string(), 600, 51, 150, TypeOfGun::Pistol).unwrap();
-        terrorist_guns.create_gun("Glock-18".to_string(), 300, 11, 200, TypeOfGun::Pistol).unwrap();
+        terrorist_guns
+            .create_gun("AK".to_string(), 2700, 31, 100, TypeOfGun::Heavy)
+            .unwrap();
+        terrorist_guns
+            .create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy)
+            .unwrap();
+        terrorist_guns
+            .create_gun("Revolver".to_string(), 600, 51, 150, TypeOfGun::Pistol)
+            .unwrap();
+        terrorist_guns
+            .create_gun("Glock-18".to_string(), 300, 11, 200, TypeOfGun::Pistol)
+            .unwrap();
 
         let mut terrorist = Team::new("Terrorist".to_string());
         terrorist.fill_gun(terrorist_guns);
 
         let mut counter_terrorist_guns = Box::new(Guns::new());
         counter_terrorist_guns.add_gun(&knife).unwrap();
-        counter_terrorist_guns.create_gun("M4A1".to_string(), 2700, 29, 100, TypeOfGun::Heavy).unwrap();
-        counter_terrorist_guns.create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy).unwrap();
-        counter_terrorist_guns.create_gun("Desert-Eagle".to_string(), 600, 53, 175, TypeOfGun::Pistol).unwrap();
-        counter_terrorist_guns.create_gun("UPS-S".to_string(), 300, 13, 225, TypeOfGun::Pistol).unwrap();
+        counter_terrorist_guns
+            .create_gun("M4A1".to_string(), 2700, 29, 100, TypeOfGun::Heavy)
+            .unwrap();
+        counter_terrorist_guns
+            .create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy)
+            .unwrap();
+        counter_terrorist_guns
+            .create_gun("Desert-Eagle".to_string(), 600, 53, 175, TypeOfGun::Pistol)
+            .unwrap();
+        counter_terrorist_guns
+            .create_gun("UPS-S".to_string(), 300, 13, 225, TypeOfGun::Pistol)
+            .unwrap();
 
         let mut counter_terrorist = Team::new("Terrorist".to_string());
         counter_terrorist.fill_gun(counter_terrorist_guns);
-
 
         Self {
             teams: HashMap::from([
@@ -208,5 +223,11 @@ impl Game {
         self.teams.iter_mut().for_each(|team| team.1.reset());
 
         msg
+    }
+
+    pub fn get_money_of_player(&self, name: &str, _time: &GameTime) -> Result<u32, String> {
+        let team_id = self.get_player(name)?;
+        let team = self.teams.get(&team_id).unwrap();
+        team.get_money(name)
     }
 }

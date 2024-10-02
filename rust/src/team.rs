@@ -122,6 +122,14 @@ impl Team {
             player.borrow_mut().add_money(money);
         });
     }
+
+    pub fn get_money(&self, name: &str) -> Result<u32, String> {
+        match self.get_player(name) {
+            Some(player) => Ok(player.borrow().get_money()),
+            None => Err(format!("the player {} is not exist", name)),
+        }
+    }
+
     pub fn fill_gun(&mut self, guns: Box<Guns>) {
         self.guns = guns
     }
