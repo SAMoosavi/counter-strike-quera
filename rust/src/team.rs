@@ -33,7 +33,7 @@ impl Team {
         }
 
         if self.has_player(name) {
-            return Err(format!("player exist with same name: {}", name));
+            return Err("you are already in this game".to_string());
         }
 
         let player = Player::new(name.to_string(), time.clone())?;
@@ -170,11 +170,13 @@ impl Team {
     }
 
     pub fn score_board(&self) -> String {
-        let mut msg = format!("{}-Players:\n", self.name);
-        for (index, player) in self.get_players().iter().enumerate() {
-            msg += &format!("{} {}\n", index + 1, player.borrow().to_string());
-        }
+        let players: Vec<String> = self
+            .get_players()
+            .iter()
+            .enumerate()
+            .map(|element| format!("{} {}", element.0 + 1, element.1.borrow().to_string()))
+            .collect();
 
-        msg
+        format!("{}-Players:\n{}", self.name, players.join("\n"))
     }
 }

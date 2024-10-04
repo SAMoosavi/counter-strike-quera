@@ -65,10 +65,7 @@ pub fn test_add_player_should_be_return_error_when_player_exists_with_same_name(
     let result = team.add_player(name, &time);
 
     assert!(result.is_err());
-    assert_eq!(
-        result.unwrap_err(),
-        format!("player exist with same name: {}", name)
-    );
+    assert_eq!(result.unwrap_err(), "you are already in this game");
     Setting::reset();
 }
 

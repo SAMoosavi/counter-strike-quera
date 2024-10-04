@@ -13,7 +13,7 @@ use crate::game_time::GameTime;
 
 use std::io;
 
-fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
+fn handel(game: &mut Game, query: &Vec<&str>) -> Result<String, String> {
     let command = *query.get(0).unwrap();
     match command {
         "ADD-USER" => {
@@ -25,16 +25,12 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
         "GET-MONEY" => {
             let name = *query.get(1).unwrap();
             let time = GameTime::new_from_str(query.get(2).unwrap());
-            let money = game.get_money_of_player(name, &time)?;
-            println!("{}", money);
-            Ok(())
+            Ok(game.get_money_of_player(name, &time)?.to_string())
         }
         "GET-HEALTH" => {
             let name = *query.get(1).unwrap();
             let time = GameTime::new_from_str(query.get(2).unwrap());
-            let health = game.get_health_of_player(name, &time)?;
-            println!("{}", health);
-            Ok(())
+            Ok(game.get_health_of_player(name, &time)?.to_string())
         }
         "TAP" => {
             let attacker = *query.get(1).unwrap();
@@ -47,9 +43,7 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
         "SCORE-BOARD" => {
             let time = GameTime::new_from_str(query.get(1).unwrap());
 
-            let score_board = game.score_board(&time);
-            println!("{}", score_board);
-            Ok(())
+            Ok(game.score_board(&time))
         }
         _ => Err(format!("the command {} is not found!", command)),
     }
@@ -62,8 +56,6 @@ fn main() {
     io::stdin().read_line(&mut number_of_round).unwrap();
     let number_of_round: u8 = number_of_round.trim().parse().unwrap();
     for _ in 0..number_of_round {
-        game.reset();
-
         let mut number_of_act = String::new();
         io::stdin().read_line(&mut number_of_act).unwrap();
         let number_of_act: Vec<&str> = number_of_act.split_whitespace().collect();
@@ -73,9 +65,14 @@ fn main() {
             io::stdin().read_line(&mut query).unwrap();
             let query: Vec<&str> = query.split_whitespace().collect();
             match handel(&mut game, &query) {
-                Ok(_) => {}
+                Ok(ans) => {
+                    if !ans.is_empty() {
+                        println!("{}", ans);
+                    }
+                }
                 Err(err) => println!("{}", err),
             }
         }
+        println!("{}", game.end_of_round());
     }
 }

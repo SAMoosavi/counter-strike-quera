@@ -153,7 +153,7 @@ impl Setting {
     }
 
     pub fn set_max_time_buy(max_time_buy: &GameTime) -> Result<(), String> {
-        if max_time_buy > &GameTime::new(0, 0, 0) {
+        if !(max_time_buy > &GameTime::new(0, 0, 0)) {
             return Err("the max_time_buy should not be None!".to_string());
         }
         SETTING.with(|x| x.borrow_mut().max_time_buy = Some(max_time_buy.clone()));

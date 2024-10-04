@@ -89,7 +89,7 @@ impl Game {
             .create_gun("UPS-S".to_string(), 300, 13, 225, TypeOfGun::Pistol)
             .unwrap();
 
-        let mut counter_terrorist = Team::new("Terrorist".to_string());
+        let mut counter_terrorist = Team::new("Counter-Terrorist".to_string());
         counter_terrorist.fill_gun(counter_terrorist_guns);
 
         Self {
@@ -117,12 +117,13 @@ impl Game {
         team_id: TeamId,
         name: &str,
         time: &GameTime,
-    ) -> Result<(), String> {
+    ) -> Result<String, String> {
         if self.has_player(name) {
-            return Err(format!("player exist with same name: {}", name));
+            return Err("you are already in this game".to_string());
         }
         let team = self.teams.get_mut(&team_id).ok_or("team not found")?;
-        team.add_player(name, time)
+        team.add_player(name, time)?;
+        Ok(format!("this user added to {}", team_id))
     }
 
     pub fn get_player(&self, name: &str) -> Result<TeamId, String> {
@@ -138,7 +139,7 @@ impl Game {
         attacked: &str,
         type_of_gun: &TypeOfGun,
         _time: &GameTime,
-    ) -> Result<(), String> {
+    ) -> Result<String, String> {
         let attacker_team = self.get_player(attacker)?;
         let attacked_team = self.get_player(attacked)?;
 
@@ -186,10 +187,10 @@ impl Game {
                 .add_kill_of_player(attacker, type_of_gun)?;
         }
 
-        Ok(())
+        Ok("nice shot".to_string())
     }
 
-    pub fn buy(&mut self, player: &str, gun: &str, time: &GameTime) -> Result<(), String> {
+    pub fn buy(&mut self, player: &str, gun: &str, time: &GameTime) -> Result<String, String> {
         match Setting::get_max_time_buy() {
             None => Err("the max_time_buy not initialized!".to_string()),
             Some(max_time) => {
@@ -197,12 +198,14 @@ impl Game {
                     return Err(format!("you are out of Time: {:?}", max_time));
                 }
                 let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
-                team.buy_gun(player, gun)
+                team.buy_gun(player, gun)?;
+
+                Ok("I hope you can use it".to_string())
             }
         }
     }
 
-    pub fn reset(&mut self) -> &str {
+    pub fn end_of_round(&mut self) -> &str {
         let msg;
 
         if !self
@@ -253,6 +256,7 @@ impl Game {
             .score_board();
         let terrorism = self.teams.get(&TeamId::Terrorist).unwrap().score_board();
 
-        counter_terrorism + &terrorism
+        let ans = vec![counter_terrorism, terrorism];
+        ans.join("\n")
     }
 }
