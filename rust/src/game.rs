@@ -42,20 +42,23 @@ impl fmt::Display for TeamId {
 
 pub struct Game {
     teams: HashMap<TeamId, Team>,
+    setting: Setting,
 }
 
 impl Game {
     pub fn new() -> Self {
-        Setting::set_max_money_of_player(10000).unwrap();
-        Setting::set_default_money_of_player(1000).unwrap();
-        Setting::set_max_number_of_team_players(10).unwrap();
-        Setting::set_won_team_money(2700).unwrap();
-        Setting::set_lose_team_money(2400).unwrap();
-        Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
-        Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
+        let mut setting = Setting::default();
+
+        setting.max_money_of_player = 10000;
+        setting.default_money_of_player = 1000;
+        setting.max_number_of_team_players = 10;
+        setting.won_team_money = 2700;
+        setting.lose_team_money = 2400;
+        setting.max_time_buy = Some(GameTime::new(0, 45, 0));
+        setting.did_time_of_player = Some(GameTime::new(0, 3, 0));
 
         let knife = Rc::new(Gun::new("knife".to_string(), 0, 43, 500, TypeOfGun::Knife));
-        Setting::set_default_gun(&knife).unwrap();
+        setting.default_gun = Some(knife.clone());
 
         let mut terrorist_guns = Box::new(Guns::new());
         terrorist_guns.add_gun(&knife).unwrap();
@@ -98,6 +101,7 @@ impl Game {
                 (TeamId::Terrorist, terrorist),
                 (TeamId::CounterTerrorist, counter_terrorist),
             ]),
+            setting,
         }
     }
 
@@ -123,7 +127,7 @@ impl Game {
             return Err("you are already in this game".to_string());
         }
         let team = self.teams.get_mut(&team_id).ok_or("team not found")?;
-        team.add_player(name, time)?;
+        team.add_player(name, time, &self.setting)?;
         Ok(format!("this user added to {}", team_id))
     }
 
@@ -168,7 +172,7 @@ impl Game {
             .unwrap()
             .get_players_gun(attacker, type_of_gun)?;
 
-        if attacked_team == attacker_team && !Setting::get_friendly_fire() {
+        if attacked_team == attacker_team && !self.setting.friendly_fire {
             return Err("friendly fire".to_string());
         }
 
@@ -189,7 +193,7 @@ impl Game {
     }
 
     pub fn buy(&mut self, player: &str, gun: &str, time: &GameTime) -> Result<String, String> {
-        match Setting::get_max_time_buy() {
+        match &self.setting.max_time_buy {
             None => Err("the max_time_buy not initialized!".to_string()),
             Some(max_time) => {
                 if time > &max_time {
@@ -217,16 +221,25 @@ impl Game {
                 .unwrap()
                 .does_live_player_exist()
         {
-            self.teams.get_mut(&TeamId::Terrorist).unwrap().won();
+            self.teams
+                .get_mut(&TeamId::Terrorist)
+                .unwrap()
+                .won(&self.setting);
             self.teams
                 .get_mut(&TeamId::CounterTerrorist)
                 .unwrap()
-                .lose();
+                .lose(&self.setting);
             msg = "Terrorist won";
         } else {
             msg = "Counter-Terrorist won";
-            self.teams.get_mut(&TeamId::Terrorist).unwrap().lose();
-            self.teams.get_mut(&TeamId::CounterTerrorist).unwrap().won();
+            self.teams
+                .get_mut(&TeamId::Terrorist)
+                .unwrap()
+                .lose(&self.setting);
+            self.teams
+                .get_mut(&TeamId::CounterTerrorist)
+                .unwrap()
+                .won(&self.setting);
         }
 
         self.teams.iter_mut().for_each(|team| team.1.reset());

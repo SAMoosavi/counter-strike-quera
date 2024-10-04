@@ -23,8 +23,13 @@ impl Team {
         }
     }
 
-    pub fn add_player(&mut self, name: &str, time: &GameTime) -> Result<(), String> {
-        let max_money_of_player = Setting::get_max_money_of_player();
+    pub fn add_player(
+        &mut self,
+        name: &str,
+        time: &GameTime,
+        setting: &Setting,
+    ) -> Result<(), String> {
+        let max_money_of_player = setting.max_money_of_player;
         if max_money_of_player == 0 {
             return Err("the maximum number of players doesn't set!".to_string());
         }
@@ -36,7 +41,7 @@ impl Team {
             return Err("you are already in this game".to_string());
         }
 
-        let player = Player::new(name.to_string(), time.clone())?;
+        let player = Player::new(name.to_string(), time.clone(), setting)?;
         Ok(self.players.push(Rc::new(RefCell::new(player))))
     }
 
@@ -106,17 +111,17 @@ impl Team {
             .count()
     }
 
-    pub fn won(&mut self) {
-        self.add_money(Setting::get_won_team_money());
+    pub fn won(&mut self, setting: &Setting) {
+        self.add_money(setting.won_team_money, setting);
     }
 
-    pub fn lose(&mut self) {
-        self.add_money(Setting::get_lose_team_money());
+    pub fn lose(&mut self, setting: &Setting) {
+        self.add_money(setting.lose_team_money, setting);
     }
 
-    fn add_money(&mut self, money: u32) {
+    fn add_money(&mut self, money: u32, setting: &Setting) {
         self.players.iter_mut().for_each(|player| {
-            player.borrow_mut().add_money(money);
+            player.borrow_mut().add_money(money, setting);
         });
     }
 

@@ -18,19 +18,19 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(name: String, time: GameTime) -> Result<Self, String> {
-        let default_gun = Setting::get_default_gun();
+    pub fn new(name: String, time: GameTime, setting: &Setting) -> Result<Self, String> {
+        let default_gun = setting.default_gun.clone();
         if default_gun.is_none() {
             return Err("the default gun doesn't set!".to_string());
         }
-        let money = Setting::get_default_money_of_player();
+        let money = setting.default_money_of_player;
         if money <= 0 {
             return Err("the default money doesn't set!".to_string());
         }
         let mut health = 100;
-        match Setting::get_did_time_of_player() {
+        match &setting.did_time_of_player {
             Some(did_time) => {
-                if did_time < time {
+                if did_time < &time {
                     health = 0;
                 }
             }
@@ -124,9 +124,9 @@ impl Player {
     pub fn get_name(&self) -> &str {
         &self.name
     }
-    pub fn add_money(&mut self, money: u32) {
-        if self.money + money > Setting::get_max_money_of_player() {
-            self.money = Setting::get_max_money_of_player();
+    pub fn add_money(&mut self, money: u32, setting: &Setting) {
+        if self.money + money > setting.max_money_of_player {
+            self.money = setting.max_money_of_player;
         } else {
             self.money += money;
         }
