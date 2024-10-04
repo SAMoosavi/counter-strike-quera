@@ -26,9 +26,9 @@ impl fmt::Display for TypeOfGun {
 impl TypeOfGun {
     pub fn to_string(&self) -> &str {
         match &self {
-            TypeOfGun::Heavy => "Heavy",
-            TypeOfGun::Pistol => "Pistol",
-            TypeOfGun::Knife => "Knife",
+            TypeOfGun::Heavy => "heavy",
+            TypeOfGun::Pistol => "pistol",
+            TypeOfGun::Knife => "knife",
         }
     }
 
