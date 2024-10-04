@@ -14,7 +14,6 @@ fn fill_setting_for_create_player() {
     Setting::set_lose_team_money(2400).unwrap();
     Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
     Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
-
 }
 
 #[test]
