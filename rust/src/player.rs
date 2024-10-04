@@ -132,14 +132,6 @@ impl Player {
         }
     }
 
-    pub fn subtract_money(&mut self, money: u32) {
-        if self.money < money {
-            self.money = 0;
-        } else {
-            self.money -= money;
-        }
-    }
-
     pub fn to_string(&self) -> String {
         format!("{} {} {}", self.name, self.kills, self.death)
     }

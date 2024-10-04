@@ -6,35 +6,38 @@ use std::rc::Rc;
 
 fn create_player() -> Player {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-    Setting::set_default_gun(&Rc::new(gun)).unwrap();
-    Setting::set_default_money_of_player(1000).unwrap();
-    Setting::set_won_team_money(2700).unwrap();
-    Setting::set_lose_team_money(2400).unwrap();
-    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
-    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
+    let mut setting = Setting::default();
+    setting.default_gun = Some(Rc::new(gun));
+    setting.default_money_of_player = 1000;
+    setting.won_team_money = 2700;
+    setting.lose_team_money = 2400;
+    setting.max_time_buy = Some(GameTime::new(0, 45, 0));
+    setting.did_time_of_player = Some(GameTime::new(0, 3, 0));
 
     let time = GameTime::new(0, 0, 10);
-    Player::new("p1".to_string(), time).unwrap()
+    Player::new("p1".to_string(), time, &setting).unwrap()
 }
 
 #[test]
 pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_error() {
-    Setting::reset();
+    let setting = Setting::default();
     let time = GameTime::new(0, 0, 10);
-    assert!(Player::new("p1".to_string(), time).is_err());
+    assert!(Player::new("p1".to_string(), time, &setting).is_err());
 }
 
 #[test]
 pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-    Setting::set_default_gun(&Rc::new(gun)).unwrap();
-    Setting::set_default_money_of_player(1000).unwrap();
-    Setting::set_won_team_money(2700).unwrap();
-    Setting::set_lose_team_money(2400).unwrap();
-    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
-    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
+    let mut setting = Setting::default();
+    setting.default_gun = Some(Rc::new(gun));
+    setting.default_money_of_player = 1000;
+    setting.won_team_money = 2700;
+    setting.lose_team_money = 2400;
+    setting.max_time_buy = Some(GameTime::new(0, 45, 0));
+    setting.did_time_of_player = Some(GameTime::new(0, 3, 0));
+
     let time = GameTime::new(0, 0, 10);
-    assert!(Player::new("p1".to_string(), time).is_ok());
+    assert!(Player::new("p1".to_string(), time, &setting).is_ok());
 }
 
 #[test]
@@ -117,7 +120,7 @@ pub fn player_can_not_buy_gun_when_exist_its_type() {
     let result = player.buy_gun(heavy_gun_2);
     assert!(result.is_err());
 
-    assert_eq!(result.unwrap_err(), "you have a Heavy");
+    assert_eq!(result.unwrap_err(), "you have a heavy");
 }
 
 #[test]
@@ -167,7 +170,7 @@ pub fn the_add_kill_func_should_be_return_error_when_player_does_not_have_this_t
     let result = player.add_kill(&crate::gun::TypeOfGun::Heavy);
 
     assert!(result.is_err());
-    assert_eq!(result.unwrap_err(), "the p1 does not have Heavy gun!");
+    assert_eq!(result.unwrap_err(), "the p1 does not have heavy gun!");
 }
 
 #[test]
@@ -196,9 +199,10 @@ pub fn the_add_money_should_be_set_money_sum_of_current_money_and_added_money_wh
 ) {
     let mut player = create_player();
     player.money = 100;
-    Setting::set_max_money_of_player(1000).unwrap();
+    let mut setting = Setting::default();
+    setting.max_money_of_player = 1000;
 
-    player.add_money(200);
+    player.add_money(200, &setting);
 
     assert_eq!(player.money, 300);
 }
@@ -206,51 +210,34 @@ pub fn the_add_money_should_be_set_money_sum_of_current_money_and_added_money_wh
 pub fn the_add_money_should_be_set_max_money_when_the_sum_is_more_than_max_money_of_player() {
     let mut player = create_player();
     player.money = 100;
-    Setting::set_max_money_of_player(1000).unwrap();
+    let mut setting = Setting::default();
+    setting.max_money_of_player = 1000;
 
-    player.add_money(1100);
+    player.add_money(1100, &setting);
 
     assert_eq!(player.money, 1000);
 }
 
 #[test]
-pub fn the_subtract_money_should_be_set_money_sum_of_current_money_and_subtracted_money_when_the_sum_is_more_than_0(
-) {
-    let mut player = create_player();
-    player.money = 1000;
-
-    player.subtract_money(500);
-
-    assert_eq!(player.money, 500);
-}
-#[test]
-pub fn the_subtract_money_should_be_set_0_when_the_sum_is_less_than_0() {
-    let mut player = create_player();
-    player.money = 100;
-
-    player.subtract_money(1500);
-
-    assert_eq!(player.money, 0);
-}
-#[test]
 pub fn test_cmp() {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-    Setting::set_default_money_of_player(1000).unwrap();
-    Setting::set_default_gun(&Rc::new(gun)).unwrap();
-    Setting::set_won_team_money(2700).unwrap();
-    Setting::set_lose_team_money(2400).unwrap();
-    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
-    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
+    let mut setting = Setting::default();
+    setting.default_money_of_player = 1000;
+    setting.default_gun = Some(Rc::new(gun));
+    setting.won_team_money = 2700;
+    setting.lose_team_money = 2400;
+    setting.max_time_buy = Some(GameTime::new(0, 45, 0));
+    setting.did_time_of_player = Some(GameTime::new(0, 3, 0));
 
-    let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 10)).unwrap();
-    let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 20)).unwrap();
+    let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 10), &setting).unwrap();
+    let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 20), &setting).unwrap();
     assert!(p1 > p2);
-    let p3 = Player::new("p3".to_string(), GameTime::new(0, 0, 10)).unwrap();
+    let p3 = Player::new("p3".to_string(), GameTime::new(0, 0, 10), &setting).unwrap();
     assert_eq!(p1, p3);
-    let mut p4 = Player::new("p4".to_string(), GameTime::new(0, 0, 10)).unwrap();
+    let mut p4 = Player::new("p4".to_string(), GameTime::new(0, 0, 10), &setting).unwrap();
     p4.kills = 1;
     assert!(p4 > p1);
-    let mut p5 = Player::new("p4".to_string(), GameTime::new(0, 0, 10)).unwrap();
+    let mut p5 = Player::new("p4".to_string(), GameTime::new(0, 0, 10), &setting).unwrap();
     p5.death = 1;
     assert!(p5 < p1);
 }

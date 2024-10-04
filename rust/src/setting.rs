@@ -1,9 +1,6 @@
 use crate::{game_time::GameTime, gun::Gun};
 use std::{fmt, rc::Rc};
 
-#[cfg(test)]
-mod test;
-
 #[derive(Debug, Default)]
 pub struct Setting {
     pub max_money_of_player: u32,
@@ -48,18 +45,5 @@ impl Setting {
             max_time_buy: None,
             did_time_of_player: None,
         }
-    }
-
-    #[cfg(test)]
-    pub fn reset(&mut self) {
-        self.max_money_of_player = 0;
-        self.default_money_of_player = 0;
-        self.default_gun = None;
-        self.max_number_of_team_players = 0;
-        self.won_team_money = 0;
-        self.lose_team_money = 0;
-        self.friendly_fire = false;
-        self.max_time_buy = None;
-        self.did_time_of_player = None;
     }
 }
