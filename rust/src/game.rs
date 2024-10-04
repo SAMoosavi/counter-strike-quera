@@ -42,7 +42,6 @@ impl fmt::Display for TeamId {
 
 pub struct Game {
     teams: HashMap<TeamId, Team>,
-    _round: u32,
 }
 
 impl Game {
@@ -52,6 +51,7 @@ impl Game {
         Setting::set_max_number_of_team_players(10).unwrap();
         Setting::set_won_team_money(2700).unwrap();
         Setting::set_lose_team_money(2400).unwrap();
+        Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
 
         let knife = Rc::new(Gun::new("knife".to_string(), 0, 43, 500, TypeOfGun::Knife));
         Setting::set_default_gun(&knife).unwrap();
@@ -97,7 +97,6 @@ impl Game {
                 (TeamId::Terrorist, terrorist),
                 (TeamId::CounterTerrorist, counter_terrorist),
             ]),
-            _round: 0,
         }
     }
 

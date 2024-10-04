@@ -58,17 +58,17 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<(), String> {
 fn main() {
     let mut game = Game::new();
 
-    let mut round = String::new();
-    io::stdin().read_line(&mut round).unwrap();
-    let round: u8 = round.trim().parse().unwrap();
-    for _ in 0..round {
+    let mut number_of_round = String::new();
+    io::stdin().read_line(&mut number_of_round).unwrap();
+    let number_of_round: u8 = number_of_round.trim().parse().unwrap();
+    for _ in 0..number_of_round {
         game.reset();
 
-        let mut act = String::new();
-        io::stdin().read_line(&mut act).unwrap();
-        let act: Vec<&str> = act.split_whitespace().collect();
-        let act: u8 = act[1].trim().parse().unwrap();
-        for _ in 0..act {
+        let mut number_of_act = String::new();
+        io::stdin().read_line(&mut number_of_act).unwrap();
+        let number_of_act: Vec<&str> = number_of_act.split_whitespace().collect();
+        let number_of_act: u8 = number_of_act[1].trim().parse().unwrap();
+        for _ in 0..number_of_act {
             let mut query = String::new();
             io::stdin().read_line(&mut query).unwrap();
             let query: Vec<&str> = query.split_whitespace().collect();
