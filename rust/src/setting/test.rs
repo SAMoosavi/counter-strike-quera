@@ -40,7 +40,7 @@ pub fn test_get_and_set_default_gun() {
         TypeOfGun::Knife,
     ));
     Setting::reset();
-    assert!(Setting::set_default_gun(gun.clone()).is_ok());
+    assert!(Setting::set_default_gun(&gun).is_ok());
     assert_eq!(Setting::get_default_gun(), Some(gun));
     Setting::reset();
 }
@@ -54,7 +54,7 @@ pub fn test_set_default_gun_fail() {
         TypeOfGun::Pistol,
     ));
     Setting::reset();
-    assert!(Setting::set_default_gun(gun).is_err());
+    assert!(Setting::set_default_gun(&gun).is_err());
     assert_eq!(Setting::get_default_gun(), None);
     Setting::reset();
 }
@@ -71,6 +71,6 @@ pub fn test_get_setting() {
 pub fn test_setting_display() {
     Setting::reset();
     let setting = Setting::get_setting();
-    assert_eq!(format!("{}", setting), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0, won_team_money: 0, lose_team_money: 0, friendly_fire: false}");
+    assert_eq!(format!("{}", setting), "Setting {max_money_of_player: 0, default_money_of_player: 0, default_gun: None, max_number_of_team_players: 0, won_team_money: 0, lose_team_money: 0, friendly_fire: false, max_time_buy: None, did_time_of_player: None}");
     Setting::reset();
 }

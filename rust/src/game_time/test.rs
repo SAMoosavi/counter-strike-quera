@@ -8,8 +8,6 @@ pub fn test_cmp() {
     assert!(time1 > time3);
     let time4 = GameTime::new(9, 10, 10);
     assert!(time1 > time4);
-    let time5 = GameTime::new(10, 10, 10);
-    assert!(time1 > time5);
     let time6 = GameTime::new(10, 10, 10);
     assert_eq!(time1, time6);
     let time7 = GameTime::new(10, 10, 11);
@@ -18,8 +16,6 @@ pub fn test_cmp() {
     assert!(time1 < time8);
     let time9 = GameTime::new(11, 10, 10);
     assert!(time1 < time9);
-    let time10 = GameTime::new(10, 10, 10);
-    assert!(time1 < time10);
 }
 #[test]
 pub fn test_new() {

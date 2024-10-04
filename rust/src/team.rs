@@ -55,7 +55,7 @@ impl Team {
     pub fn is_player_alive(&self, name: &str) -> Result<bool, String> {
         match self.get_player(name) {
             Some(player) => Ok(player.borrow().is_alive()),
-            None => Err(format!("the player {} is not found", name)),
+            None => Err("invalid username".to_string()),
         }
     }
 
@@ -63,19 +63,16 @@ impl Team {
         match self.get_player(name) {
             Some(player) => match player.borrow().get_gun_with_type(type_of_gun) {
                 Some(gun) => Ok(gun.clone()),
-                None => Err(format!(
-                    "the player {} does not have gun with type {}.",
-                    name, type_of_gun
-                )),
+                None => Err("no such gun".to_string()),
             },
-            None => Err(format!("the player {} does not exist.", name)),
+            None => Err("invalid username".to_string()),
         }
     }
 
     pub fn shut(&mut self, name: &str, damage: u32) -> Result<u32, String> {
         match self.get_player(name) {
             Some(player) => Ok(player.borrow_mut().shut(damage)?),
-            None => Err(format!("the player {} does not exist.", name)),
+            None => Err("invalid username".to_string()),
         }
     }
 
@@ -86,7 +83,7 @@ impl Team {
     ) -> Result<(), String> {
         match self.get_player(name) {
             Some(player) => player.borrow_mut().add_kill(type_of_gun),
-            None => Err(format!("the player {} does not exist.", name)),
+            None => Err("invalid username".to_string()),
         }
     }
 
@@ -126,14 +123,14 @@ impl Team {
     pub fn get_money(&self, name: &str) -> Result<u32, String> {
         match self.get_player(name) {
             Some(player) => Ok(player.borrow().get_money()),
-            None => Err(format!("the player {} is not exist", name)),
+            None => Err("invalid username".to_string()),
         }
     }
 
     pub fn get_health(&self, name: &str) -> Result<u32, String> {
         match self.get_player(name) {
             Some(player) => Ok(player.borrow().get_health()),
-            None => Err(format!("the player {} is not exist", name)),
+            None => Err("invalid username".to_string()),
         }
     }
 
@@ -158,10 +155,13 @@ impl Team {
             .find(|player| player.borrow().get_name() == player_name)
         {
             Some(player) => {
+                if !player.borrow().is_alive() {
+                    return Err("deads can not buy".to_string());
+                }
                 let gun = self.guns.get_gun(gun_name)?;
                 player.borrow_mut().buy_gun(gun)
             }
-            None => Err(format!("player with name {} does not find!", gun_name)),
+            None => Err("invalid username".to_string()),
         }
     }
 

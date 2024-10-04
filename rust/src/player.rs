@@ -12,7 +12,7 @@ pub struct Player {
     health: u32,
     money: u32,
     kills: u32,
-    killed: u32,
+    death: u32,
     guns: HashMap<TypeOfGun, Rc<Gun>>,
     start_time: GameTime,
 }
@@ -27,13 +27,24 @@ impl Player {
         if money <= 0 {
             return Err("the default money doesn't set!".to_string());
         }
+        let mut health = 100;
+        match Setting::get_did_time_of_player() {
+            Some(did_time) => {
+                if did_time < time {
+                    health = 0;
+                }
+            }
+            None => {
+                return Err("the default did_time_of_player doesn't set!".to_string());
+            }
+        }
 
         Ok(Self {
             name,
-            health: 100,
+            health,
             money,
             kills: 0,
-            killed: 0,
+            death: 0,
             guns: HashMap::from([(TypeOfGun::Knife, default_gun.unwrap())]),
             start_time: time,
         })
@@ -45,7 +56,7 @@ impl Player {
         }
 
         if self.health <= health {
-            self.killed += 1;
+            self.death += 1;
             self.health = 0;
             let knife = self.guns.get(&TypeOfGun::Knife).unwrap().clone();
             self.guns.clear();
@@ -58,17 +69,12 @@ impl Player {
 
     pub fn buy_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
         if self.money < gun.get_price() {
-            return Err(format!(
-                "{}'s money is {} but need {}",
-                self.name,
-                self.money,
-                gun.get_price()
-            ));
+            return Err("no enough money".to_string());
         }
 
         let gun_type = gun.get_type_of();
         if self.guns.get(gun_type).is_some() {
-            return Err(format!("the {} gun type is exist.", gun.get_type_of()));
+            return Err(format!("you have a {}", gun.get_type_of()));
         }
 
         self.money -= gun.get_price();
@@ -97,8 +103,8 @@ impl Player {
     pub fn get_kills(&self) -> u32 {
         self.kills
     }
-    pub fn get_killed(&self) -> u32 {
-        self.killed
+    pub fn get_death(&self) -> u32 {
+        self.death
     }
     pub fn get_health(&self) -> u32 {
         self.health
@@ -135,14 +141,14 @@ impl Player {
     }
 
     pub fn to_string(&self) -> String {
-        format!("{} {} {}", self.name, self.kills, self.killed)
+        format!("{} {} {}", self.name, self.kills, self.death)
     }
 }
 
 impl PartialEq<Self> for Player {
     fn eq(&self, other: &Self) -> bool {
         self.kills == other.kills
-            && self.killed == other.killed
+            && self.death == other.death
             && self.start_time == other.start_time
     }
 }
@@ -159,10 +165,10 @@ impl Ord for Player {
             return Ordering::Less;
         }
         if self.kills == other.kills {
-            if self.killed > other.killed {
+            if self.death > other.death {
                 return Ordering::Less;
             }
-            if self.killed == other.killed {
+            if self.death == other.death {
                 return self.start_time.cmp(&other.start_time).reverse();
             }
         }

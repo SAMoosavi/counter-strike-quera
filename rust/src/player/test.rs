@@ -6,8 +6,13 @@ use std::rc::Rc;
 
 fn create_player() -> Player {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-    Setting::set_default_gun(Rc::new(gun)).unwrap();
+    Setting::set_default_gun(&Rc::new(gun)).unwrap();
     Setting::set_default_money_of_player(1000).unwrap();
+    Setting::set_won_team_money(2700).unwrap();
+    Setting::set_lose_team_money(2400).unwrap();
+    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
+    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
+
     let time = GameTime::new(0, 0, 10);
     Player::new("p1".to_string(), time).unwrap()
 }
@@ -22,8 +27,12 @@ pub fn new_player_when_get_a_gun_that_type_of_it_is_not_knife_should_be_return_e
 #[test]
 pub fn new_player_when_get_a_gun_that_type_of_it_is_knife_should_be_return_ok() {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-    Setting::set_default_gun(Rc::new(gun)).unwrap();
+    Setting::set_default_gun(&Rc::new(gun)).unwrap();
     Setting::set_default_money_of_player(1000).unwrap();
+    Setting::set_won_team_money(2700).unwrap();
+    Setting::set_lose_team_money(2400).unwrap();
+    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
+    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
     let time = GameTime::new(0, 0, 10);
     assert!(Player::new("p1".to_string(), time).is_ok());
 }
@@ -46,7 +55,7 @@ pub fn player_should_be_live_when_its_health_has_more_then_shut() {
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), 90);
     assert_eq!(player.health, 90);
-    assert_eq!(player.killed, 0);
+    assert_eq!(player.death, 0);
 }
 
 #[test]
@@ -58,7 +67,7 @@ pub fn player_should_be_dead_when_its_health_has_lese_then_shut() {
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), 0);
     assert_eq!(player.health, 0);
-    assert_eq!(player.killed, 1);
+    assert_eq!(player.death, 1);
 }
 
 #[test]
@@ -77,7 +86,7 @@ pub fn player_can_not_buy_gun_when_does_not_have_enough_money() {
     let result = player.buy_gun(gun);
 
     assert!(result.is_err());
-    assert_eq!(result.unwrap_err(), "p1's money is 10 but need 100");
+    assert_eq!(result.unwrap_err(), "no enough money");
 }
 
 #[test]
@@ -108,7 +117,7 @@ pub fn player_can_not_buy_gun_when_exist_its_type() {
     let result = player.buy_gun(heavy_gun_2);
     assert!(result.is_err());
 
-    assert_eq!(result.unwrap_err(), "the Heavy gun type is exist.");
+    assert_eq!(result.unwrap_err(), "you have a Heavy");
 }
 
 #[test]
@@ -227,7 +236,11 @@ pub fn the_subtract_money_should_be_set_0_when_the_sum_is_less_than_0() {
 pub fn test_cmp() {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
     Setting::set_default_money_of_player(1000).unwrap();
-    Setting::set_default_gun(Rc::new(gun)).unwrap();
+    Setting::set_default_gun(&Rc::new(gun)).unwrap();
+    Setting::set_won_team_money(2700).unwrap();
+    Setting::set_lose_team_money(2400).unwrap();
+    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
+    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
 
     let p1 = Player::new("p1".to_string(), GameTime::new(0, 0, 10)).unwrap();
     let p2 = Player::new("p2".to_string(), GameTime::new(0, 0, 20)).unwrap();
@@ -238,6 +251,6 @@ pub fn test_cmp() {
     p4.kills = 1;
     assert!(p4 > p1);
     let mut p5 = Player::new("p4".to_string(), GameTime::new(0, 0, 10)).unwrap();
-    p5.killed = 1;
+    p5.death = 1;
     assert!(p5 < p1);
 }

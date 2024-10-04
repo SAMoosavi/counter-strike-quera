@@ -20,16 +20,19 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<String, String> {
             let name = *query.get(1).unwrap();
             let team_id = TeamId::to_enum(query.get(2).unwrap())?;
             let time = GameTime::new_from_str(query.get(3).unwrap());
+
             game.add_player(team_id, name, &time)
         }
         "GET-MONEY" => {
             let name = *query.get(1).unwrap();
             let time = GameTime::new_from_str(query.get(2).unwrap());
+
             Ok(game.get_money_of_player(name, &time)?.to_string())
         }
         "GET-HEALTH" => {
             let name = *query.get(1).unwrap();
             let time = GameTime::new_from_str(query.get(2).unwrap());
+
             Ok(game.get_health_of_player(name, &time)?.to_string())
         }
         "TAP" => {
@@ -39,6 +42,13 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<String, String> {
             let time = GameTime::new_from_str(query.get(4).unwrap());
 
             game.tap(attacker, attacked, &gun_type, &time)
+        }
+        "BUY" => {
+            let player = *query.get(1).unwrap();
+            let gun = *query.get(2).unwrap();
+            let time = GameTime::new_from_str(query.get(3).unwrap());
+
+            game.buy(player, gun, &time)
         }
         "SCORE-BOARD" => {
             let time = GameTime::new_from_str(query.get(1).unwrap());

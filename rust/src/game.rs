@@ -52,6 +52,7 @@ impl Game {
         Setting::set_won_team_money(2700).unwrap();
         Setting::set_lose_team_money(2400).unwrap();
         Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
+        Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
 
         let knife = Rc::new(Gun::new("knife".to_string(), 0, 43, 500, TypeOfGun::Knife));
         Setting::set_default_gun(&knife).unwrap();
@@ -168,10 +169,7 @@ impl Game {
             .get_players_gun(attacker, type_of_gun)?;
 
         if attacked_team == attacker_team && !Setting::get_friendly_fire() {
-            return Err(format!(
-                "attacker and attacked in same team: {}",
-                self.teams.get_mut(&attacked_team).unwrap().get_name()
-            ));
+            return Err("friendly fire".to_string());
         }
 
         let health = self

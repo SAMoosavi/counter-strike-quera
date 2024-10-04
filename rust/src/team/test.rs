@@ -8,8 +8,13 @@ use crate::setting::Setting;
 
 fn fill_setting_for_create_player() {
     let gun = Gun::new("knife".to_string(), 100, 10, 20, TypeOfGun::Knife);
-    Setting::set_default_gun(Rc::new(gun)).unwrap();
+    Setting::set_default_gun(&Rc::new(gun)).unwrap();
     Setting::set_default_money_of_player(1000).unwrap();
+    Setting::set_won_team_money(2700).unwrap();
+    Setting::set_lose_team_money(2400).unwrap();
+    Setting::set_max_time_buy(&GameTime::new(0, 45, 0)).unwrap();
+    Setting::set_did_time_of_player(&GameTime::new(0, 3, 0)).unwrap();
+
 }
 
 #[test]

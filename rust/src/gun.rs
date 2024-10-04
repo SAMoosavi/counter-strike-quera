@@ -170,7 +170,7 @@ impl Guns {
     pub fn get_gun(&self, name: &str) -> Result<Rc<Gun>, String> {
         match self.list.iter().position(|gun| gun.get_name() == name) {
             Some(index) => Ok(self.list[index].clone()),
-            None => Err(format!("the gun with name {} does not exist!", name)),
+            None => Err("invalid category gun".to_string()),
         }
     }
 

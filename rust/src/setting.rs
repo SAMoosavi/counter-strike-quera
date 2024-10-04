@@ -17,13 +17,14 @@ struct SettingData {
     lose_team_money: u32,
     friendly_fire: bool,
     max_time_buy: Option<GameTime>,
+    did_time_of_player: Option<GameTime>,
 }
 
 impl fmt::Display for SettingData {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}, won_team_money: {}, lose_team_money: {}, friendly_fire: {}, max_time_buy: {:?}}}",
+            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}, won_team_money: {}, lose_team_money: {}, friendly_fire: {}, max_time_buy: {:?}, did_time_of_player: {:?}}}",
             self.max_money_of_player,
             self.default_money_of_player,
             self.default_gun,
@@ -31,7 +32,8 @@ impl fmt::Display for SettingData {
             self.won_team_money,
             self.lose_team_money,
             self.friendly_fire,
-            self.max_time_buy
+            self.max_time_buy,
+            self.did_time_of_player
         )
     }
 }
@@ -47,6 +49,7 @@ impl SettingData {
             lose_team_money: 0,
             friendly_fire: false,
             max_time_buy: None,
+            did_time_of_player: None,
         }
     }
 
@@ -60,6 +63,7 @@ impl SettingData {
         self.lose_team_money = 0;
         self.friendly_fire = false;
         self.max_time_buy = None;
+        self.did_time_of_player = None;
     }
 }
 
@@ -157,6 +161,18 @@ impl Setting {
             return Err("the max_time_buy should not be None!".to_string());
         }
         SETTING.with(|x| x.borrow_mut().max_time_buy = Some(max_time_buy.clone()));
+        Ok(())
+    }
+
+    pub fn get_did_time_of_player() -> Option<GameTime> {
+        SETTING.with(|x| x.borrow().did_time_of_player.clone())
+    }
+
+    pub fn set_did_time_of_player(did_time_of_player: &GameTime) -> Result<(), String> {
+        if !(did_time_of_player > &GameTime::new(0, 0, 0)) {
+            return Err("the did_time_of_player should not be None!".to_string());
+        }
+        SETTING.with(|x| x.borrow_mut().did_time_of_player = Some(did_time_of_player.clone()));
         Ok(())
     }
 }
