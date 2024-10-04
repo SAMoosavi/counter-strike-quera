@@ -1,4 +1,7 @@
-use crate::gun::{Gun, TypeOfGun};
+use crate::{
+    game_time::GameTime,
+    gun::{Gun, TypeOfGun},
+};
 use std::{cell::RefCell, fmt, rc::Rc};
 
 #[cfg(test)]
@@ -13,13 +16,14 @@ struct SettingData {
     won_team_money: u32,
     lose_team_money: u32,
     friendly_fire: bool,
+    max_time_buy: Option<GameTime>,
 }
 
 impl fmt::Display for SettingData {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}, won_team_money: {}, lose_team_money: {}, friendly_fire: {}}}",
+            "Setting {{max_money_of_player: {}, default_money_of_player: {}, default_gun: {:?}, max_number_of_team_players: {}, won_team_money: {}, lose_team_money: {}, friendly_fire: {}, max_time_buy: {:?}}}",
             self.max_money_of_player,
             self.default_money_of_player,
             self.default_gun,
@@ -27,6 +31,7 @@ impl fmt::Display for SettingData {
             self.won_team_money,
             self.lose_team_money,
             self.friendly_fire,
+            self.max_time_buy
         )
     }
 }
@@ -40,7 +45,8 @@ impl SettingData {
             max_number_of_team_players: 0,
             won_team_money: 0,
             lose_team_money: 0,
-            friendly_fire : false,
+            friendly_fire: false,
+            max_time_buy: None,
         }
     }
 
@@ -53,6 +59,7 @@ impl SettingData {
         self.won_team_money = 0;
         self.lose_team_money = 0;
         self.friendly_fire = false;
+        self.max_time_buy = None;
     }
 }
 
@@ -90,7 +97,9 @@ impl Setting {
 
     pub fn set_default_gun(gun: &Rc<Gun>) -> Result<(), String> {
         match gun.get_type_of() {
-            TypeOfGun::Knife => Ok(SETTING.with(|x| x.borrow_mut().default_gun = Some(gun.clone()))),
+            TypeOfGun::Knife => {
+                Ok(SETTING.with(|x| x.borrow_mut().default_gun = Some(gun.clone())))
+            }
             _ => Err("the default gun should be knife type.".to_string()),
         }
     }
@@ -137,6 +146,18 @@ impl Setting {
 
     pub fn get_friendly_fire() -> bool {
         SETTING.with(|x| x.borrow().friendly_fire)
+    }
+
+    pub fn get_max_time_buy() -> Option<GameTime> {
+        SETTING.with(|x| x.borrow().max_time_buy.clone())
+    }
+
+    pub fn set_max_time_buy(max_time_buy: &GameTime) -> Result<(), String> {
+        if max_time_buy > &GameTime::new(0, 0, 0) {
+            return Err("the max_time_buy should not be None!".to_string());
+        }
+        SETTING.with(|x| x.borrow_mut().max_time_buy = Some(max_time_buy.clone()));
+        Ok(())
     }
 }
 

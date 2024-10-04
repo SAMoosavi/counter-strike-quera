@@ -190,9 +190,17 @@ impl Game {
         Ok(())
     }
 
-    pub fn buy(&mut self, player: &str, gun: &str, _time: &GameTime) -> Result<(), String> {
-        let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
-        team.buy_gun(player, gun)
+    pub fn buy(&mut self, player: &str, gun: &str, time: &GameTime) -> Result<(), String> {
+        match Setting::get_max_time_buy() {
+            None => Err("the max_time_buy not initialized!".to_string()),
+            Some(max_time) => {
+                if time > &max_time {
+                    return Err(format!("you are out of Time: {:?}", max_time));
+                }
+                let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
+                team.buy_gun(player, gun)
+            }
+        }
     }
 
     pub fn reset(&mut self) -> &str {
@@ -239,7 +247,13 @@ impl Game {
     }
 
     pub fn score_board(&self, _time: &GameTime) -> String {
-        self.teams.get(&TeamId::CounterTerrorist).unwrap().score_board()
-            + &self.teams.get(&TeamId::Terrorist).unwrap().score_board()
+        let counter_terrorism = self
+            .teams
+            .get(&TeamId::CounterTerrorist)
+            .unwrap()
+            .score_board();
+        let terrorism = self.teams.get(&TeamId::Terrorist).unwrap().score_board();
+
+        counter_terrorism + &terrorism
     }
 }
