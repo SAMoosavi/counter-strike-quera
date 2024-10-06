@@ -1,7 +1,7 @@
 use crate::game_time::GameTime;
 use crate::gun::{Gun, TypeOfGun};
 use crate::setting::Setting;
-use std::{cmp::Ordering, collections::HashMap, rc::Rc};
+use std::{cmp::Ordering, collections::HashMap, fmt, rc::Rc};
 
 #[cfg(test)]
 mod test;
@@ -24,7 +24,7 @@ impl Player {
             return Err("the default gun doesn't set!".to_string());
         }
         let money = setting.default_money_of_player;
-        if money <= 0 {
+        if money == 0 {
             return Err("the default money doesn't set!".to_string());
         }
         let mut health = 100;
@@ -51,7 +51,7 @@ impl Player {
     }
 
     pub fn shut(&mut self, health: u32) -> Result<u32, String> {
-        if self.health <= 0 {
+        if self.health == 0 {
             return Err(format!("{} did!", self.name));
         }
 
@@ -73,7 +73,7 @@ impl Player {
         }
 
         let gun_type = gun.get_type_of();
-        if self.guns.get(gun_type).is_some() {
+        if self.guns.contains_key(gun_type) {
             return Err(format!("you have a {}", gun.get_type_of()));
         }
 
@@ -131,9 +131,10 @@ impl Player {
             self.money += money;
         }
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{} {} {}", self.name, self.kills, self.death)
+}
+impl fmt::Display for Player {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{} {} {}", self.name, self.kills, self.death)
     }
 }
 

@@ -1,9 +1,7 @@
-use std::cmp::Ordering;
-
 #[cfg(test)]
 mod test;
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct GameTime {
     minute: u32,
     second: u32,
@@ -23,19 +21,9 @@ impl GameTime {
         let time = time.split(":").collect::<Vec<&str>>();
 
         Self {
-            minute: time.get(0).unwrap().trim().parse().unwrap(),
-            second: time.get(1).unwrap().trim().parse().unwrap(),
-            millisecond: time.get(2).unwrap().trim().parse().unwrap(),
+            minute: time[0].trim().parse().unwrap(),
+            second: time[1].trim().parse().unwrap(),
+            millisecond: time[2].trim().parse().unwrap(),
         }
-    }
-}
-
-impl Ord for GameTime {
-    fn cmp(&self, other: &Self) -> Ordering {
-        (self.minute, self.second, self.millisecond).cmp(&(
-            other.minute,
-            other.second,
-            other.millisecond,
-        ))
     }
 }

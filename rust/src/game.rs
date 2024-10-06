@@ -45,20 +45,26 @@ pub struct Game {
     setting: Setting,
 }
 
+impl Default for Game {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Game {
     pub fn new() -> Self {
-        let mut setting = Setting::default();
-
-        setting.max_money_of_player = 10000;
-        setting.default_money_of_player = 1000;
-        setting.max_number_of_team_players = 10;
-        setting.won_team_money = 2700;
-        setting.lose_team_money = 2400;
-        setting.max_time_buy = Some(GameTime::new(0, 45, 0));
-        setting.did_time_of_player = Some(GameTime::new(0, 3, 0));
-
         let knife = Rc::new(Gun::new("knife".to_string(), 0, 43, 500, TypeOfGun::Knife));
-        setting.default_gun = Some(knife.clone());
+        let setting = Setting {
+            max_money_of_player: 10000,
+            default_money_of_player: 1000,
+            max_number_of_team_players: 10,
+            won_team_money: 2700,
+            lose_team_money: 2400,
+            max_time_buy: Some(GameTime::new(0, 45, 0)),
+            did_time_of_player: Some(GameTime::new(0, 3, 0)),
+            default_gun: Some(knife.clone()),
+            friendly_fire: false,
+        };
 
         let mut terrorist_guns = Box::new(Guns::new());
         terrorist_guns.add_gun(&knife).unwrap();
@@ -110,7 +116,6 @@ impl Game {
             .iter()
             .find(|team| team.1.has_player(name))
             .map(|team| team.0)
-            .clone()
     }
 
     fn has_player(&self, name: &str) -> bool {
@@ -196,7 +201,7 @@ impl Game {
         match &self.setting.max_time_buy {
             None => Err("the max_time_buy not initialized!".to_string()),
             Some(max_time) => {
-                if time > &max_time {
+                if time > max_time {
                     return Err(format!("you are out of Time: {:?}", max_time));
                 }
                 let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
@@ -267,7 +272,7 @@ impl Game {
             .score_board();
         let terrorism = self.teams.get(&TeamId::Terrorist).unwrap().score_board();
 
-        let ans = vec![counter_terrorism, terrorism];
+        let ans = [counter_terrorism, terrorism];
         ans.join("\n")
     }
 }

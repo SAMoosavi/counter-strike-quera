@@ -13,8 +13,8 @@ use crate::game_time::GameTime;
 
 use std::io;
 
-fn handel(game: &mut Game, query: &Vec<&str>) -> Result<String, String> {
-    let command = *query.get(0).unwrap();
+fn handel(game: &mut Game, query: &[&str]) -> Result<String, String> {
+    let command = *query.first().unwrap();
     match command {
         "ADD-USER" => {
             let name = *query.get(1).unwrap();
@@ -38,7 +38,7 @@ fn handel(game: &mut Game, query: &Vec<&str>) -> Result<String, String> {
         "TAP" => {
             let attacker = *query.get(1).unwrap();
             let attacked = *query.get(2).unwrap();
-            let gun_type = TypeOfGun::to_enum(*query.get(3).unwrap())?;
+            let gun_type = TypeOfGun::to_enum(query.get(3).unwrap())?;
             let time = GameTime::new_from_str(query.get(4).unwrap());
 
             game.tap(attacker, attacked, &gun_type, &time)

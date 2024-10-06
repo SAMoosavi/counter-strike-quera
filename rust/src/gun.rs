@@ -158,13 +158,13 @@ impl Guns {
         Ok(())
     }
 
-    pub fn get_knife(&self) -> Result<Rc<Gun>, ()> {
+    pub fn get_knife(&self) -> Result<Rc<Gun>, String> {
         for gun in &self.list {
             if gun.get_type_of() == &TypeOfGun::Knife {
                 return Ok(gun.clone());
             }
         }
-        Err(())
+        Err("knife doesn't exist".to_string())
     }
 
     pub fn get_gun(&self, name: &str) -> Result<Rc<Gun>, String> {
@@ -174,9 +174,9 @@ impl Guns {
         }
     }
 
-    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, ()> {
+    pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, String> {
         if type_of_gun == TypeOfGun::Knife {
-            return Err(());
+            return Err("the knife cannot be received".to_string());
         }
         Ok(self
             .list

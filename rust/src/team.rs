@@ -42,15 +42,15 @@ impl Team {
         }
 
         let player = Player::new(name.to_string(), time.clone(), setting)?;
-        Ok(self.players.push(Rc::new(RefCell::new(player))))
+        self.players.push(Rc::new(RefCell::new(player)));
+        Ok(())
     }
 
     fn get_player(&self, name: &str) -> Option<Rc<RefCell<Player>>> {
         self.players
             .iter()
             .find(|player| player.borrow().get_name() == name)
-            .map(|player| player.clone())
-            .clone()
+            .cloned()
     }
 
     pub fn has_player(&self, name: &str) -> bool {
@@ -179,7 +179,7 @@ impl Team {
             .get_players()
             .iter()
             .enumerate()
-            .map(|element| format!("{} {}", element.0 + 1, element.1.borrow().to_string()))
+            .map(|element| format!("{} {}", element.0 + 1, element.1.borrow()))
             .collect();
 
         format!("{}-Players:\n{}", self.name, players.join("\n"))

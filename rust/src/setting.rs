@@ -31,19 +31,3 @@ impl fmt::Display for Setting {
         )
     }
 }
-
-impl Setting {
-    pub fn default() -> Self {
-        Self {
-            max_money_of_player: 0,
-            default_money_of_player: 0,
-            default_gun: None,
-            max_number_of_team_players: 0,
-            won_team_money: 0,
-            lose_team_money: 0,
-            friendly_fire: false,
-            max_time_buy: None,
-            did_time_of_player: None,
-        }
-    }
-}
