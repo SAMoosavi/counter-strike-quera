@@ -83,15 +83,6 @@ impl Gun {
     }
 }
 
-impl fmt::Display for Gun {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Gun {{ name: {}, price: {}, damage: {}, gift: {}, type_of: {} }}",
-            self.name, self.price, self.damage, self.gift, self.type_of
-        )
-    }
-}
 impl PartialEq for Gun {
     fn eq(&self, other: &Self) -> bool {
         self.damage == other.damage
