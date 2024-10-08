@@ -215,16 +215,8 @@ impl Game {
     pub fn end_of_round(&mut self) -> &str {
         let msg;
 
-        if !self
-            .teams
-            .get(&TeamId::CounterTerrorist)
-            .unwrap()
-            .does_live_player_exist()
-            && self
-                .teams
-                .get(&TeamId::Terrorist)
-                .unwrap()
-                .does_live_player_exist()
+        if !self.teams[&TeamId::CounterTerrorist].does_live_player_exist()
+            && self.teams[&TeamId::Terrorist].does_live_player_exist()
         {
             self.teams
                 .get_mut(&TeamId::Terrorist)
