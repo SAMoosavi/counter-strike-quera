@@ -133,7 +133,7 @@ impl Guns {
         Ok(())
     }
 
-    pub fn add_gun(&mut self, gun: &Rc<Gun>) -> Result<(), String> {
+    pub fn add_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
         if self.list.iter().any(|x| gun.get_name() == x.get_name()) {
             return Err("the gun is exist!".to_string());
         } else if gun.get_type_of() == &TypeOfGun::Knife
@@ -145,7 +145,7 @@ impl Guns {
             return Err("The knife exist".to_string());
         }
 
-        self.list.push(gun.clone());
+        self.list.push(gun);
         Ok(())
     }
 

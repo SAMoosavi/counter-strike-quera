@@ -67,7 +67,7 @@ impl Game {
         };
 
         let mut terrorist_guns = Box::new(Guns::new());
-        terrorist_guns.add_gun(&knife).unwrap();
+        terrorist_guns.add_gun(knife.clone()).unwrap();
         terrorist_guns
             .create_gun("AK".to_string(), 2700, 31, 100, TypeOfGun::Heavy)
             .unwrap();
@@ -85,7 +85,7 @@ impl Game {
         terrorist.fill_gun(terrorist_guns);
 
         let mut counter_terrorist_guns = Box::new(Guns::new());
-        counter_terrorist_guns.add_gun(&knife).unwrap();
+        counter_terrorist_guns.add_gun(knife.clone()).unwrap();
         counter_terrorist_guns
             .create_gun("M4A1".to_string(), 2700, 29, 100, TypeOfGun::Heavy)
             .unwrap();
