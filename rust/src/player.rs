@@ -57,7 +57,7 @@ impl Player {
         if self.health <= health {
             self.death += 1;
             self.health = 0;
-            let knife = self.guns.get(&TypeOfGun::Knife).unwrap().clone();
+            let knife = self.guns[&TypeOfGun::Knife].clone();
             self.guns.clear();
             self.guns.insert(TypeOfGun::Knife, knife);
         } else {

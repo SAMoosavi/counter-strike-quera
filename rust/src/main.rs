@@ -14,44 +14,44 @@ use crate::game_time::GameTime;
 use std::io;
 
 fn handel(game: &mut Game, query: &[&str]) -> Result<String, String> {
-    let command = *query.first().unwrap();
+    let command = query[0];
     match command {
         "ADD-USER" => {
-            let name = *query.get(1).unwrap();
-            let team_id = TeamId::to_enum(query.get(2).unwrap())?;
-            let time = GameTime::new_from_str(query.get(3).unwrap());
+            let name = query[1];
+            let team_id = TeamId::to_enum(query[2])?;
+            let time = GameTime::new_from_str(query[3]);
 
             game.add_player(team_id, name, &time)
         }
         "GET-MONEY" => {
-            let name = *query.get(1).unwrap();
-            let time = GameTime::new_from_str(query.get(2).unwrap());
+            let name = query[1];
+            let time = GameTime::new_from_str(query[2]);
 
             Ok(game.get_money_of_player(name, &time)?.to_string())
         }
         "GET-HEALTH" => {
-            let name = *query.get(1).unwrap();
-            let time = GameTime::new_from_str(query.get(2).unwrap());
+            let name = query[1];
+            let time = GameTime::new_from_str(query[2]);
 
             Ok(game.get_health_of_player(name, &time)?.to_string())
         }
         "TAP" => {
-            let attacker = *query.get(1).unwrap();
-            let attacked = *query.get(2).unwrap();
-            let gun_type = TypeOfGun::to_enum(query.get(3).unwrap())?;
-            let time = GameTime::new_from_str(query.get(4).unwrap());
+            let attacker = query[1];
+            let attacked = query[2];
+            let gun_type = TypeOfGun::to_enum(query[3])?;
+            let time = GameTime::new_from_str(query[4]);
 
             game.tap(attacker, attacked, &gun_type, &time)
         }
         "BUY" => {
-            let player = *query.get(1).unwrap();
-            let gun = *query.get(2).unwrap();
-            let time = GameTime::new_from_str(query.get(3).unwrap());
+            let player = query[1];
+            let gun = query[2];
+            let time = GameTime::new_from_str(query[3]);
 
             game.buy(player, gun, &time)
         }
         "SCORE-BOARD" => {
-            let time = GameTime::new_from_str(query.get(1).unwrap());
+            let time = GameTime::new_from_str(query[1]);
 
             Ok(game.score_board(&time))
         }
@@ -60,7 +60,7 @@ fn handel(game: &mut Game, query: &[&str]) -> Result<String, String> {
 }
 
 fn main() {
-    let mut game = Game::new();
+    let mut game = Game::new().unwrap();
 
     let mut number_of_round = String::new();
     io::stdin().read_line(&mut number_of_round).unwrap();
