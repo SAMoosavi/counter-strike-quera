@@ -2,6 +2,7 @@ use crate::game_time::GameTime;
 use crate::gun::{Gun, Guns, TypeOfGun};
 use crate::player::Player;
 use crate::setting::Setting;
+use itertools::Itertools;
 use std::rc::Rc;
 
 #[cfg(test)]
@@ -159,14 +160,14 @@ impl Team {
     }
 
     pub fn score_board(&self) -> String {
-        // TODO: should be sort it
-        let players: Vec<String> = self
+        let players = self
             .players
             .iter()
+            .sorted()
             .enumerate()
             .map(|element| format!("{} {}", element.0 + 1, element.1))
-            .collect();
+            .join("\n");
 
-        format!("{}-Players:\n{}", self.name, players.join("\n"))
+        format!("{}-Players:\n{}", self.name, players)
     }
 }
