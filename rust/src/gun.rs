@@ -1,5 +1,5 @@
-use std::fmt;
-use std::rc::Rc;
+use clap::ValueEnum;
+use std::{fmt, rc::Rc};
 
 #[cfg(test)]
 mod tests_of_type_of_gun;
@@ -10,7 +10,7 @@ mod tests_gun;
 #[cfg(test)]
 mod tests_guns;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Hash)]
 pub enum TypeOfGun {
     Heavy,
     Pistol,
@@ -29,15 +29,6 @@ impl TypeOfGun {
             TypeOfGun::Heavy => "heavy",
             TypeOfGun::Pistol => "pistol",
             TypeOfGun::Knife => "knife",
-        }
-    }
-
-    pub fn to_enum(name: &str) -> Result<TypeOfGun, String> {
-        match &name.to_lowercase().replace("_", "-").replace(" ", "-")[0..] {
-            "heavy" => Ok(TypeOfGun::Heavy),
-            "pistol" => Ok(TypeOfGun::Pistol),
-            "knife" => Ok(TypeOfGun::Knife),
-            _ => Err(format!("the name of {} isn't correct.", name)),
         }
     }
 }

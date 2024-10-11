@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 #[cfg(test)]
 mod test;
 
@@ -16,14 +18,27 @@ impl GameTime {
             millisecond,
         }
     }
+}
 
-    pub fn new_from_str(time: &str) -> Self {
-        let time = time.split(":").collect::<Vec<&str>>();
+impl FromStr for GameTime {
+    type Err = String;
 
-        Self {
-            minute: time[0].trim().parse().unwrap(),
-            second: time[1].trim().parse().unwrap(),
-            millisecond: time[2].trim().parse().unwrap(),
+    // Custom parsing logic for `Time`
+    fn from_str(time: &str) -> Result<Self, Self::Err> {
+        // Split the input string by ":"
+        let time: Vec<u32> = time
+            .split(":")
+            .map(|s| s.trim().parse::<u32>().unwrap())
+            .collect();
+
+        if time.len() != 3 {
+            return Err("the time is not correct!".to_string());
         }
+
+        Ok(Self {
+            minute: time[0],
+            second: time[1],
+            millisecond: time[2],
+        })
     }
 }

@@ -1,3 +1,4 @@
+use clap::ValueEnum;
 use std::{collections::HashMap, fmt, rc::Rc};
 
 use crate::{
@@ -7,7 +8,7 @@ use crate::{
     team::Team,
 };
 
-#[derive(Eq, PartialEq, Hash, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Hash)]
 pub enum TeamId {
     Terrorist,
     CounterTerrorist,
@@ -18,14 +19,6 @@ impl TeamId {
         match &self {
             TeamId::Terrorist => "Terrorist",
             TeamId::CounterTerrorist => "Counter-Terrorist",
-        }
-    }
-
-    pub fn to_enum(name: &str) -> Result<TeamId, String> {
-        match &name.to_lowercase().replace("_", "-").replace(" ", "-")[0..] {
-            "counter-terrorist" => Ok(TeamId::CounterTerrorist),
-            "terrorist" => Ok(TeamId::Terrorist),
-            _ => Err(format!("the name of {} isn't correct.", name)),
         }
     }
 }
