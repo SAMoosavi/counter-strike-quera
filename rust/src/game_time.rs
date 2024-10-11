@@ -23,22 +23,25 @@ impl GameTime {
 impl FromStr for GameTime {
     type Err = String;
 
-    // Custom parsing logic for `Time`
     fn from_str(time: &str) -> Result<Self, Self::Err> {
-        // Split the input string by ":"
-        let time: Vec<u32> = time
-            .split(":")
-            .map(|s| s.trim().parse::<u32>().unwrap())
+        let parts: Result<Vec<u32>, _> = time
+            .split(':')
+            .map(|s| s.trim().parse::<u32>())
             .collect();
 
-        if time.len() != 3 {
-            return Err("the time is not correct!".to_string());
-        }
+        match parts {
+            Ok(values) => {
+                if values.len() != 3 {
+                    return Err("The time format is incorrect.".to_string());
+                }
 
-        Ok(Self {
-            minute: time[0],
-            second: time[1],
-            millisecond: time[2],
-        })
+                Ok(Self {
+                    minute: values[0],
+                    second: values[1],
+                    millisecond: values[2],
+                })
+            }
+            Err(_) => Err("The time format is incorrect.".to_string()),
+        }
     }
 }
