@@ -1,5 +1,5 @@
-use std::fmt;
-use std::rc::Rc;
+use clap::ValueEnum;
+use std::{fmt, rc::Rc};
 
 #[cfg(test)]
 mod tests_of_type_of_gun;
@@ -10,7 +10,7 @@ mod tests_gun;
 #[cfg(test)]
 mod tests_guns;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Hash)]
 pub enum TypeOfGun {
     Heavy,
     Pistol,
@@ -29,15 +29,6 @@ impl TypeOfGun {
             TypeOfGun::Heavy => "heavy",
             TypeOfGun::Pistol => "pistol",
             TypeOfGun::Knife => "knife",
-        }
-    }
-
-    pub fn to_enum(name: &str) -> Result<TypeOfGun, String> {
-        match &name.to_lowercase().replace("_", "-").replace(" ", "-")[0..] {
-            "heavy" => Ok(TypeOfGun::Heavy),
-            "pistol" => Ok(TypeOfGun::Pistol),
-            "knife" => Ok(TypeOfGun::Knife),
-            _ => Err(format!("the name of {} isn't correct.", name)),
         }
     }
 }
@@ -83,15 +74,6 @@ impl Gun {
     }
 }
 
-impl fmt::Display for Gun {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Gun {{ name: {}, price: {}, damage: {}, gift: {}, type_of: {} }}",
-            self.name, self.price, self.damage, self.gift, self.type_of
-        )
-    }
-}
 impl PartialEq for Gun {
     fn eq(&self, other: &Self) -> bool {
         self.damage == other.damage
@@ -142,7 +124,7 @@ impl Guns {
         Ok(())
     }
 
-    pub fn add_gun(&mut self, gun: &Rc<Gun>) -> Result<(), String> {
+    pub fn add_gun(&mut self, gun: Rc<Gun>) -> Result<(), String> {
         if self.list.iter().any(|x| gun.get_name() == x.get_name()) {
             return Err("the gun is exist!".to_string());
         } else if gun.get_type_of() == &TypeOfGun::Knife
@@ -154,7 +136,7 @@ impl Guns {
             return Err("The knife exist".to_string());
         }
 
-        self.list.push(gun.clone());
+        self.list.push(gun);
         Ok(())
     }
 
@@ -168,10 +150,11 @@ impl Guns {
     }
 
     pub fn get_gun(&self, name: &str) -> Result<Rc<Gun>, String> {
-        match self.list.iter().position(|gun| gun.get_name() == name) {
-            Some(index) => Ok(self.list[index].clone()),
-            None => Err("invalid category gun".to_string()),
-        }
+        self.list
+            .iter()
+            .find(|gun| gun.get_name() == name)
+            .cloned()
+            .ok_or("invalid category gun".to_string())
     }
 
     pub fn get_guns_with_type(&self, type_of_gun: TypeOfGun) -> Result<Vec<Rc<Gun>>, String> {

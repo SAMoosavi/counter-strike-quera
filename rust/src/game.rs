@@ -1,3 +1,4 @@
+use clap::ValueEnum;
 use std::{collections::HashMap, fmt, rc::Rc};
 
 use crate::{
@@ -7,7 +8,7 @@ use crate::{
     team::Team,
 };
 
-#[derive(Eq, PartialEq, Hash, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Hash)]
 pub enum TeamId {
     Terrorist,
     CounterTerrorist,
@@ -18,14 +19,6 @@ impl TeamId {
         match &self {
             TeamId::Terrorist => "Terrorist",
             TeamId::CounterTerrorist => "Counter-Terrorist",
-        }
-    }
-
-    pub fn to_enum(name: &str) -> Result<TeamId, String> {
-        match &name.to_lowercase().replace("_", "-").replace(" ", "-")[0..] {
-            "counter-terrorist" => Ok(TeamId::CounterTerrorist),
-            "terrorist" => Ok(TeamId::Terrorist),
-            _ => Err(format!("the name of {} isn't correct.", name)),
         }
     }
 }
@@ -47,12 +40,12 @@ pub struct Game {
 
 impl Default for Game {
     fn default() -> Self {
-        Self::new()
+        Self::new().unwrap()
     }
 }
 
 impl Game {
-    pub fn new() -> Self {
+    pub fn new() -> Result<Self, String> {
         let knife = Rc::new(Gun::new("knife".to_string(), 0, 43, 500, TypeOfGun::Knife));
         let setting = Setting {
             max_money_of_player: 10000,
@@ -67,48 +60,38 @@ impl Game {
         };
 
         let mut terrorist_guns = Box::new(Guns::new());
-        terrorist_guns.add_gun(&knife).unwrap();
-        terrorist_guns
-            .create_gun("AK".to_string(), 2700, 31, 100, TypeOfGun::Heavy)
-            .unwrap();
-        terrorist_guns
-            .create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy)
-            .unwrap();
-        terrorist_guns
-            .create_gun("Revolver".to_string(), 600, 51, 150, TypeOfGun::Pistol)
-            .unwrap();
-        terrorist_guns
-            .create_gun("Glock-18".to_string(), 300, 11, 200, TypeOfGun::Pistol)
-            .unwrap();
+        terrorist_guns.add_gun(knife.clone())?;
+        terrorist_guns.create_gun("AK".to_string(), 2700, 31, 100, TypeOfGun::Heavy)?;
+        terrorist_guns.create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy)?;
+        terrorist_guns.create_gun("Revolver".to_string(), 600, 51, 150, TypeOfGun::Pistol)?;
+        terrorist_guns.create_gun("Glock-18".to_string(), 300, 11, 200, TypeOfGun::Pistol)?;
 
         let mut terrorist = Team::new("Terrorist".to_string());
         terrorist.fill_gun(terrorist_guns);
 
         let mut counter_terrorist_guns = Box::new(Guns::new());
-        counter_terrorist_guns.add_gun(&knife).unwrap();
-        counter_terrorist_guns
-            .create_gun("M4A1".to_string(), 2700, 29, 100, TypeOfGun::Heavy)
-            .unwrap();
-        counter_terrorist_guns
-            .create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy)
-            .unwrap();
-        counter_terrorist_guns
-            .create_gun("Desert-Eagle".to_string(), 600, 53, 175, TypeOfGun::Pistol)
-            .unwrap();
-        counter_terrorist_guns
-            .create_gun("UPS-S".to_string(), 300, 13, 225, TypeOfGun::Pistol)
-            .unwrap();
+        counter_terrorist_guns.add_gun(knife.clone())?;
+        counter_terrorist_guns.create_gun("M4A1".to_string(), 2700, 29, 100, TypeOfGun::Heavy)?;
+        counter_terrorist_guns.create_gun("AWP".to_string(), 4300, 110, 50, TypeOfGun::Heavy)?;
+        counter_terrorist_guns.create_gun(
+            "Desert-Eagle".to_string(),
+            600,
+            53,
+            175,
+            TypeOfGun::Pistol,
+        )?;
+        counter_terrorist_guns.create_gun("UPS-S".to_string(), 300, 13, 225, TypeOfGun::Pistol)?;
 
         let mut counter_terrorist = Team::new("Counter-Terrorist".to_string());
         counter_terrorist.fill_gun(counter_terrorist_guns);
 
-        Self {
+        Ok(Self {
             teams: HashMap::from([
                 (TeamId::Terrorist, terrorist),
                 (TeamId::CounterTerrorist, counter_terrorist),
             ]),
             setting,
-        }
+        })
     }
 
     fn find_player(&self, name: &str) -> Option<&TeamId> {
@@ -136,7 +119,7 @@ impl Game {
         Ok(format!("this user added to {}", team_id))
     }
 
-    pub fn get_player(&self, name: &str) -> Result<TeamId, String> {
+    pub fn get_team_id(&self, name: &str) -> Result<TeamId, String> {
         match self.find_player(name) {
             Some(team_id) => Ok((*team_id).clone()),
             None => Err(format!("player not found: {}", name)),
@@ -150,48 +133,34 @@ impl Game {
         type_of_gun: &TypeOfGun,
         _time: &GameTime,
     ) -> Result<String, String> {
-        let attacker_team = self.get_player(attacker)?;
-        let attacked_team = self.get_player(attacked)?;
+        let attacker_team_id = self.get_team_id(attacker)?;
+        let attacked_team_id = self.get_team_id(attacked)?;
 
-        if !self
-            .teams
-            .get_mut(&attacker_team)
-            .unwrap()
-            .is_player_alive(attacker)?
-        {
+        let attacker_team = &self.teams[&attacker_team_id];
+        let attacked_team = &self.teams[&attacked_team_id];
+
+        if !attacker_team.is_player_alive(attacker)? {
             return Err("attacker is dead".to_string());
         }
 
-        if !self
-            .teams
-            .get_mut(&attacked_team)
-            .unwrap()
-            .is_player_alive(attacked)?
-        {
+        if !attacked_team.is_player_alive(attacked)? {
             return Err("attacked is dead".to_string());
         }
 
-        let gun = self
-            .teams
-            .get_mut(&attacker_team)
-            .unwrap()
-            .get_players_gun(attacker, type_of_gun)?;
+        let gun = attacker_team.get_players_gun(attacker, type_of_gun)?;
 
-        if attacked_team == attacker_team && !self.setting.friendly_fire {
+        if attacked_team_id == attacker_team_id && !self.setting.friendly_fire {
             return Err("friendly fire".to_string());
         }
 
-        let health = self
-            .teams
-            .get_mut(&attacked_team)
-            .unwrap()
-            .shut(attacked, gun.get_damage())?;
+        let attacked_team = self.teams.get_mut(&attacked_team_id).unwrap();
+
+        let health = attacked_team.shut(attacked, gun.get_damage())?;
+
+        let attacker_team = self.teams.get_mut(&attacker_team_id).unwrap();
 
         if health == 0 {
-            self.teams
-                .get_mut(&attacker_team)
-                .unwrap()
-                .add_kill_of_player(attacker, type_of_gun)?;
+            attacker_team.add_kill_of_player(attacker, type_of_gun)?;
         }
 
         Ok("nice shot".to_string())
@@ -204,7 +173,7 @@ impl Game {
                 if time > max_time {
                     return Err(format!("you are out of Time: {:?}", max_time));
                 }
-                let team = self.teams.get_mut(&self.get_player(player)?).unwrap();
+                let team = self.teams.get_mut(&self.get_team_id(player)?).unwrap();
                 team.buy_gun(player, gun)?;
 
                 Ok("I hope you can use it".to_string())
@@ -215,16 +184,8 @@ impl Game {
     pub fn end_of_round(&mut self) -> &str {
         let msg;
 
-        if !self
-            .teams
-            .get(&TeamId::CounterTerrorist)
-            .unwrap()
-            .does_live_player_exist()
-            && self
-                .teams
-                .get(&TeamId::Terrorist)
-                .unwrap()
-                .does_live_player_exist()
+        if !self.teams[&TeamId::CounterTerrorist].does_live_player_exist()
+            && self.teams[&TeamId::Terrorist].does_live_player_exist()
         {
             self.teams
                 .get_mut(&TeamId::Terrorist)
@@ -253,13 +214,13 @@ impl Game {
     }
 
     pub fn get_money_of_player(&self, name: &str, _time: &GameTime) -> Result<u32, String> {
-        let team_id = self.get_player(name)?;
+        let team_id = self.get_team_id(name)?;
         let team = self.teams.get(&team_id).unwrap();
         team.get_money(name)
     }
 
     pub fn get_health_of_player(&self, name: &str, _time: &GameTime) -> Result<u32, String> {
-        let team_id = self.get_player(name)?;
+        let team_id = self.get_team_id(name)?;
         let team = self.teams.get(&team_id).unwrap();
         team.get_health(name)
     }

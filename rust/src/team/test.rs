@@ -83,7 +83,7 @@ pub fn test_add_player_added_to_least_of_players() {
     assert!(result.is_ok());
     assert_eq!(team.players.len(), 1);
     assert_eq!(
-        *team.players[0].borrow(),
+        team.players[0],
         Player::new(name.to_string(), time, &setting).unwrap()
     );
 }

@@ -18,36 +18,35 @@ pub struct Player {
 }
 
 impl Player {
-    pub fn new(name: String, time: GameTime, setting: &Setting) -> Result<Self, String> {
-        let default_gun = setting.default_gun.clone();
-        if default_gun.is_none() {
-            return Err("the default gun doesn't set!".to_string());
-        }
-        let money = setting.default_money_of_player;
-        if money == 0 {
-            return Err("the default money doesn't set!".to_string());
-        }
-        let mut health = 100;
-        match &setting.did_time_of_player {
-            Some(did_time) => {
-                if did_time < &time {
-                    health = 0;
-                }
-            }
-            None => {
-                return Err("the default did_time_of_player doesn't set!".to_string());
-            }
-        }
+    pub fn new(name: String, start_time: GameTime, setting: &Setting) -> Result<Self, String> {
+        match &setting.default_gun {
+            Some(default_gun) => match setting.default_money_of_player {
+                0 => Err("the default money doesn't set!".to_string()),
+                money => match &setting.did_time_of_player {
+                    Some(did_time) => {
+                        let health = {
+                            if did_time < &start_time {
+                                0
+                            } else {
+                                100
+                            }
+                        };
 
-        Ok(Self {
-            name,
-            health,
-            money,
-            kills: 0,
-            death: 0,
-            guns: HashMap::from([(TypeOfGun::Knife, default_gun.unwrap())]),
-            start_time: time,
-        })
+                        Ok(Self {
+                            name,
+                            health,
+                            money,
+                            kills: 0,
+                            death: 0,
+                            guns: HashMap::from([(TypeOfGun::Knife, default_gun.clone())]),
+                            start_time,
+                        })
+                    }
+                    None => Err("the default did_time_of_player doesn't set!".to_string()),
+                },
+            },
+            None => Err("the default gun doesn't set!".to_string()),
+        }
     }
 
     pub fn shut(&mut self, health: u32) -> Result<u32, String> {
@@ -58,7 +57,7 @@ impl Player {
         if self.health <= health {
             self.death += 1;
             self.health = 0;
-            let knife = self.guns.get(&TypeOfGun::Knife).unwrap().clone();
+            let knife = self.guns[&TypeOfGun::Knife].clone();
             self.guns.clear();
             self.guns.insert(TypeOfGun::Knife, knife);
         } else {
