@@ -1,4 +1,5 @@
 pub mod cli;
+pub mod tui;
 pub mod game;
 pub mod game_time;
 pub mod gun;
@@ -11,5 +12,6 @@ use game::Game;
 fn main() {
     let mut game = Game::new().unwrap();
 
-    cli::run(&mut game);
+    // cli::run(&mut game);
+    tui::run(&mut game);
 }

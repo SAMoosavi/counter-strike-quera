@@ -7,4 +7,4 @@ edition = "2021"
 clap = "4.5.20"
 clap-repl = "0.3.0"
 itertools = "0.13.0"
-ratatui = { version = "0.28.1", features = ["all-widgets"] }
+ratatui = { version = "0.28.1", features = ["all-widgets","crossterm"] }
