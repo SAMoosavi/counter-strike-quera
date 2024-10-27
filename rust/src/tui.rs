@@ -25,7 +25,7 @@ enum GameEvent {
 
 
 trait GameCommandHandler {
-    fn run(&mut self, frame: &mut Frame, rect: Rect);
+    fn run(&mut self, frame: &mut Frame, rect: Rect, game: &mut Game) -> Option<Log>;
     fn event_handler(&mut self, event: Event) -> GameEvent;
 }
 
@@ -65,7 +65,7 @@ enum Log {
 }
 
 struct App<'a> {
-    _game: &'a mut Game,
+    game: &'a mut Game,
     exit: bool,
     logs: Vec<Log>,
     state: GameCommand,
@@ -74,7 +74,7 @@ struct App<'a> {
 impl<'a> App<'a> {
     pub fn new(game: &'a mut Game) -> Self {
         Self {
-            _game: game,
+            game,
             exit: false,
             logs: vec![],
             state: GameCommand::None(CommandNoneHandler::default()),
@@ -122,34 +122,48 @@ impl<'a> App<'a> {
     }
 
     fn show_work(&mut self, frame: &mut Frame, rect: Rect) {
+        // TODO: use get_handler
+        let handler: &mut dyn GameCommandHandler = match &mut self.state {
+            GameCommand::None(none) => none,
+            _ => todo!(),
+        };
+
+        if let Some(log) = handler.run(frame, rect, self.game) {
+            self.logs.push(log);
+            self.game_event_handler(GameEvent::Back);
+        }
+    }
+
+    fn get_handler(&mut self) -> &mut dyn GameCommandHandler {
         match &mut self.state {
             GameCommand::None(none) => none.run(frame, rect),
+            GameCommand::None(none) => none,
             _ => todo!(),
         }
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
-        let event = match &mut self.state {
-            GameCommand::None(none) => none.event_handler(event::read()?),
-            _ => todo!(),
-        };
+        let handler = self.get_handler();
+        let event = handler.event_handler(event::read()?);
         self.game_event_handler(event);
         Ok(())
     }
 
     fn game_event_handler(&mut self, event: GameEvent) {
         match event {
-            GameEvent::Back => { self.state = GameCommand::None(CommandNoneHandler::default()); }
-            GameEvent::ChangeState(state) => self.state = match &state[..] {
-                "add-user" => GameCommand::AddUser,
-                "get-money" => GameCommand::GetMoney,
-                "get-health" => GameCommand::GetHealth,
-                "tap" => GameCommand::Tap,
-                "buy" => GameCommand::Buy,
-                "score-board" => GameCommand::ScoreBoard,
-                "none" => GameCommand::None(CommandNoneHandler::default()),
-                _ => panic!("Invalid state: {}", state),
-            },
+            GameEvent::Back => self.state = GameCommand::None(CommandNoneHandler::default()),
+            GameEvent::ChangeState(state) => {
+                self.state = match &state[..] {
+                    "add-user" => GameCommand::AddUser,
+                    "get-money" => GameCommand::GetMoney,
+                    "get-health" => GameCommand::GetHealth,
+                    "tap" => GameCommand::Tap,
+                    "buy" => GameCommand::Buy,
+                    "score-board" => GameCommand::ScoreBoard(CommandScoreBoardHandler::default()),
+                    "none" => GameCommand::None(CommandNoneHandler::default()),
+                    _ => panic!("Invalid state: {}", state),
+                }
+            }
             GameEvent::None => {}
         }
     }

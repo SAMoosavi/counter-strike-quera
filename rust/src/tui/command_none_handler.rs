@@ -1,13 +1,14 @@
+use crate::game::Game;
+use crate::tui::{GameCommand, GameCommandHandler, GameEvent, Log};
 use ratatui::{
     crossterm::event::{Event, KeyCode, KeyEventKind},
     layout::Rect,
     style::{Color, Style, Stylize},
     text::{Line, Span},
-    widgets::{Block, BorderType, Borders, List, ListItem}, Frame,
+    widgets::{Block, BorderType, Borders, List, ListItem},
+    Frame,
 };
 use regex::Regex;
-
-use crate::tui::{GameCommand, GameCommandHandler, GameEvent};
 
 pub struct CommandNoneHandler {
     selected: usize,
@@ -86,7 +87,7 @@ impl CommandNoneHandler {
     }
 }
 impl GameCommandHandler for CommandNoneHandler {
-    fn run(&mut self, frame: &mut Frame, rect: Rect) {
+    fn run(&mut self, frame: &mut Frame, rect: Rect, game: &mut Game) -> Option<Log> {
         let mut lines: Vec<ListItem> = vec![];
 
         for (index, command) in self.commands_filtered.iter().enumerate() {
@@ -109,11 +110,13 @@ impl GameCommandHandler for CommandNoneHandler {
                         Span::from(&self.search).fg(Color::Red),
                         Span::from(" "),
                     ])
-                        .centered(),
+                    .centered(),
                 )
                 .border_type(BorderType::Rounded),
         );
         frame.render_widget(list, rect);
+
+        Option::None
     }
 
     fn event_handler(&mut self, event: Event) -> GameEvent {
