@@ -163,33 +163,12 @@ impl GameCommandHandler for GameCommandNone {
 }
 
 enum GameCommand {
-    AddUser {
-        name: String,
-        team_id: TeamId,
-        time: GameTime,
-    },
-    GetMoney {
-        name: String,
-        time: GameTime,
-    },
-    GetHealth {
-        name: String,
-        time: GameTime,
-    },
-    Tap {
-        attacker: String,
-        attacked: String,
-        gun_type: TypeOfGun,
-        time: GameTime,
-    },
-    Buy {
-        player: String,
-        gun: String,
-        time: GameTime,
-    },
-    ScoreBoard {
-        time: GameTime,
-    },
+    AddUser,
+    GetMoney,
+    GetHealth,
+    Tap,
+    Buy,
+    ScoreBoard,
     None(GameCommandNone),
 }
 
@@ -282,51 +261,28 @@ impl<'a> App<'a> {
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
-        match event::read()? {
-            // it's important to check that the event is a key press event as
-            // crossterm also emits key release and repeat events on Windows.
-            Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
-                self.handle_key_event(key_event)
-            }
-            Event::Key(_) => todo!(),
-            Event::FocusGained => todo!(),
-            Event::FocusLost => todo!(),
-            Event::Mouse(_) => todo!(),
-            Event::Paste(_) => todo!(),
-            Event::Resize(_, _) => todo!(),
+        let event = match &mut self.state {
+            GameCommand::None(none) => none.event_handler(event::read()?),
+            _ => todo!(),
         };
+        self.game_event_handler(event);
         Ok(())
     }
 
-    fn handle_key_event(&mut self, key_event: KeyEvent) {
-        match key_event.code {
-            KeyCode::Backspace => todo!(),
-            KeyCode::Enter => todo!(),
-            KeyCode::Left => todo!(),
-            KeyCode::Right => todo!(),
-            KeyCode::Up => todo!(),
-            KeyCode::Down => todo!(),
-            KeyCode::Home => todo!(),
-            KeyCode::End => todo!(),
-            KeyCode::PageUp => todo!(),
-            KeyCode::PageDown => todo!(),
-            KeyCode::Tab => todo!(),
-            KeyCode::BackTab => todo!(),
-            KeyCode::Delete => todo!(),
-            KeyCode::Insert => todo!(),
-            KeyCode::F(_) => todo!(),
-            KeyCode::Char(_) => todo!(),
-            KeyCode::Null => todo!(),
-            KeyCode::Esc => todo!(),
-            KeyCode::CapsLock => todo!(),
-            KeyCode::ScrollLock => todo!(),
-            KeyCode::NumLock => todo!(),
-            KeyCode::PrintScreen => todo!(),
-            KeyCode::Pause => todo!(),
-            KeyCode::Menu => todo!(),
-            KeyCode::KeypadBegin => todo!(),
-            KeyCode::Media(media_key_code) => todo!(),
-            KeyCode::Modifier(modifier_key_code) => todo!(),
-        };
+    fn game_event_handler(&mut self, event: GameEvent) {
+        match event {
+            GameEvent::Back => { self.state = GameCommand::None(GameCommandNone::default()); }
+            GameEvent::ChangeState(state) => self.state = match &state[..] {
+                "add-user" => GameCommand::AddUser,
+                "get-money" => GameCommand::GetMoney,
+                "get-health" => GameCommand::GetHealth,
+                "tap" => GameCommand::Tap,
+                "buy" => GameCommand::Buy,
+                "score-board" => GameCommand::ScoreBoard,
+                "none" => GameCommand::None(GameCommandNone::default()),
+                _ => panic!("Invalid state: {}", state),
+            },
+            GameEvent::None => {}
+        }
     }
 }
