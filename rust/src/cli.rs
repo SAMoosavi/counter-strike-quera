@@ -90,9 +90,11 @@ fn clap_editor_builder<T: Parser + Send + Sync + 'static>(prompt: DefaultPrompt)
         .build()
 }
 
-
 pub fn run(game: &mut Game) {
-    let prompt = DefaultPrompt::new(DefaultPromptSegment::Basic("CS_game".to_owned()), DefaultPromptSegment::Basic("".to_owned()));
+    let prompt = DefaultPrompt::new(
+        DefaultPromptSegment::Basic("CS_game".to_owned()),
+        DefaultPromptSegment::Basic("".to_owned()),
+    );
 
     let mut rl_game: ClapEditor<GameCommand> = clap_editor_builder(prompt.clone());
     let mut rl_round: ClapEditor<RoundCommand> = clap_editor_builder(prompt.clone());

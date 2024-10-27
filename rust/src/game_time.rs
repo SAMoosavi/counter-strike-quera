@@ -24,10 +24,7 @@ impl FromStr for GameTime {
     type Err = String;
 
     fn from_str(time: &str) -> Result<Self, Self::Err> {
-        let parts: Result<Vec<u32>, _> = time
-            .split(':')
-            .map(|s| s.trim().parse::<u32>())
-            .collect();
+        let parts: Result<Vec<u32>, _> = time.split(':').map(|s| s.trim().parse::<u32>()).collect();
 
         match parts {
             Ok(values) => {

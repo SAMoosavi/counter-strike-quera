@@ -28,7 +28,6 @@ trait GameCommandHandler {
     fn event_handler(&mut self, event: Event) -> GameEvent;
 }
 
-
 enum GameCommand {
     AddUser,
     GetMoney,

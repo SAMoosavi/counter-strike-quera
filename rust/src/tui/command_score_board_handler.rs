@@ -1,5 +1,5 @@
-use crate::{game::Game, game_time::GameTime};
 use crate::tui::{GameCommandHandler, GameEvent, Log};
+use crate::{game::Game, game_time::GameTime};
 use ratatui::{
     crossterm::event::{Event, KeyCode, KeyEventKind},
     layout::Rect,
@@ -47,7 +47,7 @@ impl GameCommandHandler for CommandScoreBoardHandler {
             Span::from("please enter time: ").bold().yellow(),
             Span::from(&self.time).white(),
         ]))])
-            .block(block);
+        .block(block);
 
         frame.render_widget(list, rect);
 
