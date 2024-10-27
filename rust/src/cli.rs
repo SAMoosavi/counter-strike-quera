@@ -78,31 +78,8 @@ fn game_handler(game: &mut Game, command: GameCommand) -> Result<String, String>
     }
 }
 
-pub fn run(game: &mut Game) {
-    let mut prompt = DefaultPrompt::default();
-    prompt.left_prompt = DefaultPromptSegment::Basic("CS_game".to_owned());
-
-    let mut rl_game: ClapEditor<GameCommand> = ClapEditor::builder()
-        .with_prompt(Box::new(prompt.clone()))
-        .with_editor_hook(|reed| {
-            reed.with_history(Box::new(
-                FileBackedHistory::with_file(1000, "/tmp/clap-repl-simple-example-history".into())
-                    .unwrap(),
-            ))
-        })
-        .build();
-
-    let mut rl_round: ClapEditor<RoundCommand> = ClapEditor::builder()
-        .with_prompt(Box::new(prompt.clone()))
-        .with_editor_hook(|reed| {
-            reed.with_history(Box::new(
-                FileBackedHistory::with_file(1000, "/tmp/clap-repl-simple-example-history".into())
-                    .unwrap(),
-            ))
-        })
-        .build();
-
-    let mut rl_number_of_round: ClapEditor<NumberOfRoundCommand> = ClapEditor::builder()
+fn clap_editor_builder<T: Parser + Send + Sync + 'static>(prompt: DefaultPrompt) -> ClapEditor<T> {
+    ClapEditor::builder()
         .with_prompt(Box::new(prompt))
         .with_editor_hook(|reed| {
             reed.with_history(Box::new(
@@ -110,7 +87,16 @@ pub fn run(game: &mut Game) {
                     .unwrap(),
             ))
         })
-        .build();
+        .build()
+}
+
+
+pub fn run(game: &mut Game) {
+    let prompt = DefaultPrompt::new(DefaultPromptSegment::Basic("CS_game".to_owned()), DefaultPromptSegment::Basic("".to_owned()));
+
+    let mut rl_game: ClapEditor<GameCommand> = clap_editor_builder(prompt.clone());
+    let mut rl_round: ClapEditor<RoundCommand> = clap_editor_builder(prompt.clone());
+    let mut rl_number_of_round: ClapEditor<NumberOfRoundCommand> = clap_editor_builder(prompt);
 
     let number_of_round = match rl_number_of_round.read_command() {
         clap_repl::ReadCommandOutput::Command(command) => command.n,

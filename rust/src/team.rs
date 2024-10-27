@@ -80,7 +80,7 @@ impl Team {
     }
 
     pub fn shut(&mut self, name: &str, damage: u32) -> Result<u32, String> {
-        Ok(self.get_mut_player(name)?.shut(damage)?)
+        self.get_mut_player(name)?.shut(damage)
     }
 
     pub fn add_kill_of_player(
