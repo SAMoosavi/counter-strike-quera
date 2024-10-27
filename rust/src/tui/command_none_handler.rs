@@ -87,7 +87,7 @@ impl CommandNoneHandler {
     }
 }
 impl GameCommandHandler for CommandNoneHandler {
-    fn run(&mut self, frame: &mut Frame, rect: Rect, game: &mut Game) -> Option<Log> {
+    fn run(&mut self, frame: &mut Frame, rect: Rect, _game: &mut Game) -> Option<Log> {
         let mut lines: Vec<ListItem> = vec![];
 
         for (index, command) in self.commands_filtered.iter().enumerate() {
