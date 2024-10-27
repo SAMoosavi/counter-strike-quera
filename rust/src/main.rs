@@ -1,11 +1,11 @@
 pub mod cli;
-pub mod tui;
 pub mod game;
 pub mod game_time;
 pub mod gun;
 pub mod player;
 pub mod setting;
 pub mod team;
+pub mod tui;
 
 use game::Game;
 
