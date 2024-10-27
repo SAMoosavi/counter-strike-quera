@@ -16,6 +16,18 @@ use crate::{
     gun::TypeOfGun,
 };
 
+enum GameEvent {
+    Back,
+    ChangeState(String),
+    None,
+}
+
+
+trait GameCommandHandler {
+    fn run(&mut self, frame: &mut Frame, rect: Rect);
+    fn event_handler(&mut self, event: Event) -> GameEvent;
+}
+
 struct GameCommandNone {
     selected: usize,
 }
