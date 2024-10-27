@@ -1,6 +1,11 @@
 mod command_none_handler;
+mod command_score_board_handler;
 
 use std::io;
+
+use crate::game::Game;
+use command_none_handler::CommandNoneHandler;
+use command_score_board_handler::CommandScoreBoardHandler;
 
 use ratatui::{
     crossterm::event::{self, Event},
@@ -11,18 +16,12 @@ use ratatui::{
     widgets::{Block, BorderType, Borders, List, ListItem},
     DefaultTerminal, Frame,
 };
-use command_none_handler::CommandNoneHandler;
-
-use crate::{
-    game::{Game},
-};
 
 enum GameEvent {
     Back,
     ChangeState(String),
     None,
 }
-
 
 trait GameCommandHandler {
     fn run(&mut self, frame: &mut Frame, rect: Rect, game: &mut Game) -> Option<Log>;
@@ -36,7 +35,7 @@ enum GameCommand {
     GetHealth,
     Tap,
     Buy,
-    ScoreBoard,
+    ScoreBoard(CommandScoreBoardHandler),
     None(CommandNoneHandler),
 }
 
@@ -125,6 +124,7 @@ impl<'a> App<'a> {
         // TODO: use get_handler
         let handler: &mut dyn GameCommandHandler = match &mut self.state {
             GameCommand::None(none) => none,
+            GameCommand::ScoreBoard(scoreboard) => scoreboard,
             _ => todo!(),
         };
 
@@ -136,8 +136,8 @@ impl<'a> App<'a> {
 
     fn get_handler(&mut self) -> &mut dyn GameCommandHandler {
         match &mut self.state {
-            GameCommand::None(none) => none.run(frame, rect),
             GameCommand::None(none) => none,
+            GameCommand::ScoreBoard(scoreboard) => scoreboard,
             _ => todo!(),
         }
     }
