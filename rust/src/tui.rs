@@ -1,9 +1,11 @@
+mod command_add_user_handler;
 mod command_none_handler;
 mod command_score_board_handler;
 
 use std::io;
 
 use crate::game::Game;
+use command_add_user_handler::CommandAddUserHandler;
 use command_none_handler::CommandNoneHandler;
 use command_score_board_handler::CommandScoreBoardHandler;
 
@@ -29,7 +31,7 @@ trait GameCommandHandler {
 }
 
 enum GameCommand {
-    AddUser,
+    AddUser(CommandAddUserHandler),
     GetMoney,
     GetHealth,
     Tap,
@@ -124,6 +126,7 @@ impl<'a> App<'a> {
         let handler: &mut dyn GameCommandHandler = match &mut self.state {
             GameCommand::None(none) => none,
             GameCommand::ScoreBoard(scoreboard) => scoreboard,
+            GameCommand::AddUser(add_user) => add_user,
             _ => todo!(),
         };
 
@@ -137,6 +140,7 @@ impl<'a> App<'a> {
         match &mut self.state {
             GameCommand::None(none) => none,
             GameCommand::ScoreBoard(scoreboard) => scoreboard,
+            GameCommand::AddUser(add_user) => add_user,
             _ => todo!(),
         }
     }
@@ -153,7 +157,7 @@ impl<'a> App<'a> {
             GameEvent::Back => self.state = GameCommand::None(CommandNoneHandler::default()),
             GameEvent::ChangeState(state) => {
                 self.state = match &state[..] {
-                    "add-user" => GameCommand::AddUser,
+                    "add-user" => GameCommand::AddUser(CommandAddUserHandler::default()),
                     "get-money" => GameCommand::GetMoney,
                     "get-health" => GameCommand::GetHealth,
                     "tap" => GameCommand::Tap,
