@@ -1,4 +1,6 @@
 mod command_add_user_handler;
+mod command_get_health_handler;
+mod command_get_money_handler;
 mod command_none_handler;
 mod command_score_board_handler;
 
@@ -6,9 +8,13 @@ use std::io;
 
 use crate::game::Game;
 use command_add_user_handler::CommandAddUserHandler;
+use command_get_health_handler::CommandGetHealthHandler;
+use command_get_money_handler::CommandGetMoneyHandler;
 use command_none_handler::CommandNoneHandler;
 use command_score_board_handler::CommandScoreBoardHandler;
 
+use ratatui::text::Text;
+use ratatui::widgets::Paragraph;
 use ratatui::{
     crossterm::event::{self, Event},
     layout::Rect,
@@ -32,8 +38,8 @@ trait GameCommandHandler {
 
 enum GameCommand {
     AddUser(CommandAddUserHandler),
-    GetMoney,
-    GetHealth,
+    GetMoney(CommandGetMoneyHandler),
+    GetHealth(CommandGetHealthHandler),
     Tap,
     Buy,
     ScoreBoard(CommandScoreBoardHandler),
@@ -101,8 +107,8 @@ impl<'a> App<'a> {
         let mut lines: Vec<ListItem> = vec![];
         for log in &self.logs {
             let message = match log {
-                Log::Result(message) => Line::from(message.clone()).style(Style::new().green()),
-                Log::Error(message) => Line::from(message.clone()).style(Style::new().red()),
+                Log::Result(message) => Text::from(message.clone()).style(Style::new().green()),
+                Log::Error(message) => Text::from(message.clone()).style(Style::new().red()),
             };
             lines.push(ListItem::new(message));
         }
@@ -127,6 +133,8 @@ impl<'a> App<'a> {
             GameCommand::None(none) => none,
             GameCommand::ScoreBoard(scoreboard) => scoreboard,
             GameCommand::AddUser(add_user) => add_user,
+            GameCommand::GetMoney(get_money) => get_money,
+            GameCommand::GetHealth(get_health) => get_health,
             _ => todo!(),
         };
 
@@ -141,6 +149,8 @@ impl<'a> App<'a> {
             GameCommand::None(none) => none,
             GameCommand::ScoreBoard(scoreboard) => scoreboard,
             GameCommand::AddUser(add_user) => add_user,
+            GameCommand::GetMoney(get_money) => get_money,
+            GameCommand::GetHealth(get_health) => get_health,
             _ => todo!(),
         }
     }
@@ -158,8 +168,8 @@ impl<'a> App<'a> {
             GameEvent::ChangeState(state) => {
                 self.state = match &state[..] {
                     "add-user" => GameCommand::AddUser(CommandAddUserHandler::default()),
-                    "get-money" => GameCommand::GetMoney,
-                    "get-health" => GameCommand::GetHealth,
+                    "get-money" => GameCommand::GetMoney(CommandGetMoneyHandler::default()),
+                    "get-health" => GameCommand::GetHealth(CommandGetHealthHandler::default()),
                     "tap" => GameCommand::Tap,
                     "buy" => GameCommand::Buy,
                     "score-board" => GameCommand::ScoreBoard(CommandScoreBoardHandler::default()),

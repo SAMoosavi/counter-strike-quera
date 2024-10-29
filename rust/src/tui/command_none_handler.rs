@@ -100,20 +100,33 @@ impl GameCommandHandler for CommandNoneHandler {
             )));
         }
 
-        let list = List::new(lines).block(
-            Block::default()
-                .borders(Borders::ALL)
-                .title(Line::from(" Game Command ").right_aligned())
-                .title(
-                    Line::from_iter([
-                        Span::from(" Search Command: "),
-                        Span::from(&self.search).fg(Color::Red),
-                        Span::from(" "),
-                    ])
-                    .centered(),
-                )
-                .border_type(BorderType::Rounded),
-        );
+        let block = Block::default()
+            .borders(Borders::ALL)
+            .title(Line::from(" Game Command ").right_aligned())
+            .title(
+                Line::from_iter([
+                    Span::from(" Search Command: "),
+                    Span::from(&self.search).fg(Color::Red),
+                    Span::from(" "),
+                ])
+                .centered(),
+            )
+            .title_bottom(
+                Line::from(" type to search command ".to_uppercase())
+                    .left_aligned()
+                    .bold()
+                    .red(),
+            )
+            .title_bottom(
+                Line::from(" use ↑↓ for change command ".to_uppercase())
+                    .right_aligned()
+                    .bold()
+                    .red(),
+            )
+            .border_type(BorderType::Rounded);
+
+        let list = List::new(lines).block(block);
+
         frame.render_widget(list, rect);
 
         Option::None

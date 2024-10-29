@@ -41,6 +41,12 @@ impl GameCommandHandler for CommandScoreBoardHandler {
         let block = Block::default()
             .borders(Borders::ALL)
             .title(Line::from(" Game Score Board ").right_aligned())
+            .title_bottom(
+                Line::from(" type time ".to_uppercase())
+                    .left_aligned()
+                    .bold()
+                    .red(),
+            )
             .border_type(BorderType::Rounded);
 
         let list = List::new([ListItem::new(Line::from_iter([
@@ -52,11 +58,13 @@ impl GameCommandHandler for CommandScoreBoardHandler {
         frame.render_widget(list, rect);
 
         let mut log = None;
-
         if self.send {
-            match GameTime::from_str(&self.time[..]) {
-                Ok(time) => log = Some(Log::Result(game.score_board(&time))),
-                Err(str) => log = Some(Log::Error(str)),
+            log = match GameTime::from_str(&self.time[..]) {
+                Ok(time) => Some(Log::Result(format!(
+                    "Game Score Board:\n{}",
+                    game.score_board(&time)
+                ))),
+                Err(str) => Some(Log::Error(format!("Game Score Board: {str}"))),
             };
             self.send = false;
         }

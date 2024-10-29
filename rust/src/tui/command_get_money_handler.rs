@@ -16,7 +16,6 @@ use std::{cmp::PartialEq, str::FromStr};
 #[derive(PartialEq, Eq)]
 enum State {
     EnterName,
-    EnterTeamId,
     EnterTime,
     Send,
 }
@@ -24,45 +23,25 @@ enum State {
 impl State {
     pub fn next(&self) -> Self {
         match self {
-            State::EnterName => State::EnterTeamId,
-            State::EnterTeamId => State::EnterTime,
+            State::EnterName => State::EnterTime,
             State::EnterTime => State::Send,
             State::Send => State::EnterName,
         }
     }
 }
 
-pub struct CommandAddUserHandler {
+pub struct CommandGetMoneyHandler {
     name: String,
     status: State,
     time: String,
-    team_id: TeamId,
 }
 
-impl CommandAddUserHandler {
+impl CommandGetMoneyHandler {
     pub fn default() -> Self {
         Self {
             name: "".to_string(),
             status: State::EnterName,
             time: "".to_string(),
-            team_id: TeamId::Terrorist,
-        }
-    }
-
-    fn next_team_id(&mut self) {
-        if self.status == State::EnterTeamId {
-            self.team_id = match self.team_id {
-                TeamId::Terrorist => TeamId::CounterTerrorist,
-                TeamId::CounterTerrorist => TeamId::Terrorist,
-            };
-        }
-    }
-    fn prev_team_id(&mut self) {
-        if self.status == State::EnterTeamId {
-            self.team_id = match self.team_id {
-                TeamId::Terrorist => TeamId::CounterTerrorist,
-                TeamId::CounterTerrorist => TeamId::Terrorist,
-            };
         }
     }
 
@@ -90,11 +69,10 @@ impl CommandAddUserHandler {
     }
 }
 
-impl GameCommandHandler for CommandAddUserHandler {
+impl GameCommandHandler for CommandGetMoneyHandler {
     fn run(&mut self, frame: &mut Frame, rect: Rect, game: &mut Game) -> Option<Log> {
         let title_bottom = match self.status {
             State::EnterName => " type name ",
-            State::EnterTeamId => " use ↑↓ for change team ",
             State::EnterTime => " type time ",
             State::Send => " send ",
         }
@@ -102,7 +80,7 @@ impl GameCommandHandler for CommandAddUserHandler {
 
         let block = Block::default()
             .borders(Borders::ALL)
-            .title(Line::from(" Add User ").right_aligned())
+            .title(Line::from(" Get Money Of Player ").right_aligned())
             .title_bottom(Line::from(title_bottom).centered().bold().red())
             .border_type(BorderType::Rounded);
 
@@ -117,17 +95,6 @@ impl GameCommandHandler for CommandAddUserHandler {
             ]),
         });
 
-        let team_id = ListItem::new(match &self.status {
-            State::EnterTeamId => Line::from_iter([
-                Span::from("please select team: ").bold().yellow(),
-                Span::from(self.team_id.to_string()).white(),
-            ]),
-            _ => Line::from_iter([
-                Span::from("team: ").bold().yellow(),
-                Span::from(self.team_id.to_string()).yellow(),
-            ]),
-        });
-
         let time = ListItem::new(match &self.status {
             State::EnterTime => Line::from_iter([
                 Span::from("please enter time: ").bold().yellow(),
@@ -139,18 +106,18 @@ impl GameCommandHandler for CommandAddUserHandler {
             ]),
         });
 
-        let list = List::new([name, team_id, time]).block(block);
+        let list = List::new([name, time]).block(block);
 
         frame.render_widget(list, rect);
 
         let mut log = None;
         if self.status == State::Send {
             log = match GameTime::from_str(&self.time[..]) {
-                Ok(time) => match game.add_player(self.team_id, &self.name[..], &time) {
-                    Ok(str) => Some(Log::Result(format!("Add Player: {str}"))),
-                    Err(str) => Some(Log::Error(format!("Add Player: {str}"))),
+                Ok(time) => match game.get_money_of_player(&self.name[..], &time) {
+                    Ok(num) => Some(Log::Result(format!("{}'s money: {num}", self.name))),
+                    Err(str) => Some(Log::Error(format!("Get Money Of Player: {str}"))),
                 },
-                Err(str) => Some(Log::Error(format!("Add Player: {str}"))),
+                Err(str) => Some(Log::Error(format!("Get Money Of Player: {str}"))),
             };
             self.status = State::EnterName;
         }
@@ -166,8 +133,6 @@ impl GameCommandHandler for CommandAddUserHandler {
                     KeyCode::Delete => self.pop(),
                     KeyCode::Char(x) => self.push(x),
                     KeyCode::Null | KeyCode::Esc => return GameEvent::Back,
-                    KeyCode::Up => self.next_team_id(),
-                    KeyCode::Down => self.prev_team_id(),
                     _ => {}
                 };
             }
