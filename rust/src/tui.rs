@@ -1,4 +1,5 @@
 mod command_add_user_handler;
+mod command_buy_handler;
 mod command_get_health_handler;
 mod command_get_money_handler;
 mod command_none_handler;
@@ -8,11 +9,11 @@ use std::io;
 
 use crate::game::Game;
 use command_add_user_handler::CommandAddUserHandler;
+use command_buy_handler::CommandBuyHandler;
 use command_get_health_handler::CommandGetHealthHandler;
 use command_get_money_handler::CommandGetMoneyHandler;
 use command_none_handler::CommandNoneHandler;
 use command_score_board_handler::CommandScoreBoardHandler;
-
 use ratatui::{
     crossterm::event::{self, Event},
     layout::Rect,
@@ -39,7 +40,7 @@ enum GameCommand {
     GetMoney(CommandGetMoneyHandler),
     GetHealth(CommandGetHealthHandler),
     Tap,
-    Buy,
+    Buy(CommandBuyHandler),
     ScoreBoard(CommandScoreBoardHandler),
     None(CommandNoneHandler),
 }
@@ -133,6 +134,7 @@ impl<'a> App<'a> {
             GameCommand::AddUser(add_user) => add_user,
             GameCommand::GetMoney(get_money) => get_money,
             GameCommand::GetHealth(get_health) => get_health,
+            GameCommand::Buy(buy) => buy,
             _ => todo!(),
         };
 
@@ -149,6 +151,7 @@ impl<'a> App<'a> {
             GameCommand::AddUser(add_user) => add_user,
             GameCommand::GetMoney(get_money) => get_money,
             GameCommand::GetHealth(get_health) => get_health,
+            GameCommand::Buy(buy) => buy,
             _ => todo!(),
         }
     }
@@ -169,7 +172,7 @@ impl<'a> App<'a> {
                     "get-money" => GameCommand::GetMoney(CommandGetMoneyHandler::default()),
                     "get-health" => GameCommand::GetHealth(CommandGetHealthHandler::default()),
                     "tap" => GameCommand::Tap,
-                    "buy" => GameCommand::Buy,
+                    "buy" => GameCommand::Buy(CommandBuyHandler::default()),
                     "score-board" => GameCommand::ScoreBoard(CommandScoreBoardHandler::default()),
                     "none" => GameCommand::None(CommandNoneHandler::default()),
                     _ => panic!("Invalid state: {}", state),
