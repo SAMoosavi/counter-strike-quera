@@ -8,10 +8,27 @@ pub mod team;
 pub mod tui;
 
 use game::Game;
+use clap::{Parser, ValueEnum};
+
+#[derive(Clone, ValueEnum, Debug)]
+enum Mod {
+    Tui,
+    Cli,
+}
+
+#[derive(Parser, Debug)]
+#[command(name = "")]
+struct Cli {
+    #[arg(long = "mod", short = 'm', default_value = "tui")]
+    mode: Mod,
+}
 
 fn main() {
+    let args = Cli::parse();
     let mut game = Game::new().unwrap();
 
-    // cli::run(&mut game);
-    tui::run(&mut game);
+    match args.mode {
+        Mod::Tui => tui::run(&mut game),
+        Mod::Cli => cli::run(&mut game),
+    }
 }
