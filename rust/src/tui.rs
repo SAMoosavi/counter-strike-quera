@@ -6,8 +6,6 @@ mod command_none_handler;
 mod command_score_board_handler;
 mod command_tap_handler;
 
-use std::io;
-
 use crate::game::Game;
 use command_add_user_handler::CommandAddUserHandler;
 use command_buy_handler::CommandBuyHandler;
@@ -16,9 +14,10 @@ use command_get_money_handler::CommandGetMoneyHandler;
 use command_none_handler::CommandNoneHandler;
 use command_score_board_handler::CommandScoreBoardHandler;
 use command_tap_handler::CommandTapHandler;
+use std::io;
 
 use ratatui::{
-    crossterm::event::{self, Event},
+    crossterm::event::{self, Event, KeyCode, KeyModifiers},
     layout::Rect,
     prelude::{Constraint, Direction, Layout},
     style::{Style, Stylize},
@@ -30,6 +29,7 @@ use ratatui::{
 enum GameEvent {
     Back,
     ChangeState(String),
+    Finish,
     None,
 }
 
@@ -45,7 +45,7 @@ enum GameCommand {
     Tap(CommandTapHandler),
     Buy(CommandBuyHandler),
     ScoreBoard(CommandScoreBoardHandler),
-    None(CommandNoneHandler),
+    None,
 }
 
 impl GameCommand {
@@ -77,6 +77,7 @@ struct App<'a> {
     exit: bool,
     logs: Vec<Log>,
     state: GameCommand,
+    none_handler: CommandNoneHandler,
 }
 
 impl<'a> App<'a> {
@@ -85,7 +86,8 @@ impl<'a> App<'a> {
             game,
             exit: false,
             logs: vec![],
-            state: GameCommand::None(CommandNoneHandler::default()),
+            state: GameCommand::None,
+            none_handler: CommandNoneHandler::default(),
         }
     }
 
@@ -132,7 +134,7 @@ impl<'a> App<'a> {
     fn show_work(&mut self, frame: &mut Frame, rect: Rect) {
         // TODO: use get_handler
         let handler: &mut dyn GameCommandHandler = match &mut self.state {
-            GameCommand::None(none) => none,
+            GameCommand::None => &mut self.none_handler,
             GameCommand::ScoreBoard(scoreboard) => scoreboard,
             GameCommand::AddUser(add_user) => add_user,
             GameCommand::GetMoney(get_money) => get_money,
@@ -149,7 +151,7 @@ impl<'a> App<'a> {
 
     fn get_handler(&mut self) -> &mut dyn GameCommandHandler {
         match &mut self.state {
-            GameCommand::None(none) => none,
+            GameCommand::None => &mut self.none_handler,
             GameCommand::ScoreBoard(scoreboard) => scoreboard,
             GameCommand::AddUser(add_user) => add_user,
             GameCommand::GetMoney(get_money) => get_money,
@@ -160,15 +162,22 @@ impl<'a> App<'a> {
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
+        let terminal_event = event::read()?;
+        if let Event::Key(key) = terminal_event {
+            if key.modifiers.contains(KeyModifiers::CONTROL) && key.code == KeyCode::Char('c') {
+                self.exit = true;
+            }
+        }
         let handler = self.get_handler();
-        let event = handler.event_handler(event::read()?);
-        self.game_event_handler(event);
+        let game_event = handler.event_handler(terminal_event);
+
+        self.game_event_handler(game_event);
         Ok(())
     }
 
     fn game_event_handler(&mut self, event: GameEvent) {
         match event {
-            GameEvent::Back => self.state = GameCommand::None(CommandNoneHandler::default()),
+            GameEvent::Back => self.state = GameCommand::None,
             GameEvent::ChangeState(state) => {
                 self.state = match &state[..] {
                     "add-user" => GameCommand::AddUser(CommandAddUserHandler::default()),
@@ -177,10 +186,11 @@ impl<'a> App<'a> {
                     "tap" => GameCommand::Tap(CommandTapHandler::default()),
                     "buy" => GameCommand::Buy(CommandBuyHandler::default()),
                     "score-board" => GameCommand::ScoreBoard(CommandScoreBoardHandler::default()),
-                    "none" => GameCommand::None(CommandNoneHandler::default()),
+                    "none" => GameCommand::None,
                     _ => panic!("Invalid state: {}", state),
                 }
             }
+            GameEvent::Finish => self.exit = true,
             GameEvent::None => {}
         }
     }
