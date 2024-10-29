@@ -113,7 +113,7 @@ impl GameCommandHandler for CommandGetHealthHandler {
         let mut log = None;
         if self.status == State::Send {
             log = match GameTime::from_str(&self.time[..]) {
-                Ok(time) => match game.get_money_of_player(&self.name[..], &time) {
+                Ok(time) => match game.get_health_of_player(&self.name[..], &time) {
                     Ok(num) => Some(Log::Result(format!("{}'s health: {num}", self.name))),
                     Err(str) => Some(Log::Error(format!("Get Health Of Player: {str}"))),
                 },

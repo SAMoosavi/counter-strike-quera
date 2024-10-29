@@ -4,6 +4,7 @@ mod command_get_health_handler;
 mod command_get_money_handler;
 mod command_none_handler;
 mod command_score_board_handler;
+mod command_tap_handler;
 
 use std::io;
 
@@ -14,6 +15,8 @@ use command_get_health_handler::CommandGetHealthHandler;
 use command_get_money_handler::CommandGetMoneyHandler;
 use command_none_handler::CommandNoneHandler;
 use command_score_board_handler::CommandScoreBoardHandler;
+use command_tap_handler::CommandTapHandler;
+
 use ratatui::{
     crossterm::event::{self, Event},
     layout::Rect,
@@ -39,7 +42,7 @@ enum GameCommand {
     AddUser(CommandAddUserHandler),
     GetMoney(CommandGetMoneyHandler),
     GetHealth(CommandGetHealthHandler),
-    Tap,
+    Tap(CommandTapHandler),
     Buy(CommandBuyHandler),
     ScoreBoard(CommandScoreBoardHandler),
     None(CommandNoneHandler),
@@ -135,7 +138,7 @@ impl<'a> App<'a> {
             GameCommand::GetMoney(get_money) => get_money,
             GameCommand::GetHealth(get_health) => get_health,
             GameCommand::Buy(buy) => buy,
-            _ => todo!(),
+            GameCommand::Tap(tap) => tap,
         };
 
         if let Some(log) = handler.run(frame, rect, self.game) {
@@ -152,7 +155,7 @@ impl<'a> App<'a> {
             GameCommand::GetMoney(get_money) => get_money,
             GameCommand::GetHealth(get_health) => get_health,
             GameCommand::Buy(buy) => buy,
-            _ => todo!(),
+            GameCommand::Tap(tap) => tap,
         }
     }
 
@@ -171,7 +174,7 @@ impl<'a> App<'a> {
                     "add-user" => GameCommand::AddUser(CommandAddUserHandler::default()),
                     "get-money" => GameCommand::GetMoney(CommandGetMoneyHandler::default()),
                     "get-health" => GameCommand::GetHealth(CommandGetHealthHandler::default()),
-                    "tap" => GameCommand::Tap,
+                    "tap" => GameCommand::Tap(CommandTapHandler::default()),
                     "buy" => GameCommand::Buy(CommandBuyHandler::default()),
                     "score-board" => GameCommand::ScoreBoard(CommandScoreBoardHandler::default()),
                     "none" => GameCommand::None(CommandNoneHandler::default()),
