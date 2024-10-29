@@ -13,14 +13,12 @@ use command_get_money_handler::CommandGetMoneyHandler;
 use command_none_handler::CommandNoneHandler;
 use command_score_board_handler::CommandScoreBoardHandler;
 
-use ratatui::text::Text;
-use ratatui::widgets::Paragraph;
 use ratatui::{
     crossterm::event::{self, Event},
     layout::Rect,
     prelude::{Constraint, Direction, Layout},
     style::{Style, Stylize},
-    text::Line,
+    text::Text,
     widgets::{Block, BorderType, Borders, List, ListItem},
     DefaultTerminal, Frame,
 };

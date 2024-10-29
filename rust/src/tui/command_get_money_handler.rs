@@ -1,5 +1,5 @@
 use crate::{
-    game::{Game, TeamId},
+    game::Game,
     game_time::GameTime,
     tui::{GameCommandHandler, GameEvent, Log},
 };
