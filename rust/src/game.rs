@@ -121,7 +121,7 @@ impl Game {
 
     pub fn get_team_id(&self, name: &str) -> Result<TeamId, String> {
         match self.find_player(name) {
-            Some(team_id) => Ok((*team_id).clone()),
+            Some(team_id) => Ok(*team_id),
             None => Err(format!("player not found: {}", name)),
         }
     }
