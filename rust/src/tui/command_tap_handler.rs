@@ -1,9 +1,10 @@
-use crate::gun::TypeOfGun;
 use crate::{
-    game::{Game, TeamId},
+    game::Game,
     game_time::GameTime,
+    gun::TypeOfGun,
     tui::{GameCommandHandler, GameEvent, Log},
 };
+
 use ratatui::{
     crossterm::event::{Event, KeyCode, KeyEventKind},
     layout::Rect,
