@@ -22,7 +22,7 @@ use ratatui::{
     prelude::{Constraint, Direction, Layout},
     style::{Style, Stylize},
     text::Text,
-    widgets::{Block, BorderType, Borders, List, ListItem},
+    widgets::{Block, BorderType, Borders, Clear, List, ListItem},
     DefaultTerminal, Frame,
 };
 
@@ -99,7 +99,9 @@ impl<'a> App<'a> {
                     .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
                     .split(frame.area());
 
-                self.show_work(frame, layout[0]);
+                while self.show_work(frame, layout[0]) {
+                    frame.render_widget(Clear, layout[0]);
+                }
                 self.show_log(frame, layout[1]);
             })?;
             self.handle_events()?;
@@ -131,7 +133,7 @@ impl<'a> App<'a> {
         frame.render_widget(list, rect);
     }
 
-    fn show_work(&mut self, frame: &mut Frame, rect: Rect) {
+    fn show_work(&mut self, frame: &mut Frame, rect: Rect) -> bool {
         // TODO: use get_handler
         let handler: &mut dyn GameCommandHandler = match &mut self.state {
             GameCommand::None => &mut self.none_handler,
@@ -146,6 +148,9 @@ impl<'a> App<'a> {
         if let Some(log) = handler.run(frame, rect, self.game) {
             self.logs.push(log);
             self.game_event_handler(GameEvent::Back);
+            true
+        } else {
+            false
         }
     }
 
